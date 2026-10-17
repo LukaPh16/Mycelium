@@ -1,0 +1,246 @@
+{
+ "version": 2,
+ "note": "Single source of truth for packet types. Precedence: tracker > most specific matching protocol rule (named host > ports > protocol; ties by list order) > other. Unknown ids render in the neutral color.",
+ "neutral": "#9AA0A6",
+ "doh_hosts": [
+  "dns.google",
+  "dns.google.com",
+  "cloudflare-dns.com",
+  "one.one.one.one",
+  "dns.quad9.net",
+  "doh.opendns.com",
+  "dns.nextdns.io",
+  "doh.cleanbrowsing.org",
+  "dns.adguard-dns.com",
+  "doh.mullvad.net"
+ ],
+ "types": [
+  {
+   "id": "dns",
+   "label": "DNS query",
+   "color": "#4FC3F7",
+   "rule": "UDP/TCP 53 to our resolver",
+   "observed": true,
+   "match": {
+    "proto": [
+     "udp",
+     "tcp"
+    ],
+    "ports": [
+     "53"
+    ]
+   }
+  },
+  {
+   "id": "tracker",
+   "label": "Tracker / ad / analytics",
+   "color": "#FF5252",
+   "rule": "domain classified as tracker (any protocol)",
+   "observed": true,
+   "match": {
+    "tracker": true
+   }
+  },
+  {
+   "id": "https",
+   "label": "HTTPS (TLS over TCP)",
+   "color": "#66BB6A",
+   "rule": "TCP 443",
+   "observed": true,
+   "observed_note": "tripwire only",
+   "match": {
+    "proto": [
+     "tcp"
+    ],
+    "ports": [
+     "443"
+    ]
+   }
+  },
+  {
+   "id": "http",
+   "label": "HTTP (plain)",
+   "color": "#FFCA28",
+   "rule": "TCP 80, 8080",
+   "observed": true,
+   "observed_note": "tripwire only",
+   "match": {
+    "proto": [
+     "tcp"
+    ],
+    "ports": [
+     "80",
+     "8080"
+    ]
+   }
+  },
+  {
+   "id": "tcp",
+   "label": "Other TCP",
+   "color": "#AB47BC",
+   "rule": "TCP, any other port",
+   "observed": true,
+   "observed_note": "tripwire only",
+   "match": {
+    "proto": [
+     "tcp"
+    ]
+   }
+  },
+  {
+   "id": "quic",
+   "label": "QUIC / HTTP/3",
+   "color": "#26A69A",
+   "rule": "UDP 443",
+   "observed": false,
+   "match": {
+    "proto": [
+     "udp"
+    ],
+    "ports": [
+     "443"
+    ]
+   }
+  },
+  {
+   "id": "udp",
+   "label": "Other UDP",
+   "color": "#7E57C2",
+   "rule": "UDP, any other port",
+   "observed": false,
+   "match": {
+    "proto": [
+     "udp"
+    ]
+   }
+  },
+  {
+   "id": "dot",
+   "label": "DNS over TLS",
+   "color": "#29B6F6",
+   "rule": "TCP 853",
+   "observed": false,
+   "match": {
+    "proto": [
+     "tcp"
+    ],
+    "ports": [
+     "853"
+    ]
+   }
+  },
+  {
+   "id": "doh",
+   "label": "DNS over HTTPS",
+   "color": "#0288D1",
+   "rule": "HTTPS to a known DoH resolver host",
+   "observed": false,
+   "match": {
+    "proto": [
+     "tcp"
+    ],
+    "ports": [
+     "443"
+    ],
+    "doh_host": true
+   }
+  },
+  {
+   "id": "ntp",
+   "label": "Time sync (NTP)",
+   "color": "#8D6E63",
+   "rule": "UDP 123",
+   "observed": false,
+   "match": {
+    "proto": [
+     "udp"
+    ],
+    "ports": [
+     "123"
+    ]
+   }
+  },
+  {
+   "id": "mdns",
+   "label": "Local discovery (mDNS/SSDP)",
+   "color": "#BDBDBD",
+   "rule": "UDP 5353, 1900",
+   "observed": false,
+   "match": {
+    "proto": [
+     "udp"
+    ],
+    "ports": [
+     "5353",
+     "1900"
+    ]
+   }
+  },
+  {
+   "id": "stun",
+   "label": "Calls / WebRTC (STUN/TURN)",
+   "color": "#EC407A",
+   "rule": "UDP/TCP 3478, 5349, 19302",
+   "observed": false,
+   "match": {
+    "proto": [
+     "udp",
+     "tcp"
+    ],
+    "ports": [
+     "3478",
+     "5349",
+     "19302"
+    ]
+   }
+  },
+  {
+   "id": "push",
+   "label": "Push / MQTT",
+   "color": "#FFA726",
+   "rule": "TCP 5228-5230 (FCM), 1883, 8883",
+   "observed": false,
+   "match": {
+    "proto": [
+     "tcp"
+    ],
+    "ports": [
+     "5228-5230",
+     "1883",
+     "8883"
+    ]
+   }
+  },
+  {
+   "id": "icmp",
+   "label": "ICMP / ping",
+   "color": "#78909C",
+   "rule": "ICMP, ICMPv6",
+   "observed": false,
+   "match": {
+    "proto": [
+     "icmp",
+     "icmpv6"
+    ]
+   }
+  },
+  {
+   "id": "os_packets",
+   "label": "OS packet counter",
+   "color": "#9AA0A6",
+   "rule": "NetworkStatsManager totals, type unknown",
+   "observed": true,
+   "match": {
+    "source": "os_stats"
+   }
+  },
+  {
+   "id": "other",
+   "label": "Other / unknown",
+   "color": "#9AA0A6",
+   "rule": "anything not matched above (neutral default)",
+   "observed": true,
+   "match": {}
+  }
+ ]
+}

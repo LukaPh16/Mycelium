@@ -26,9 +26,18 @@ kotlin { jvmToolchain(17) }
 
 tasks.withType<Test>().configureEach {
     systemProperty("schemaPath", rootProject.file("docs/schema.sql").absolutePath)
+    systemProperty("trackersPath", file("src/main/assets/trackers.json").absolutePath)
+    systemProperty("chatTemplatesPath", file("src/main/assets/chat_templates.json").absolutePath)
+    systemProperty("packetTypesPath", file("src/main/assets/config/packet_types.json").absolutePath)
+    systemProperty("simDemoPath", file("src/main/assets/sim/demo1.json").absolutePath)
+    systemProperty("terrariumConfigPath", file("src/main/assets/config/terrarium.json").absolutePath)
+    systemProperty("assetsDir", file("src/main/assets").absolutePath)
 }
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("androidx.core:core-ktx:1.17.0")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.xerial:sqlite-jdbc:3.50.3.0")   // test-only: real SQLite for fixture-DB stats tests
 }

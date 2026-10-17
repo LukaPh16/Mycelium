@@ -1,0 +1,148 @@
+{
+ "limits": [
+  "Mycelium sees lookups, connection attempts and byte totals, not contents. Passwords, messages and the insides of individual packets never pass through it."
+ ],
+ "help": [
+  "I keep field notes on the apps you watch: which domains they look up, which companies they reach, what was blocked, and how much data moved."
+ ],
+ "help_examples": [
+  "Ask, for example, what an app did today, which companies turned up this week, what happened last night, or what was blocked."
+ ],
+ "out_of_scope": [
+  "That lies outside what I can observe. I only speak about lookups, trackers, blocks and data use recorded on this device."
+ ],
+ "no_data": [
+  "I have no record of that. I only speak about what this phone has seen."
+ ],
+ "not_watched": [
+  "{label} is not being watched, so I hold no lookups for it."
+ ],
+ "not_watched_bytes": [
+  "The system counted {amount} {unit} moved by it {period}."
+ ],
+ "not_watched_offer": [
+  "Start watching {label} and I will begin taking notes."
+ ],
+ "watch_unknown": [
+  "I could not find that app among the ones installed here."
+ ],
+ "watch_already": [
+  "{label} is already under observation."
+ ],
+ "unwatch_not_watched": [
+  "{label} is not being watched at the moment."
+ ],
+ "watch_confirm": [
+  "Watching {label} needs your confirmation. Tap to begin."
+ ],
+ "unwatch_confirm": [
+  "Stop watching {label}? Tap to confirm; its past notes are kept."
+ ],
+ "summary_lookups": [
+  "{species} made {lookups} lookups {period}, reaching {domains} distinct domains.",
+  "{species} reached {domains} distinct domains in {lookups} lookups {period}."
+ ],
+ "summary_trackers": [
+  "{tracker_hits} of those lookups went to {companies} tracker companies; {top_company} was the most frequent, with {top_hits}.",
+  "Tracker companies took {tracker_hits} of them, spread over {companies} companies; {top_company} led with {top_hits}."
+ ],
+ "summary_no_trackers": [
+  "No tracker companies turned up for {species} {period}."
+ ],
+ "summary_blocked": [
+  "{blocked} of its lookups were turned away by your rules."
+ ],
+ "summary_background": [
+  "{bg} happened while {species} sat in the background."
+ ],
+ "summary_last": [
+  "{species} was last seen at {time}."
+ ],
+ "top_apps_lead": [
+  "The most active creature {period} was {species}, with {value} {unit}."
+ ],
+ "top_apps_next": [
+  "{species} followed, with {value} {unit}."
+ ],
+ "companies_lead": [
+  "{company} turned up most often {period}: {hits} lookups, from {apps} of the watched apps."
+ ],
+ "companies_app_lead": [
+  "{company} was the most frequent contact of {species} {period}, with {hits} lookups."
+ ],
+ "companies_next": [
+  "{company} came next, with {hits}."
+ ],
+ "when_none": [
+  "I have no record of {target} {period}."
+ ],
+ "when_once": [
+  "{species} contacted {target} once {period}, at {time}."
+ ],
+ "when_app": [
+  "{species} contacted {target} {hits} times {period}, first at {first_time} and last at {last_time}."
+ ],
+ "recent_count": [
+  "{n} events were recorded {period}; the latest follow."
+ ],
+ "recent_dns": [
+  "At {time}, {species} looked up {domain}."
+ ],
+ "recent_dns_tracker": [
+  "At {time}, {species} looked up {domain}, which belongs to {company}."
+ ],
+ "recent_dns_blocked": [
+  "At {time}, {species} asked for {domain} and was turned away."
+ ],
+ "recent_tripwire": [
+  "At {time}, {species} knocked on the tripwire at port {port}."
+ ],
+ "recent_anomaly": [
+  "At {time}, {species} showed {what}."
+ ],
+ "recent_block": [
+  "At {time}, you blocked {target}."
+ ],
+ "night_quiet": [
+  "The garden was quiet between 00:00 and 06:00 on {date}."
+ ],
+ "night_total": [
+  "Between 00:00 and 06:00 on {date}, the watched apps made {lookups} lookups, {bg} of them in the background."
+ ],
+ "night_app": [
+  "{species} accounted for {lookups} background lookups, {tracker_hits} of them to trackers."
+ ],
+ "blocked_none": [
+  "Nothing was blocked {period}."
+ ],
+ "blocked_total": [
+  "{n} lookups were blocked {period}."
+ ],
+ "blocked_item": [
+  "{species} was turned away from {domain} {n} times."
+ ],
+ "bytes_app": [
+  "{species} moved {total_amount} {total_unit} {period}: {rx_amount} {rx_unit} in and {tx_amount} {tx_unit} out."
+ ],
+ "compare_app": [
+  "{species} made {n2} lookups {period2}, against {n1} {period1}."
+ ],
+ "compare_trackers": [
+  "Tracker lookups went from {t1} to {t2}."
+ ],
+ "compare_new": [
+  "New companies appeared {period2}: {list}."
+ ],
+ "compare_all": [
+  "The watched apps made {n2} lookups {period2}, against {n1} {period1}."
+ ],
+ "compare_all_trackers": [
+  "Tracker lookups went from {t1} to {t2}."
+ ],
+ "anomaly_none": [
+  "No anomalies were recorded {period}."
+ ],
+ "anomaly_item": [
+  "At {time}, {species} showed {what}."
+ ]
+}

@@ -1,0 +1,21 @@
+{
+ "id": "preset14",
+ "name": "Puffball",
+ "kingdom": "mushroom",
+ "palette": [
+  "#8D6E63",
+  "#D7CCC8",
+  "#FAFAFA"
+ ],
+ "shape": {
+  "branches": 6,
+  "curl": 0.2,
+  "cap": true
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A mushroom that grows with every lookup its app makes."
+}

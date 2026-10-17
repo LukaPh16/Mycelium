@@ -1,0 +1,21 @@
+{
+ "id": "preset23",
+ "name": "Lettuce Coral",
+ "kingdom": "coral",
+ "palette": [
+  "#00695C",
+  "#80CBC4",
+  "#E0F2F1"
+ ],
+ "shape": {
+  "branches": 4,
+  "curl": 0.9,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A coral that grows with every lookup its app makes."
+}

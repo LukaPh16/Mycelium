@@ -1,0 +1,21 @@
+{
+ "id": "preset16",
+ "name": "Bindweed",
+ "kingdom": "vine",
+ "palette": [
+  "#7B1FA2",
+  "#E1BEE7",
+  "#FAFAFA"
+ ],
+ "shape": {
+  "branches": 5,
+  "curl": 0.8,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A vine that grows with every lookup its app makes."
+}

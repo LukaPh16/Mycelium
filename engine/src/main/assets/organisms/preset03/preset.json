@@ -1,0 +1,21 @@
+{
+ "id": "preset03",
+ "name": "Brain Coral",
+ "kingdom": "coral",
+ "palette": [
+  "#AD1457",
+  "#F48FB1",
+  "#FCE4EC"
+ ],
+ "shape": {
+  "branches": 4,
+  "curl": 0.9,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A coral that grows with every lookup its app makes."
+}

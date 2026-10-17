@@ -1,0 +1,21 @@
+{
+ "id": "preset12",
+ "name": "Ivy",
+ "kingdom": "vine",
+ "palette": [
+  "#2E7D32",
+  "#A5D6A7",
+  "#F1F8E9"
+ ],
+ "shape": {
+  "branches": 7,
+  "curl": 0.6,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A vine that grows with every lookup its app makes."
+}

@@ -1,0 +1,21 @@
+{
+ "id": "preset09",
+ "name": "Chanterelle",
+ "kingdom": "mushroom",
+ "palette": [
+  "#EF6C00",
+  "#FFCC80",
+  "#FFF3E0"
+ ],
+ "shape": {
+  "branches": 6,
+  "curl": 0.7,
+  "cap": true
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A mushroom that grows with every lookup its app makes."
+}

@@ -1,0 +1,21 @@
+{
+ "id": "preset24",
+ "name": "Clematis",
+ "kingdom": "vine",
+ "palette": [
+  "#283593",
+  "#9FA8DA",
+  "#E8EAF6"
+ ],
+ "shape": {
+  "branches": 6,
+  "curl": 0.2,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A vine that grows with every lookup its app makes."
+}

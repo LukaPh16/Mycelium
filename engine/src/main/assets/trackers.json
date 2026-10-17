@@ -1,0 +1,746 @@
+{
+"2mdn.net": {
+"company": "Google",
+"category": "ads"
+},
+"2o7.net": {
+"company": "Adobe",
+"category": "analytics"
+},
+"33across.com": {
+"company": "33Across",
+"category": "ads"
+},
+"3lift.com": {
+"company": "TripleLift",
+"category": "ads"
+},
+"adcolony.com": {
+"company": "Digital Turbine",
+"category": "ads"
+},
+"addthis.com": {
+"company": "Oracle",
+"category": "ads"
+},
+"adfox.ru": {
+"company": "Yandex",
+"category": "ads"
+},
+"adj.st": {
+"company": "Adjust",
+"category": "analytics"
+},
+"adjust.com": {
+"company": "Adjust",
+"category": "analytics"
+},
+"adjust.io": {
+"company": "Adjust",
+"category": "analytics"
+},
+"admob.com": {
+"company": "Google",
+"category": "ads"
+},
+"adnxs.com": {
+"company": "Microsoft",
+"category": "ads"
+},
+"ads-twitter.com": {
+"company": "X",
+"category": "ads"
+},
+"ads.tiktok.com": {
+"company": "ByteDance",
+"category": "ads"
+},
+"ads.yahoo.com": {
+"company": "Yahoo",
+"category": "ads"
+},
+"adsafeprotected.com": {
+"company": "Integral Ad Science",
+"category": "analytics"
+},
+"adservice.google.com": {
+"company": "Google",
+"category": "ads"
+},
+"adsrvr.org": {
+"company": "The Trade Desk",
+"category": "ads"
+},
+"adtechus.com": {
+"company": "Verizon Media",
+"category": "ads"
+},
+"advertising.com": {
+"company": "Yahoo",
+"category": "ads"
+},
+"adx-dra.op.hicloud.com": {
+"company": "Huawei",
+"category": "ads"
+},
+"amazon-adsystem.com": {
+"company": "Amazon",
+"category": "ads"
+},
+"amplitude.com": {
+"company": "Amplitude",
+"category": "analytics"
+},
+"an.facebook.com": {
+"company": "Meta",
+"category": "ads"
+},
+"an.yandex.ru": {
+"company": "Yandex",
+"category": "ads"
+},
+"analytics.google.com": {
+"company": "Google",
+"category": "analytics"
+},
+"analytics.tiktok.com": {
+"company": "ByteDance",
+"category": "analytics"
+},
+"analytics.twitter.com": {
+"company": "X",
+"category": "analytics"
+},
+"api.ad.xiaomi.com": {
+"company": "Xiaomi",
+"category": "ads"
+},
+"app-analytics.snapchat.com": {
+"company": "Snap",
+"category": "analytics"
+},
+"app-measurement.com": {
+"company": "Google",
+"category": "analytics"
+},
+"app.link": {
+"company": "Branch",
+"category": "analytics"
+},
+"appboy.com": {
+"company": "Braze",
+"category": "analytics"
+},
+"applovin.com": {
+"company": "AppLovin",
+"category": "ads"
+},
+"applvn.com": {
+"company": "AppLovin",
+"category": "ads"
+},
+"appmetrica.yandex.com": {
+"company": "Yandex",
+"category": "analytics"
+},
+"appmetrica.yandex.net": {
+"company": "Yandex",
+"category": "analytics"
+},
+"appodeal.com": {
+"company": "Appodeal",
+"category": "ads"
+},
+"appodealx.com": {
+"company": "Appodeal",
+"category": "ads"
+},
+"appsflyer.com": {
+"company": "AppsFlyer",
+"category": "analytics"
+},
+"appsflyersdk.com": {
+"company": "AppsFlyer",
+"category": "analytics"
+},
+"apsalar.com": {
+"company": "Singular",
+"category": "analytics"
+},
+"bat.bing.com": {
+"company": "Microsoft",
+"category": "ads"
+},
+"bidswitch.net": {
+"company": "IPONWEB",
+"category": "ads"
+},
+"bluekai.com": {
+"company": "Oracle",
+"category": "ads"
+},
+"bnc.lt": {
+"company": "Branch",
+"category": "analytics"
+},
+"branch.io": {
+"company": "Branch",
+"category": "analytics"
+},
+"braze.com": {
+"company": "Braze",
+"category": "analytics"
+},
+"braze.eu": {
+"company": "Braze",
+"category": "analytics"
+},
+"browser-intake-datadoghq.com": {
+"company": "Datadog",
+"category": "analytics"
+},
+"bugly.qq.com": {
+"company": "Tencent",
+"category": "analytics"
+},
+"bugsnag.com": {
+"company": "Bugsnag",
+"category": "analytics"
+},
+"business-api.tiktok.com": {
+"company": "ByteDance",
+"category": "ads"
+},
+"byteoversea.com": {
+"company": "ByteDance",
+"category": "analytics"
+},
+"casalemedia.com": {
+"company": "Index Exchange",
+"category": "ads"
+},
+"cdp.cloud.unity3d.com": {
+"company": "Unity",
+"category": "analytics"
+},
+"chartbeat.com": {
+"company": "Chartbeat",
+"category": "analytics"
+},
+"chartbeat.net": {
+"company": "Chartbeat",
+"category": "analytics"
+},
+"chartboost.com": {
+"company": "Chartboost",
+"category": "ads"
+},
+"clarity.ms": {
+"company": "Microsoft",
+"category": "analytics"
+},
+"clevertap-prod.com": {
+"company": "CleverTap",
+"category": "analytics"
+},
+"connect.facebook.net": {
+"company": "Meta",
+"category": "social"
+},
+"crashlytics.com": {
+"company": "Google",
+"category": "analytics"
+},
+"crashlyticsreports-pa.googleapis.com": {
+"company": "Google",
+"category": "analytics"
+},
+"criteo.com": {
+"company": "Criteo",
+"category": "ads"
+},
+"criteo.net": {
+"company": "Criteo",
+"category": "ads"
+},
+"crwdcntrl.net": {
+"company": "Lotame",
+"category": "ads"
+},
+"ct.pinterest.com": {
+"company": "Pinterest",
+"category": "ads"
+},
+"data.mistat.xiaomi.com": {
+"company": "Xiaomi",
+"category": "analytics"
+},
+"demdex.net": {
+"company": "Adobe",
+"category": "analytics"
+},
+"doubleclick.net": {
+"company": "Google",
+"category": "ads"
+},
+"doubleverify.com": {
+"company": "DoubleVerify",
+"category": "analytics"
+},
+"exelator.com": {
+"company": "Nielsen",
+"category": "ads"
+},
+"fingerprint.com": {
+"company": "Fingerprint",
+"category": "fingerprinting"
+},
+"firebaselogging-pa.googleapis.com": {
+"company": "Google",
+"category": "analytics"
+},
+"flurry.com": {
+"company": "Yahoo",
+"category": "analytics"
+},
+"forter.com": {
+"company": "Forter",
+"category": "fingerprinting"
+},
+"fpjs.io": {
+"company": "Fingerprint",
+"category": "fingerprinting"
+},
+"fullstory.com": {
+"company": "FullStory",
+"category": "analytics"
+},
+"fyber.com": {
+"company": "Digital Turbine",
+"category": "ads"
+},
+"google-analytics.com": {
+"company": "Google",
+"category": "analytics"
+},
+"googleadservices.com": {
+"company": "Google",
+"category": "ads"
+},
+"googleadsserving.cn": {
+"company": "Google",
+"category": "ads"
+},
+"googlesyndication.com": {
+"company": "Google",
+"category": "ads"
+},
+"googletagmanager.com": {
+"company": "Google",
+"category": "analytics"
+},
+"googletagservices.com": {
+"company": "Google",
+"category": "ads"
+},
+"graph.facebook.com": {
+"company": "Meta",
+"category": "social"
+},
+"gumgum.com": {
+"company": "GumGum",
+"category": "ads"
+},
+"heapanalytics.com": {
+"company": "Heap",
+"category": "analytics"
+},
+"hm.baidu.com": {
+"company": "Baidu",
+"category": "analytics"
+},
+"hotjar.com": {
+"company": "Hotjar",
+"category": "analytics"
+},
+"id5-sync.com": {
+"company": "ID5",
+"category": "fingerprinting"
+},
+"imasdk.googleapis.com": {
+"company": "Google",
+"category": "ads"
+},
+"imrworldwide.com": {
+"company": "Nielsen",
+"category": "analytics"
+},
+"in.appcenter.ms": {
+"company": "Microsoft",
+"category": "analytics"
+},
+"incognia.com": {
+"company": "Incognia",
+"category": "fingerprinting"
+},
+"inmobi.com": {
+"company": "InMobi",
+"category": "ads"
+},
+"inner-active.mobi": {
+"company": "Digital Turbine",
+"category": "ads"
+},
+"instabug.com": {
+"company": "Instabug",
+"category": "analytics"
+},
+"ironsrc.com": {
+"company": "ironSource",
+"category": "ads"
+},
+"ironsrc.mobi": {
+"company": "ironSource",
+"category": "ads"
+},
+"isnssdk.com": {
+"company": "ByteDance",
+"category": "analytics"
+},
+"kargo.com": {
+"company": "Kargo",
+"category": "ads"
+},
+"kochava.com": {
+"company": "Kochava",
+"category": "analytics"
+},
+"krxd.net": {
+"company": "Salesforce",
+"category": "ads"
+},
+"leanplum.com": {
+"company": "Leanplum",
+"category": "analytics"
+},
+"liftoff.io": {
+"company": "Liftoff",
+"category": "ads"
+},
+"lijit.com": {
+"company": "Sovrn",
+"category": "ads"
+},
+"log.tiktokv.com": {
+"company": "ByteDance",
+"category": "analytics"
+},
+"mathtag.com": {
+"company": "MediaMath",
+"category": "ads"
+},
+"mc.yandex.ru": {
+"company": "Yandex",
+"category": "analytics"
+},
+"media.net": {
+"company": "Media.net",
+"category": "ads"
+},
+"metrics.data.hicloud.com": {
+"company": "Huawei",
+"category": "analytics"
+},
+"mintegral.com": {
+"company": "Mintegral",
+"category": "ads"
+},
+"mixpanel.com": {
+"company": "Mixpanel",
+"category": "analytics"
+},
+"moatads.com": {
+"company": "Oracle",
+"category": "analytics"
+},
+"mobileapptracking.com": {
+"company": "Tune",
+"category": "analytics"
+},
+"moloco.com": {
+"company": "Moloco",
+"category": "ads"
+},
+"mopub.com": {
+"company": "MoPub",
+"category": "ads"
+},
+"mtgglobals.com": {
+"company": "Mintegral",
+"category": "ads"
+},
+"mxpnl.com": {
+"company": "Mixpanel",
+"category": "analytics"
+},
+"newrelic.com": {
+"company": "New Relic",
+"category": "analytics"
+},
+"nr-data.net": {
+"company": "New Relic",
+"category": "analytics"
+},
+"ogury.co": {
+"company": "Ogury",
+"category": "ads"
+},
+"ogury.io": {
+"company": "Ogury",
+"category": "ads"
+},
+"omtrdc.net": {
+"company": "Adobe",
+"category": "analytics"
+},
+"onelink.me": {
+"company": "AppsFlyer",
+"category": "analytics"
+},
+"onesignal.com": {
+"company": "OneSignal",
+"category": "analytics"
+},
+"online-metrix.net": {
+"company": "LexisNexis",
+"category": "fingerprinting"
+},
+"openx.net": {
+"company": "OpenX",
+"category": "ads"
+},
+"optimizely.com": {
+"company": "Optimizely",
+"category": "analytics"
+},
+"outbrain.com": {
+"company": "Outbrain",
+"category": "ads"
+},
+"pangle.io": {
+"company": "ByteDance",
+"category": "ads"
+},
+"pangleglobal.com": {
+"company": "ByteDance",
+"category": "ads"
+},
+"perimeterx.net": {
+"company": "HUMAN",
+"category": "fingerprinting"
+},
+"permutive.com": {
+"company": "Permutive",
+"category": "analytics"
+},
+"pixel.facebook.com": {
+"company": "Meta",
+"category": "social"
+},
+"pos.baidu.com": {
+"company": "Baidu",
+"category": "ads"
+},
+"pubmatic.com": {
+"company": "PubMatic",
+"category": "ads"
+},
+"pubnative.net": {
+"company": "Verve",
+"category": "ads"
+},
+"pushwoosh.com": {
+"company": "Pushwoosh",
+"category": "analytics"
+},
+"px-cdn.net": {
+"company": "HUMAN",
+"category": "fingerprinting"
+},
+"px.ads.linkedin.com": {
+"company": "LinkedIn",
+"category": "ads"
+},
+"quantcount.com": {
+"company": "Quantcast",
+"category": "analytics"
+},
+"quantserve.com": {
+"company": "Quantcast",
+"category": "analytics"
+},
+"rayjump.com": {
+"company": "Mintegral",
+"category": "ads"
+},
+"rezync.com": {
+"company": "Zeta",
+"category": "ads"
+},
+"rlcdn.com": {
+"company": "LiveRamp",
+"category": "ads"
+},
+"rubiconproject.com": {
+"company": "Magnite",
+"category": "ads"
+},
+"samsungadhub.com": {
+"company": "Samsung",
+"category": "ads"
+},
+"samsungads.com": {
+"company": "Samsung",
+"category": "ads"
+},
+"sc-analytics.appspot.com": {
+"company": "Snap",
+"category": "analytics"
+},
+"scorecardresearch.com": {
+"company": "comScore",
+"category": "analytics"
+},
+"segment.com": {
+"company": "Segment",
+"category": "analytics"
+},
+"segment.io": {
+"company": "Segment",
+"category": "analytics"
+},
+"segmentapis.com": {
+"company": "Segment",
+"category": "analytics"
+},
+"sentry.io": {
+"company": "Sentry",
+"category": "analytics"
+},
+"seon.io": {
+"company": "SEON",
+"category": "fingerprinting"
+},
+"serving-sys.com": {
+"company": "Sizmek",
+"category": "ads"
+},
+"sgsnssdk.com": {
+"company": "ByteDance",
+"category": "analytics"
+},
+"sharethrough.com": {
+"company": "Sharethrough",
+"category": "ads"
+},
+"siftscience.com": {
+"company": "Sift",
+"category": "fingerprinting"
+},
+"singular.net": {
+"company": "Singular",
+"category": "analytics"
+},
+"smaato.net": {
+"company": "Smaato",
+"category": "ads"
+},
+"smartadserver.com": {
+"company": "Equativ",
+"category": "ads"
+},
+"smartlook.com": {
+"company": "Smartlook",
+"category": "analytics"
+},
+"snap.licdn.com": {
+"company": "LinkedIn",
+"category": "analytics"
+},
+"sng.link": {
+"company": "Singular",
+"category": "analytics"
+},
+"startappservice.com": {
+"company": "Start.io",
+"category": "ads"
+},
+"supersonicads.com": {
+"company": "ironSource",
+"category": "ads"
+},
+"taboola.com": {
+"company": "Taboola",
+"category": "ads"
+},
+"tapjoy.com": {
+"company": "Tapjoy",
+"category": "ads"
+},
+"tapjoyads.com": {
+"company": "Tapjoy",
+"category": "ads"
+},
+"teads.tv": {
+"company": "Teads",
+"category": "ads"
+},
+"tenjin.com": {
+"company": "Tenjin",
+"category": "analytics"
+},
+"threatmetrix.com": {
+"company": "LexisNexis",
+"category": "fingerprinting"
+},
+"tr.snapchat.com": {
+"company": "Snap",
+"category": "ads"
+},
+"tracking.miui.com": {
+"company": "Xiaomi",
+"category": "analytics"
+},
+"unityads.unity3d.com": {
+"company": "Unity",
+"category": "ads"
+},
+"urbanairship.com": {
+"company": "Airship",
+"category": "analytics"
+},
+"uxcam.com": {
+"company": "UXCam",
+"category": "analytics"
+},
+"vortex.data.microsoft.com": {
+"company": "Microsoft",
+"category": "analytics"
+},
+"vungle.com": {
+"company": "Vungle",
+"category": "ads"
+},
+"wzrkt.com": {
+"company": "CleverTap",
+"category": "analytics"
+},
+"yandexadexchange.net": {
+"company": "Yandex",
+"category": "ads"
+},
+"yieldmo.com": {
+"company": "Yieldmo",
+"category": "ads"
+}
+}

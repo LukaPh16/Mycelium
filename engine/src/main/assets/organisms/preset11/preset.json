@@ -1,0 +1,21 @@
+{
+ "id": "preset11",
+ "name": "Staghorn",
+ "kingdom": "coral",
+ "palette": [
+  "#00838F",
+  "#80DEEA",
+  "#E0F7FA"
+ ],
+ "shape": {
+  "branches": 5,
+  "curl": 0.3,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A coral that grows with every lookup its app makes."
+}

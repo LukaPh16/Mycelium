@@ -1,0 +1,26 @@
+{
+ "id": "preset13",
+ "name": "Slow Moss",
+ "kingdom": "fern",
+ "palette": [
+  "#827717",
+  "#DCE775",
+  "#F9FBE7"
+ ],
+ "shape": {
+  "branches": 4,
+  "curl": 0.9,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "Grows slowly: needs more activity than other organisms to reach each stage.",
+ "stage_thresholds": [
+  0,
+  80,
+  300
+ ]
+}

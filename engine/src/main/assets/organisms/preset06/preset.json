@@ -1,0 +1,21 @@
+{
+ "id": "preset06",
+ "name": "Hart's Tongue",
+ "kingdom": "fern",
+ "palette": [
+  "#33691E",
+  "#AED581",
+  "#F1F8E9"
+ ],
+ "shape": {
+  "branches": 5,
+  "curl": 0.8,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A fern that grows with every lookup its app makes."
+}

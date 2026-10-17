@@ -1,0 +1,130 @@
+{
+ "version": 1,
+ "presets": [
+  {
+   "id": "preset01",
+   "name": "Ink Cap",
+   "file": "organisms/preset01/preset.json"
+  },
+  {
+   "id": "preset02",
+   "name": "Maidenhair",
+   "file": "organisms/preset02/preset.json"
+  },
+  {
+   "id": "preset03",
+   "name": "Brain Coral",
+   "file": "organisms/preset03/preset.json"
+  },
+  {
+   "id": "preset04",
+   "name": "Morning Glory",
+   "file": "organisms/preset04/preset.json"
+  },
+  {
+   "id": "preset05",
+   "name": "Fly Agaric",
+   "file": "organisms/preset05/preset.json"
+  },
+  {
+   "id": "preset06",
+   "name": "Hart's Tongue",
+   "file": "organisms/preset06/preset.json"
+  },
+  {
+   "id": "preset07",
+   "name": "Sea Fan",
+   "file": "organisms/preset07/preset.json"
+  },
+  {
+   "id": "preset08",
+   "name": "Wild Hop",
+   "file": "organisms/preset08/preset.json"
+  },
+  {
+   "id": "preset09",
+   "name": "Chanterelle",
+   "file": "organisms/preset09/preset.json"
+  },
+  {
+   "id": "preset10",
+   "name": "Bracken",
+   "file": "organisms/preset10/preset.json"
+  },
+  {
+   "id": "preset11",
+   "name": "Staghorn",
+   "file": "organisms/preset11/preset.json"
+  },
+  {
+   "id": "preset12",
+   "name": "Ivy",
+   "file": "organisms/preset12/preset.json"
+  },
+  {
+   "id": "preset13",
+   "name": "Slow Moss",
+   "file": "organisms/preset13/preset.json"
+  },
+  {
+   "id": "preset14",
+   "name": "Puffball",
+   "file": "organisms/preset14/preset.json"
+  },
+  {
+   "id": "preset15",
+   "name": "Fire Coral",
+   "file": "organisms/preset15/preset.json"
+  },
+  {
+   "id": "preset16",
+   "name": "Bindweed",
+   "file": "organisms/preset16/preset.json"
+  },
+  {
+   "id": "preset17",
+   "name": "Oyster Shelf",
+   "file": "organisms/preset17/preset.json"
+  },
+  {
+   "id": "preset18",
+   "name": "Royal Fern",
+   "file": "organisms/preset18/preset.json"
+  },
+  {
+   "id": "preset19",
+   "name": "Pillar Coral",
+   "file": "organisms/preset19/preset.json"
+  },
+  {
+   "id": "preset20",
+   "name": "Passionflower",
+   "file": "organisms/preset20/preset.json"
+  },
+  {
+   "id": "preset21",
+   "name": "Earthstar",
+   "file": "organisms/preset21/preset.json"
+  },
+  {
+   "id": "preset22",
+   "name": "Tree Fern",
+   "file": "organisms/preset22/preset.json"
+  },
+  {
+   "id": "preset23",
+   "name": "Lettuce Coral",
+   "file": "organisms/preset23/preset.json"
+  },
+  {
+   "id": "preset24",
+   "name": "Clematis",
+   "file": "organisms/preset24/preset.json"
+  },
+  {
+   "id": "preset25",
+   "name": "Lion's Mane",
+   "file": "organisms/preset25/preset.json"
+  }
+ ]
+}

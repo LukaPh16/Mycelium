@@ -1,0 +1,21 @@
+{
+ "id": "preset21",
+ "name": "Earthstar",
+ "kingdom": "mushroom",
+ "palette": [
+  "#4E342E",
+  "#BCAAA4",
+  "#EFEBE9"
+ ],
+ "shape": {
+  "branches": 5,
+  "curl": 0.3,
+  "cap": true
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A mushroom that grows with every lookup its app makes."
+}

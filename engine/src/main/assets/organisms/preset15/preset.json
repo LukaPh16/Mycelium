@@ -1,0 +1,21 @@
+{
+ "id": "preset15",
+ "name": "Fire Coral",
+ "kingdom": "coral",
+ "palette": [
+  "#D84315",
+  "#FFAB91",
+  "#FBE9E7"
+ ],
+ "shape": {
+  "branches": 3,
+  "curl": 0.5,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A coral that grows with every lookup its app makes."
+}

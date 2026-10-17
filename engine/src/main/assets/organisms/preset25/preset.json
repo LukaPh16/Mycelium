@@ -1,0 +1,21 @@
+{
+ "id": "preset25",
+ "name": "Lion's Mane",
+ "kingdom": "mushroom",
+ "palette": [
+  "#E0E0E0",
+  "#FFFFFF",
+  "#F5F5F5"
+ ],
+ "shape": {
+  "branches": 3,
+  "curl": 0.5,
+  "cap": true
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A mushroom that grows with every lookup its app makes."
+}

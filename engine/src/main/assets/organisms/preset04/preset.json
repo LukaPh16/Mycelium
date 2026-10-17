@@ -1,0 +1,21 @@
+{
+ "id": "preset04",
+ "name": "Morning Glory",
+ "kingdom": "vine",
+ "palette": [
+  "#4527A0",
+  "#9575CD",
+  "#EDE7F6"
+ ],
+ "shape": {
+  "branches": 6,
+  "curl": 0.2,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A vine that grows with every lookup its app makes."
+}

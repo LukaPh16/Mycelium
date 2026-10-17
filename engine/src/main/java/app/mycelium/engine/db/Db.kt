@@ -20,18 +20,24 @@ class Db(private val context: Context) : SQLiteOpenHelper(context, NAME, null, V
         }
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) = Unit
+    /** Additive only: add what later versions of docs/schema.sql introduced. */
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE chat ADD COLUMN latency_ms INTEGER")
+            db.execSQL("ALTER TABLE chat ADD COLUMN sentences TEXT")
+        }
+    }
 
     val reader: SQLiteDatabase by lazy {
         writableDatabase // ensure the file and schema exist first
         SQLiteDatabase.openDatabase(
             context.getDatabasePath(NAME).path, null,
-            SQLiteDatabase.OPEN_READONLY or SQLiteDatabase.ENABLE_WRITE_AHEAD_LOGGING,
+            SQLiteDatabase.OPEN_READONLY,
         )
     }
 
     companion object {
         const val NAME = "mycelium.db"
-        const val VERSION = 1
+        const val VERSION = 2
     }
 }

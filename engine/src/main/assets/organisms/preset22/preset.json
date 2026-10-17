@@ -1,0 +1,21 @@
+{
+ "id": "preset22",
+ "name": "Tree Fern",
+ "kingdom": "fern",
+ "palette": [
+  "#1B5E20",
+  "#4CAF50",
+  "#E8F5E9"
+ ],
+ "shape": {
+  "branches": 7,
+  "curl": 0.6,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A fern that grows with every lookup its app makes."
+}

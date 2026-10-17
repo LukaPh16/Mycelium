@@ -24,6 +24,7 @@ A separate team builds the final UI in Lovable; we build the engine, the chatbot
 - compileSdk 36, targetSdk 36, minSdk 30.
 - Allowed deps: kotlinx-coroutines, kotlinx-serialization-json, AndroidX core/activity/lifecycle,
   Jetpack Compose Material 3 (debug UI only), JUnit 4.
+  Test-only: org.xerial:sqlite-jdbc (fixture-DB tests for stats; never in the APK).
 - Cloud AI calls use java.net.HttpURLConnection (no extra HTTP library).
 - Not allowed: Room, Retrofit, OkHttp, analytics, TTS, speech-to-text, on-device LLMs,
   any cloud API other than the user-keyed AI call in Step 9.

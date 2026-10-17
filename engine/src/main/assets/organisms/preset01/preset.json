@@ -1,0 +1,21 @@
+{
+ "id": "preset01",
+ "name": "Ink Cap",
+ "kingdom": "mushroom",
+ "palette": [
+  "#5D4037",
+  "#A1887F",
+  "#EFEBE9"
+ ],
+ "shape": {
+  "branches": 5,
+  "curl": 0.3,
+  "cap": true
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A mushroom that grows with every lookup its app makes."
+}

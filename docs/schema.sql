@@ -5,7 +5,7 @@ CREATE TABLE app (package TEXT PRIMARY KEY, uid INTEGER, label TEXT, seed TEXT,
 CREATE TABLE event (
   id INTEGER PRIMARY KEY AUTOINCREMENT,  -- citation id
   ts INTEGER NOT NULL,
-  kind TEXT NOT NULL,      -- dns|tripwire|block|unblock|vpn|anomaly
+  kind TEXT NOT NULL,      -- dns|tripwire|block|unblock|vpn|anomaly|ai
   ptype TEXT,              -- packet type id from packet_types.json (dns, https, tracker, ...); NULL for non-packet kinds
   package TEXT,            -- NULL = unknown
   how TEXT,                -- uid_dns|uid_tcp|guess_fg|unknown
@@ -16,7 +16,7 @@ CREATE TABLE event (
   fg INTEGER,              -- 1 foreground, 0 background, NULL unknown
   port INTEGER,            -- tripwire only
   answer TEXT,             -- answered IPs, comma list
-  note TEXT,               -- vpn/anomaly/debug text; anomaly evidence ids as comma list
+  note TEXT,               -- vpn/anomaly/debug text; anomaly evidence ids as comma list; ai: bytes, model, latency, status (never payload)
   sim INTEGER DEFAULT 0);
 CREATE INDEX ix_event_ts ON event(ts);
 CREATE INDEX ix_event_pkg ON event(package, ts);
@@ -28,7 +28,9 @@ CREATE TABLE traffic (       -- per-app bytes and packets from NetworkStatsManag
   rx_packets INTEGER, tx_packets INTEGER,                    -- OS packet counters, type unknown
   PRIMARY KEY (uid, start_ts, fg, net));
 CREATE TABLE chat (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER, role TEXT, text TEXT,
-  cites TEXT, engine TEXT);  -- role user|bot; engine cloud|template
+  cites TEXT, engine TEXT,   -- role user|bot; engine cloud|template
+  latency_ms INTEGER,        -- bot: time to answer (added in DB version 2)
+  sentences TEXT);           -- bot: JSON [{text,cites}] so each sentence keeps its citations (version 2)
 CREATE TABLE queue (         -- traffic caught in Sanctuary, waiting for on-device processing
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   ts INTEGER NOT NULL,

@@ -1,0 +1,21 @@
+{
+ "id": "preset19",
+ "name": "Pillar Coral",
+ "kingdom": "coral",
+ "palette": [
+  "#F9A825",
+  "#FFF59D",
+  "#FFFDE7"
+ ],
+ "shape": {
+  "branches": 6,
+  "curl": 0.7,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A coral that grows with every lookup its app makes."
+}

@@ -1,0 +1,21 @@
+{
+ "id": "preset17",
+ "name": "Oyster Shelf",
+ "kingdom": "mushroom",
+ "palette": [
+  "#607D8B",
+  "#CFD8DC",
+  "#ECEFF1"
+ ],
+ "shape": {
+  "branches": 7,
+  "curl": 0.1,
+  "cap": true
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A mushroom that grows with every lookup its app makes."
+}

@@ -1,0 +1,21 @@
+{
+ "id": "preset05",
+ "name": "Fly Agaric",
+ "kingdom": "mushroom",
+ "palette": [
+  "#C62828",
+  "#EF9A9A",
+  "#FFF8E1"
+ ],
+ "shape": {
+  "branches": 3,
+  "curl": 0.5,
+  "cap": true
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A mushroom that grows with every lookup its app makes."
+}

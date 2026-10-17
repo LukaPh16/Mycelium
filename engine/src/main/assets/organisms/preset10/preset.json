@@ -1,0 +1,21 @@
+{
+ "id": "preset10",
+ "name": "Bracken",
+ "kingdom": "fern",
+ "palette": [
+  "#1B5E20",
+  "#66BB6A",
+  "#E8F5E9"
+ ],
+ "shape": {
+  "branches": 3,
+  "curl": 0.0,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A fern that grows with every lookup its app makes."
+}

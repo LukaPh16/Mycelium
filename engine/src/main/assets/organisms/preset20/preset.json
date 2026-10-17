@@ -1,0 +1,21 @@
+{
+ "id": "preset20",
+ "name": "Passionflower",
+ "kingdom": "vine",
+ "palette": [
+  "#6A1B9A",
+  "#BA68C8",
+  "#F3E5F5"
+ ],
+ "shape": {
+  "branches": 3,
+  "curl": 0.0,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A vine that grows with every lookup its app makes."
+}

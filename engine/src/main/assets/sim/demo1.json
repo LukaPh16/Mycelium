@@ -1,0 +1,647 @@
+{
+ "name": "demo1",
+ "description": "Five apps over about two minutes at speed 1: a tracker-heavy TikTok session first, background WhatsApp, Instagram with the Meta SDK, a weather app's 03:00 background burst, and an AppLovin block in Candy Crush followed by tripwire retries.",
+ "apps": [
+  {
+   "package": "com.zhiliaoapp.musically",
+   "label": "TikTok"
+  },
+  {
+   "package": "com.instagram.android",
+   "label": "Instagram"
+  },
+  {
+   "package": "com.whatsapp",
+   "label": "WhatsApp"
+  },
+  {
+   "package": "com.weather.Weather",
+   "label": "The Weather Channel"
+  },
+  {
+   "package": "com.king.candycrushsaga",
+   "label": "Candy Crush Saga"
+  }
+ ],
+ "events": [
+  {
+   "dt_ms": 400,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "api16-normal-useast5.tiktokv.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "ads.tiktok.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "analytics.tiktok.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "log.byteoversea.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "mon.isnssdk.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "v16m.tiktokcdn.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "graph.facebook.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "app-measurement.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "t.appsflyer.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "sdk.pangle.io",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "log.tiktokv.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "mcs.sgsnssdk.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "p16-sign.tiktokcdn-us.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "ads.tiktok.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "analytics.tiktok.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "log.byteoversea.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "googleads.g.doubleclick.net",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "api16-normal-useast5.tiktokv.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "mon.isnssdk.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "sdk.pangle.io",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "v16m.tiktokcdn.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "app-measurement.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "t.appsflyer.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "log.tiktokv.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "graph.facebook.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "analytics.tiktok.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "ads.tiktok.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "log.byteoversea.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "t.appsflyer.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 950,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "sdk.pangle.io",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1500,
+   "package": "com.whatsapp",
+   "domain": "g.whatsapp.net",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1500,
+   "package": "com.whatsapp",
+   "domain": "mmg.whatsapp.net",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1500,
+   "package": "com.whatsapp",
+   "domain": "static.whatsapp.net",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1500,
+   "package": "com.whatsapp",
+   "domain": "g.whatsapp.net",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "i.instagram.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "scontent.cdninstagram.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "graph.facebook.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "connect.facebook.net",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "graph.instagram.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "an.facebook.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "i.instagram.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "scontent.cdninstagram.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "graph.facebook.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.instagram.android",
+   "domain": "app-measurement.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "api.weather.com",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:12:00"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "doubleclick.net",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:12:17"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "amazon-adsystem.com",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:12:34"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "api.weather.com",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:13:51"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "googlesyndication.com",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:13:08"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "c.amazon-adsystem.com",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:13:25"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "pubmatic.com",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:14:42"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "api.weather.com",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:14:59"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "adsrvr.org",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:14:16"
+  },
+  {
+   "dt_ms": 300,
+   "package": "com.weather.Weather",
+   "domain": "doubleclick.net",
+   "fg": 0,
+   "kind": "dns",
+   "at_local": "03:15:33"
+  },
+  {
+   "dt_ms": 1300,
+   "package": "com.king.candycrushsaga",
+   "domain": "mobile-api.king.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1300,
+   "package": "com.king.candycrushsaga",
+   "domain": "ms.applovin.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1300,
+   "package": "com.king.candycrushsaga",
+   "domain": "d.applovin.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1300,
+   "package": "com.king.candycrushsaga",
+   "domain": "rt.applovin.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1500,
+   "package": "*",
+   "domain": "applovin.com",
+   "kind": "block"
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.king.candycrushsaga",
+   "domain": "ms.applovin.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 400,
+   "package": "com.king.candycrushsaga",
+   "kind": "tripwire",
+   "port": 443,
+   "fg": 1
+  },
+  {
+   "dt_ms": 1500,
+   "package": "com.king.candycrushsaga",
+   "domain": "d.applovin.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 400,
+   "package": "com.king.candycrushsaga",
+   "kind": "tripwire",
+   "port": 443,
+   "fg": 1
+  },
+  {
+   "dt_ms": 2500,
+   "package": "com.king.candycrushsaga",
+   "kind": "tripwire",
+   "port": 443,
+   "fg": 1
+  },
+  {
+   "dt_ms": 1200,
+   "package": "com.king.candycrushsaga",
+   "domain": "mobile-api.king.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "log.byteoversea.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "mon.isnssdk.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "ads.tiktok.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "t.appsflyer.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "analytics.tiktok.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "log.tiktokv.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "v16m.tiktokcdn.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "sdk.pangle.io",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "app-measurement.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "graph.facebook.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "api16-normal-useast5.tiktokv.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "mcs.sgsnssdk.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "log.byteoversea.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.zhiliaoapp.musically",
+   "domain": "ads.tiktok.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 2000,
+   "package": "com.whatsapp",
+   "domain": "mmg.whatsapp.net",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 2000,
+   "package": "com.whatsapp",
+   "domain": "crashlogs.whatsapp.net",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1600,
+   "package": "com.instagram.android",
+   "domain": "i.instagram.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1600,
+   "package": "com.instagram.android",
+   "domain": "graph.facebook.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1600,
+   "package": "com.instagram.android",
+   "domain": "scontent.cdninstagram.com",
+   "fg": 1,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1600,
+   "package": "com.instagram.android",
+   "domain": "edge-chat.instagram.com",
+   "fg": 1,
+   "kind": "dns",
+   "ptype": "quic"
+  },
+  {
+   "dt_ms": 2200,
+   "package": "com.weather.Weather",
+   "domain": "api.weather.com",
+   "fg": 0,
+   "kind": "dns"
+  },
+  {
+   "dt_ms": 1800,
+   "package": "com.king.candycrushsaga",
+   "domain": "ms.applovin.com",
+   "fg": 1,
+   "kind": "dns"
+  }
+ ]
+}

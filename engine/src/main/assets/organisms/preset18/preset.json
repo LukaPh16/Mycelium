@@ -1,0 +1,21 @@
+{
+ "id": "preset18",
+ "name": "Royal Fern",
+ "kingdom": "fern",
+ "palette": [
+  "#004D40",
+  "#4DB6AC",
+  "#E0F2F1"
+ ],
+ "shape": {
+  "branches": 4,
+  "curl": 0.4,
+  "cap": false
+ },
+ "stage_names": [
+  "spore",
+  "sprout",
+  "bloom"
+ ],
+ "description": "A fern that grows with every lookup its app makes."
+}

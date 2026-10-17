@@ -1,0 +1,15 @@
+{
+ "stage_thresholds": [
+  0,
+  50,
+  200
+ ],
+ "weights": {
+  "default": 1,
+  "tracker": 2,
+  "os_packets": 0.01
+ },
+ "count_os_packets": true,
+ "default_preset": "preset01",
+ "presets_index": "organisms/index.json"
+}
