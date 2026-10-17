@@ -108,3 +108,5 @@ html, body { margin: 0; height: 100%; background: #12152A; color: var(--ink); fo
 
 #error { position: fixed; z-index: 20; left: 16px; right: 16px; top: 35%; padding: 14px; background: var(--paper); color: var(--ink);
   text-align: center; font: 600 15px 'Pixelify', sans-serif; --edge: var(--berry); }
+/* The native app shows today's summary and plain-word help itself; the type-mix bar and its legend are hidden there. */
+#sign, #legend, .cell canvas.bar { display: none; }

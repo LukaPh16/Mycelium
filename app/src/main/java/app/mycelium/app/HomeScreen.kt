@@ -7,6 +7,8 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.mycelium.app.ui.pixel
+import app.mycelium.app.ui.pixelPanel
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.webkit.WebViewAssetLoader
 import app.mycelium.app.ui.EmptyState
@@ -46,7 +51,7 @@ import org.json.JSONObject
 
 /** Home: the terrarium web module, with a friendly banner when protection is paused or offline. */
 @Composable
-fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit) {
+fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topInset: Dp) {
     var watched by remember { mutableStateOf<Int?>(null) }
     LaunchedEffect(Unit) {
         while (true) {
@@ -55,38 +60,37 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit) {
         }
     }
     val go = LocalGo.current
-    Column(Modifier.fillMaxSize()) {
+    val pal = LocalPal.current
+    Box(Modifier.fillMaxSize().background(pal.bg)) {
         when {
-            watched == 0 && protection != Protection.Demo -> {
-                EmptyState(
-                    R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_empty_title), stringResource(R.string.home_empty_body),
-                    action = stringResource(R.string.home_choose), onAction = { go(Routes.APPS) }, modifier = Modifier.padding(top = 48.dp),
-                )
-                return@Column
-            }
-            protection == Protection.Paused -> Banner(R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_paused_title),
-                stringResource(R.string.home_paused_body), stringResource(R.string.prot_start), start)
-            protection == Protection.SafeMode -> Banner(R.drawable.sprite_mushroom_wow, stringResource(R.string.safe_mode_long),
-                stringResource(R.string.home_safe_body), null, {})
+            watched == null -> LoadingState(stringResource(R.string.home_loading), Modifier.padding(top = topInset + 48.dp))
+            watched == 0 && protection != Protection.Demo -> EmptyState(
+                R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_empty_title), stringResource(R.string.home_empty_body),
+                action = stringResource(R.string.home_choose), onAction = { go(Routes.APPS) }, modifier = Modifier.padding(top = topInset + 48.dp),
+            )
+            else -> TerrariumWeb(prefs, Modifier.fillMaxSize().padding(top = topInset))
+        }
+        if (watched != 0) when (protection) {
+            Protection.Paused -> StatusPill(R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_paused_short), stringResource(R.string.prot_start_short), start, topInset)
+            Protection.SafeMode -> StatusPill(R.drawable.sprite_mushroom_wow, stringResource(R.string.home_safe_short), null, {}, topInset)
             else -> Unit
         }
-        if (watched == null) LoadingState(stringResource(R.string.home_loading)) else TerrariumWeb(prefs, Modifier.fillMaxSize())
     }
 }
 
+/** A slim note floating under the top bar: what is going on, and one button. */
 @Composable
-private fun Banner(sprite: Int, title: String, body: String, action: String?, onAction: () -> Unit) {
+private fun StatusPill(sprite: Int, text: String, action: String?, onAction: () -> Unit, topInset: Dp) {
     val pal = LocalPal.current
-    PixelPanel(Modifier.fillMaxWidth().padding(12.dp), style = PanelStyle.Paper) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            PixelSprite(sprite, artPixelDp = 1.5f)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleMedium, color = pal.ink)
-                Text(body, style = MaterialTheme.typography.bodyMedium, color = pal.inkMuted)
-            }
-        }
-        if (action != null) PixelButton(action, onAction, Modifier.fillMaxWidth())
+    Row(
+        Modifier.fillMaxWidth().padding(top = topInset + 8.dp, start = 16.dp, end = 16.dp)
+            .pixelPanel(PanelStyle.Paper, pal, pixel()).padding(start = 12.dp, end = 8.dp, top = 6.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        PixelSprite(sprite, artPixelDp = 1f)
+        Spacer(Modifier.width(8.dp))
+        Text(text, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+        if (action != null) PixelButton(action, onAction)
     }
 }
 

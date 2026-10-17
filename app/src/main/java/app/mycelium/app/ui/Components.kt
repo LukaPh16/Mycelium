@@ -137,9 +137,9 @@ fun PixelButton(
     val source = remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
     val (fill, shade, fg) = when (kind) {
-        ButtonKind.Primary -> Triple(pal.leaf, pal.moss, pal.onAccent)
+        ButtonKind.Primary -> Triple(pal.leaf, pal.moss, pal.onLeaf)
         ButtonKind.Secondary -> Triple(pal.paper, pal.paperEdge, pal.ink)
-        ButtonKind.Danger -> Triple(pal.berry, pal.woodDark, pal.onAccent)
+        ButtonKind.Danger -> Triple(pal.berry, pal.woodDark, pal.onLeaf)
         ButtonKind.Quiet -> Triple(pal.paperEdge, pal.paperEdge, pal.ink)
     }
     val down = if (pressed && enabled) p else 0f

@@ -100,6 +100,9 @@
     <string name="home_empty_title">No creatures yet</string>
     <string name="home_empty_body">Pick the apps you want to watch. Each one gets a little creature that grows when the app contacts the internet.</string>
     <string name="home_choose">Choose apps</string>
+    <string name="home_paused_short">Your garden is resting.</string>
+    <string name="home_safe_short">Safe Mode: you\'re offline. Nothing is sent.</string>
+    <string name="prot_start_short">Start</string>
     <string name="home_safe_body">You\'re offline. Mycelium is holding on to what it catches and will sort it when you\'re back.</string>
 
     <!-- terrarium web page (passed to terrarium.js) -->
