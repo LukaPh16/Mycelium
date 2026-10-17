@@ -7,20 +7,29 @@
   <link rel="stylesheet" href="terrarium.css">
 </head>
 <body>
-  <!-- Replaceable UI: swap this folder, or use the same engine calls from any other UI. Data access: Feed in terrarium.js. -->
+  <!-- Replaceable UI: swap this folder, or use the same engine calls from any other UI. Engine data: Feed; words: Host. -->
+  <canvas id="scene" aria-hidden="true"></canvas>
   <main id="terrarium">
-    <canvas id="bg" aria-hidden="true"></canvas>
+    <div id="sign" role="status" hidden></div>
     <div id="grid"></div>
-    <p id="empty" hidden>No organisms yet. Choose apps to watch on the Status tab.</p>
+    <p id="empty" hidden></p>
   </main>
+  <canvas id="fx" aria-hidden="true"></canvas>
   <aside id="legend">
-    <button id="legend-toggle" type="button">Legend</button>
+    <button id="legend-toggle" type="button"></button>
     <ul id="legend-list"></ul>
   </aside>
-  <section id="panel" hidden></section>
+  <div id="dialog" hidden>
+    <div class="backdrop"></div>
+    <div class="box" role="dialog" aria-modal="true">
+      <div class="plate"></div>
+      <div class="row"><canvas class="portrait" aria-hidden="true"></canvas><div class="text"></div></div>
+      <div class="buttons"></div>
+    </div>
+  </div>
   <p id="error" hidden></p>
   <script>
-    // Desktop work without a phone: index.html?mock=1 loads a fixture Feed (see feed.mock.js).
+    // Desktop work without a phone: index.html?mock=1 loads a fixture Feed and Host (see feed.mock.js).
     if (/[?&]mock=1/.test(location.search)) document.write('<script src="feed.mock.js"><\/script>');
   </script>
   <script src="terrarium.js"></script>

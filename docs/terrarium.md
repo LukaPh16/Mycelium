@@ -79,10 +79,18 @@ Feed.getPresets()          -> Promise<{presets:[{id, name, file, preset:{...}}],
 Feed.getPacketTypes()      -> Promise<packet_types.json>
 Feed.ack(appId, stage)     -> Promise<{ok}>          // after an upgrade animation finished
 Feed.setPreset(appId, id)  -> Promise<{ok}>
+Feed.getSnoops(appIds, fromMs) -> Promise<{app_id: {contacts, blocked, snoops:[{company, category, hits, shooed}]}}>
+                                                   // stats appSummary per app + company block rules ("shooed")
+Feed.shoo(appId, company)  -> Promise<{ok}>          // block {scope:"company", value, package: appId}
 Feed.onUpdate(cb)                                  // cb({type:"terrarium_update", app_id, stage, stage_shown, counts})
 Feed.assetUrl(path)        -> string               // URL for organisms/... files
 ```
-`feed.mock.js` is a fixture version: from the repo root run `python3 -m http.server`, then open
+Words and settings come from `window.MyceliumHost` (app side, `HomeScreen.kt`): `strings()` (JSON of `terr_*` strings from
+strings.xml, `%1$s` style), `plural(key, n, argsJson)`, `settings()` (`{"reduce_motion","battery_saver"}`). The page's
+bridge allow-list is the terrarium methods plus `stats`, `rules` and `block`. The sky follows the phone clock
+(night/dawn/day/dusk); `?theme=day|night` only picks the panel colors.
+
+`feed.mock.js` is a fixture version (its Host shows string keys instead of words): from the repo root run `python3 -m http.server`, then open
 `http://localhost:8000/app/src/main/assets/terrarium/index.html?mock=1` (`&reset=1` forgets acks, `&legend=1`,
 `&panel=<app_id>`). The state machine is visible on each cell as `data-stage`, `data-shown`, `data-anim`.
 
