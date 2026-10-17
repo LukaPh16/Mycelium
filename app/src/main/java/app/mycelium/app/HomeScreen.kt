@@ -7,6 +7,22 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import app.mycelium.app.garden.Camera
+import app.mycelium.app.garden.GardenFx
+import app.mycelium.app.garden.MAX_PETS
+import app.mycelium.app.garden.Pet
+import app.mycelium.app.garden.loadPets
+import app.mycelium.app.ui.Glyphs
+import app.mycelium.app.ui.PixelGlyph
+import app.mycelium.engine.MyceliumEngine
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,10 +69,21 @@ import org.json.JSONObject
 @Composable
 fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topInset: Dp) {
     var watched by remember { mutableStateOf<Int?>(null) }
-    LaunchedEffect(Unit) {
+    var pets by remember { mutableStateOf(emptyList<Pet>()) }
+    var reload by remember { mutableIntStateOf(0) }
+    var selected by remember { mutableStateOf<String?>(null) }
+    val fx = remember { GardenFx() }
+    val camera = remember { Camera() }
+    LaunchedEffect(reload) {
         while (true) {
             watched = Api.io("watched").optJSONArray("apps")?.length() ?: 0
-            delay(3000)
+            pets = loadPets()
+            delay(15_000)
+        }
+    }
+    LaunchedEffect(Unit) {   // live updates: refresh shortly after the engine reports activity
+        MyceliumEngine.events.collect { ev ->
+            if (ev.contains("\"terrarium_update\"") || ev.contains("\"block\"")) { delay(800); reload++ }
         }
     }
     val go = LocalGo.current
@@ -68,7 +95,27 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
                 R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_empty_title), stringResource(R.string.home_empty_body),
                 action = stringResource(R.string.home_choose), onAction = { go(Routes.APPS) }, modifier = Modifier.padding(top = topInset + 48.dp),
             )
-            else -> GardenView(still = prefs.reduceMotion || prefs.batterySaver, modifier = Modifier.fillMaxSize())
+            else -> {
+                GardenView(
+                    still = prefs.reduceMotion || prefs.batterySaver, pets = pets, selected = selected, fx = fx, camera = camera,
+                    onTapPet = { selected = it.pkg }, onTapSnoop = { p, _ -> selected = p.pkg }, onTapEmpty = { selected = null },
+                    modifier = Modifier.fillMaxSize(),
+                )
+                Column(Modifier.align(Alignment.BottomEnd).navigationBarsPadding().padding(16.dp), horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (pets.size > MAX_PETS) Text(
+                        stringResource(R.string.garden_more, pets.size - MAX_PETS),
+                        Modifier.pixelPanel(PanelStyle.Paper, pal, pixel()).padding(horizontal = 12.dp, vertical = 8.dp),
+                        style = MaterialTheme.typography.labelLarge, color = pal.ink,
+                    )
+                    val cd = stringResource(R.string.garden_reset)
+                    Box(
+                        Modifier.size(48.dp).pixelPanel(PanelStyle.Paper, pal, pixel()).clickable(role = Role.Button) { camera.reset() }
+                            .semantics { contentDescription = cd },
+                        contentAlignment = Alignment.Center,
+                    ) { PixelGlyph(Glyphs.target, pal.ink, sizeDp = 20) }
+                }
+            }
         }
         if (watched != 0) when (protection) {
             Protection.Paused -> StatusPill(R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_paused_short), stringResource(R.string.prot_start_short), start, topInset)

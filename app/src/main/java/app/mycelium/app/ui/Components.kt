@@ -363,6 +363,7 @@ object Glyphs {
     val gear = listOf("...XX...", ".XXXXXX.", ".XX..XX.", "XX....XX", "XX....XX", ".XX..XX.", ".XXXXXX.", "...XX...")
     val help = listOf("..XXXX..", ".XX..XX.", ".....XX.", "....XX..", "...XX...", "...XX...", "........", "...XX...")
     val leaf = listOf("......XX", "....XXXX", "..XXXXXX", ".XXXX.XX", ".XXX.XXX", ".XX.XXX.", ".X.XX...", "X.......")
+    val target = listOf("...XX...", ".XX..XX.", ".X....X.", "X..XX..X", "X..XX..X", ".X....X.", ".XX..XX.", "...XX...")
     val back = listOf("...X....", "..XX....", ".XXXXXXX", "XXXXXXXX", ".XXXXXXX", "..XX....", "...X....", "........")
 }
 

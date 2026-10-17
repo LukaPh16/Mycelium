@@ -105,6 +105,9 @@
     <string name="prot_start_short">Start</string>
     <string name="home_safe_body">You\'re offline. Mycelium is holding on to what it catches and will sort it when you\'re back.</string>
 
+    <string name="garden_reset">Back to the whole garden</string>
+    <string name="garden_more">+%1$d more in My Apps</string>
+
     <!-- terrarium web page (passed to terrarium.js) -->
     <plurals name="terr_sign_some">
         <item quantity="one">%d Snoop visited your garden today</item>
