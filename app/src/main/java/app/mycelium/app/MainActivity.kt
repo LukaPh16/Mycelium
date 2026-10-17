@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private val TABS = listOf("Status" to "◉", "Live" to "≋", "Garden" to "✿", "Stats" to "▥", "Tools" to "⚙", "Chat" to "✉")
+private val TABS = listOf("Status" to "◉", "Live" to "≋", "Terrarium" to "❦", "Garden" to "✿", "Stats" to "▥", "Tools" to "⚙", "Chat" to "✉")
 
 @Composable
 private fun App(startVpn: ((String) -> Unit) -> Unit) {
@@ -80,7 +80,8 @@ private fun App(startVpn: ((String) -> Unit) -> Unit) {
             if (!choosingApps) NavigationBar {
                 for ((name, glyph) in TABS) NavigationBarItem(
                     selected = tab == name, onClick = { tab = name },
-                    icon = { Text(glyph, style = MaterialTheme.typography.titleLarge) }, label = { Text(name) },
+                    icon = { Text(glyph, style = MaterialTheme.typography.titleLarge) },
+                    label = { Text(name, maxLines = 1, style = MaterialTheme.typography.labelSmall) },
                 )
             }
         },
@@ -98,6 +99,7 @@ private fun App(startVpn: ((String) -> Unit) -> Unit) {
                 else when (tab) {
                     "Status" -> StatusTab(startVpn, onChooseApps = { choosingApps = true })
                     "Live" -> LiveTab(feed)
+                    "Terrarium" -> TerrariumTab()
                     "Garden" -> GardenTab()
                     "Stats" -> StatsTab()
                     "Tools" -> ToolsTab()

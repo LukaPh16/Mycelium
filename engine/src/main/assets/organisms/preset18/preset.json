@@ -1,11 +1,11 @@
 {
  "id": "preset18",
- "name": "Royal Fern",
- "kingdom": "fern",
+ "name": "Cave Slime",
+ "kingdom": "slime",
  "palette": [
-  "#004D40",
-  "#4DB6AC",
-  "#E0F2F1"
+  "#4A148C",
+  "#AB47BC",
+  "#F3E5F5"
  ],
  "shape": {
   "branches": 4,
@@ -17,5 +17,32 @@
   "sprout",
   "bloom"
  ],
- "description": "A fern that grows with every lookup its app makes."
+ "description": "A slime that grows with every lookup its app makes.",
+ "stages": [
+  {
+   "file": "stage1.png",
+   "frame_w": 32,
+   "frame_h": 24,
+   "frames": 4,
+   "fps": 6
+  },
+  {
+   "file": "stage2.png",
+   "frame_w": 48,
+   "frame_h": 32,
+   "frames": 6,
+   "fps": 8
+  },
+  {
+   "file": "stage3.png",
+   "frame_w": 64,
+   "frame_h": 44,
+   "frames": 6,
+   "fps": 8
+  }
+ ],
+ "tint": {
+  "mode": "multiply"
+ },
+ "note": "Placeholder strips from scripts/make_placeholders.py. Optional \"upgrade\": [{file, frame_w, frame_h, frames, fps}, ...] per stage transition; without it the UI plays its built-in 800 ms transition."
 }

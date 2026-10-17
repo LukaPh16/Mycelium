@@ -1,21 +1,51 @@
 {
  "id": "preset05",
- "name": "Fly Agaric",
- "kingdom": "mushroom",
+ "name": "Barrel Cactus",
+ "kingdom": "cactus",
  "palette": [
-  "#C62828",
-  "#EF9A9A",
-  "#FFF8E1"
+  "#1B5E20",
+  "#43A047",
+  "#C5E1A5"
  ],
  "shape": {
   "branches": 3,
   "curl": 0.5,
-  "cap": true
+  "cap": false
  },
  "stage_names": [
   "spore",
   "sprout",
   "bloom"
  ],
- "description": "A mushroom that grows with every lookup its app makes."
+ "description": "A cactus that grows with every lookup its app makes.",
+ "stages": [
+  {
+   "file": "stage1.png",
+   "frame_w": 24,
+   "frame_h": 32,
+   "frames": 2,
+   "fps": 2
+  },
+  {
+   "file": "stage2.png",
+   "frame_w": 32,
+   "frame_h": 44,
+   "frames": 4,
+   "fps": 3
+  },
+  {
+   "file": "stage3.png",
+   "frame_w": 40,
+   "frame_h": 56,
+   "frames": 4,
+   "fps": 3
+  }
+ ],
+ "tint": {
+  "mode": "palette_swap",
+  "key_colors": [
+   "#FF00FF"
+  ]
+ },
+ "note": "Placeholder strips from scripts/make_placeholders.py. Optional \"upgrade\": [{file, frame_w, frame_h, frames, fps}, ...] per stage transition; without it the UI plays its built-in 800 ms transition."
 }

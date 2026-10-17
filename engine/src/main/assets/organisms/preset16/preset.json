@@ -1,11 +1,11 @@
 {
  "id": "preset16",
- "name": "Bindweed",
+ "name": "Ivy",
  "kingdom": "vine",
  "palette": [
-  "#7B1FA2",
-  "#E1BEE7",
-  "#FAFAFA"
+  "#1B5E20",
+  "#2E7D32",
+  "#81C784"
  ],
  "shape": {
   "branches": 5,
@@ -17,5 +17,35 @@
   "sprout",
   "bloom"
  ],
- "description": "A vine that grows with every lookup its app makes."
+ "description": "A vine that grows with every lookup its app makes.",
+ "stages": [
+  {
+   "file": "stage1.png",
+   "frame_w": 28,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 6
+  },
+  {
+   "file": "stage2.png",
+   "frame_w": 32,
+   "frame_h": 60,
+   "frames": 6,
+   "fps": 6
+  },
+  {
+   "file": "stage3.png",
+   "frame_w": 40,
+   "frame_h": 80,
+   "frames": 8,
+   "fps": 8
+  }
+ ],
+ "tint": {
+  "mode": "palette_swap",
+  "key_colors": [
+   "#FF00FF"
+  ]
+ },
+ "note": "Placeholder strips from scripts/make_placeholders.py. Optional \"upgrade\": [{file, frame_w, frame_h, frames, fps}, ...] per stage transition; without it the UI plays its built-in 800 ms transition."
 }

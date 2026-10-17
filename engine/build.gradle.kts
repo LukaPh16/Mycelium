@@ -41,3 +41,17 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.xerial:sqlite-jdbc:3.50.3.0")   // test-only: real SQLite for fixture-DB stats tests
 }
+
+// Presets are data: every preset in organisms/index.json needs a preset.json and strips whose sizes match it.
+val checkPresets = tasks.register<Exec>("checkPresets") {
+    group = "verification"
+    description = "Runs scripts/check_presets.py on assets/organisms."
+    val script = rootProject.file("scripts/check_presets.py")
+    val stamp = layout.buildDirectory.file("checkPresets.ok")
+    inputs.dir("src/main/assets/organisms")
+    inputs.file(script)
+    outputs.file(stamp)
+    commandLine("python3", script.absolutePath)
+    doLast { stamp.get().asFile.writeText("ok") }
+}
+tasks.named("preBuild") { dependsOn(checkPresets) }

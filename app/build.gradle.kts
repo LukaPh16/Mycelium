@@ -29,4 +29,5 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.11.0")
     implementation(platform("androidx.compose:compose-bom:2025.09.01"))
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.webkit:webkit:1.14.0")   // WebViewAssetLoader for the terrarium web module (CLAUDE.md)
 }

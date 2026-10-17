@@ -1,11 +1,11 @@
 {
  "id": "preset19",
- "name": "Pillar Coral",
- "kingdom": "coral",
+ "name": "Lion's Mane Jelly",
+ "kingdom": "jelly",
  "palette": [
-  "#F9A825",
-  "#FFF59D",
-  "#FFFDE7"
+  "#E65100",
+  "#FFB74D",
+  "#FFF3E0"
  ],
  "shape": {
   "branches": 6,
@@ -17,5 +17,35 @@
   "sprout",
   "bloom"
  ],
- "description": "A coral that grows with every lookup its app makes."
+ "description": "A jelly that grows with every lookup its app makes.",
+ "stages": [
+  {
+   "file": "stage1.png",
+   "frame_w": 32,
+   "frame_h": 48,
+   "frames": 8,
+   "fps": 8
+  },
+  {
+   "file": "stage2.png",
+   "frame_w": 40,
+   "frame_h": 64,
+   "frames": 8,
+   "fps": 8
+  },
+  {
+   "file": "stage3.png",
+   "frame_w": 56,
+   "frame_h": 80,
+   "frames": 8,
+   "fps": 10
+  }
+ ],
+ "tint": {
+  "mode": "palette_swap",
+  "key_colors": [
+   "#FF00FF"
+  ]
+ },
+ "note": "Placeholder strips from scripts/make_placeholders.py. Optional \"upgrade\": [{file, frame_w, frame_h, frames, fps}, ...] per stage transition; without it the UI plays its built-in 800 ms transition."
 }

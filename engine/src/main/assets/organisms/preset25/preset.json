@@ -3,9 +3,9 @@
  "name": "Lion's Mane",
  "kingdom": "mushroom",
  "palette": [
-  "#E0E0E0",
-  "#FFFFFF",
-  "#F5F5F5"
+  "#BCAAA4",
+  "#EFEBE9",
+  "#FFFFFF"
  ],
  "shape": {
   "branches": 3,
@@ -17,5 +17,32 @@
   "sprout",
   "bloom"
  ],
- "description": "A mushroom that grows with every lookup its app makes."
+ "description": "A mushroom that grows with every lookup its app makes.",
+ "stages": [
+  {
+   "file": "stage1.png",
+   "frame_w": 32,
+   "frame_h": 32,
+   "frames": 6,
+   "fps": 4
+  },
+  {
+   "file": "stage2.png",
+   "frame_w": 40,
+   "frame_h": 40,
+   "frames": 6,
+   "fps": 4
+  },
+  {
+   "file": "stage3.png",
+   "frame_w": 48,
+   "frame_h": 52,
+   "frames": 6,
+   "fps": 5
+  }
+ ],
+ "tint": {
+  "mode": "multiply"
+ },
+ "note": "Placeholder strips from scripts/make_placeholders.py. Optional \"upgrade\": [{file, frame_w, frame_h, frames, fps}, ...] per stage transition; without it the UI plays its built-in 800 ms transition."
 }

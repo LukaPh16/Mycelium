@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terrarium</title>
+  <link rel="stylesheet" href="terrarium.css">
+</head>
+<body>
+  <!-- Replaceable UI: swap this folder, or use the same engine calls from any other UI. Data access: Feed in terrarium.js. -->
+  <main id="terrarium">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div id="grid"></div>
+    <p id="empty" hidden>No organisms yet. Choose apps to watch on the Status tab.</p>
+  </main>
+  <aside id="legend">
+    <button id="legend-toggle" type="button">Legend</button>
+    <ul id="legend-list"></ul>
+  </aside>
+  <section id="panel" hidden></section>
+  <p id="error" hidden></p>
+  <script>
+    // Desktop work without a phone: index.html?mock=1 loads a fixture Feed (see feed.mock.js).
+    if (/[?&]mock=1/.test(location.search)) document.write('<script src="feed.mock.js"><\/script>');
+  </script>
+  <script src="terrarium.js"></script>
+</body>
+</html>

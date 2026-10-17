@@ -1,21 +1,51 @@
 {
  "id": "preset09",
- "name": "Chanterelle",
- "kingdom": "mushroom",
+ "name": "Hart's Tongue",
+ "kingdom": "fern",
  "palette": [
-  "#EF6C00",
-  "#FFCC80",
-  "#FFF3E0"
+  "#1B5E20",
+  "#388E3C",
+  "#A5D6A7"
  ],
  "shape": {
   "branches": 6,
   "curl": 0.7,
-  "cap": true
+  "cap": false
  },
  "stage_names": [
   "spore",
   "sprout",
   "bloom"
  ],
- "description": "A mushroom that grows with every lookup its app makes."
+ "description": "A fern that grows with every lookup its app makes.",
+ "stages": [
+  {
+   "file": "stage1.png",
+   "frame_w": 32,
+   "frame_h": 32,
+   "frames": 4,
+   "fps": 5
+  },
+  {
+   "file": "stage2.png",
+   "frame_w": 40,
+   "frame_h": 48,
+   "frames": 6,
+   "fps": 6
+  },
+  {
+   "file": "stage3.png",
+   "frame_w": 56,
+   "frame_h": 64,
+   "frames": 6,
+   "fps": 6
+  }
+ ],
+ "tint": {
+  "mode": "palette_swap",
+  "key_colors": [
+   "#FF00FF"
+  ]
+ },
+ "note": "Placeholder strips from scripts/make_placeholders.py. Optional \"upgrade\": [{file, frame_w, frame_h, frames, fps}, ...] per stage transition; without it the UI plays its built-in 800 ms transition."
 }
