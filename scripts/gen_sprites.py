@@ -779,16 +779,14 @@ def tile_rock(kind, rng):
                 continue
             if kind == "tip" and abs(x - 7.5) > 7.5 - y * 0.5:
                 continue
-            band = y / 16
-            if band < 0.3:
-                k = "r2" if (x + y) % 2 else "e1"
-            elif band < 0.6:
-                k = "r2"
-                if (x + y) % 2 == 0 and band > 0.45:
-                    k = "r1"
-            else:
-                k = "r1" if (x + y) % 2 else "r0"
-            if rng.random() < 0.05:
+            # even texture (no bands): depth shading is added by the app per row, so tiles stack without stripes
+            n = rng.random()
+            k = "r2" if (x * 3 + y * 5) % 7 else "r1"
+            if (x + y) % 2 == 0 and n < 0.35:
+                k = "r1"
+            if n < 0.04:
+                k = "r3"
+            if kind in ("left", "tip") and g.has(x - 1, y) is False and x == int(y // 1.4):
                 k = "r3"
             g.put(x, y, k)
     for y in range(16):   # outline on the open sides
