@@ -2,6 +2,7 @@ package app.mycelium.app
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -167,7 +168,7 @@ private fun AppLine(r: AppRow, enabled: Boolean, onToggle: (Boolean) -> Unit, on
             )
             if (r.watched) Text(
                 stringResource(R.string.apps_change_creature),
-                Modifier.clickable(role = Role.Button, onClick = onCreature).padding(vertical = 6.dp),
+                Modifier.defaultMinSize(minHeight = 48.dp).clickable(role = Role.Button, onClick = onCreature).padding(vertical = 14.dp),
                 style = MaterialTheme.typography.labelLarge, color = if (pal.night) pal.gold else pal.wood,
             )
         }
@@ -209,7 +210,7 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     PresetThumb(p.getJSONObject("preset"), boxDp = 96, stageNo = Int.MAX_VALUE)   // what it grows into
-                    Spacer(Modifier.width(14.dp))
+                    Spacer(Modifier.width(16.dp))
                     Text(p.getString("name") + if (id == current) " " + stringResource(R.string.preset_current) else "",
                         style = MaterialTheme.typography.titleSmall, color = pal.ink)
                 }

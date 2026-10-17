@@ -155,7 +155,7 @@ fun ActivityScreen(feed: List<JSONObject>, advanced: Boolean) {
     val groups = remember(feed.size, feed.firstOrNull()) {
         feed.groupBy { it.optString("package").ifEmpty { "" } }.map { (k, v) -> Group(k, v) }.sortedBy { it.key.isEmpty() }   // apps first
     }
-    LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.act_intro), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = pal.inkMuted)
@@ -192,7 +192,7 @@ private fun EventCard(e: JSONObject, types: Map<String, PacketType>, advanced: B
     val snoop = isSnoop(e)
     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min).pixelPanel(PanelStyle.Paper, pal, pixel()).padding(start = 10.dp, end = 12.dp, top = 10.dp, bottom = 4.dp)) {
         Canvas(Modifier.width(6.dp).fillMaxHeight().padding(vertical = 2.dp)) { drawRect(color) }
-        Spacer(Modifier.width(10.dp))
+        Spacer(Modifier.width(8.dp))
         Column(Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (snoop) { PixelSprite(R.drawable.sprite_snoop, artPixelDp = 1.5f); Spacer(Modifier.width(8.dp)) }

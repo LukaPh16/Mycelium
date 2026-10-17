@@ -162,7 +162,7 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
                         Modifier.size(48.dp).pixelPanel(PanelStyle.Paper, pal, pixel()).clickable(role = Role.Button) { camera.reset() }
                             .semantics { contentDescription = cd },
                         contentAlignment = Alignment.Center,
-                    ) { PixelGlyph(Glyphs.target, pal.ink, sizeDp = 20) }
+                    ) { PixelGlyph(Glyphs.target, pal.ink, sizeDp = 24) }
                 }
             }
         }

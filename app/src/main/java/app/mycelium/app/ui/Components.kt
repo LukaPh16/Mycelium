@@ -109,7 +109,7 @@ fun Modifier.pixelPanel(style: PanelStyle, pal: Pal, p: Float): Modifier = drawB
 fun PixelPanel(
     modifier: Modifier = Modifier,
     style: PanelStyle = PanelStyle.Paper,
-    padding: Int = 14,
+    padding: Int = 16,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val pal = LocalPal.current
@@ -178,12 +178,12 @@ fun InfoButton(info: Info, modifier: Modifier = Modifier, tint: Color? = null) {
     val label = stringResource(R.string.info_about, stringResource(info.title))
     Box(
         modifier
-            .size(36.dp)
+            .size(48.dp)
             .clickable(role = Role.Button) { open = true }
             .semantics { contentDescription = label },
         contentAlignment = Alignment.Center,
     ) {
-        Canvas(Modifier.size(20.dp)) {
+        Canvas(Modifier.size(24.dp)) {
             val n = 9                                            // 9x9 pixel circle
             val cell = max(1f, (size.width / n).roundToInt().toFloat())
             val ring = listOf("..XXXXX..", ".X.....X.", "X...i...X", "X.......X", "X...i...X", "X...i...X", "X...i...X", ".X.....X.", "..XXXXX..")
@@ -219,7 +219,7 @@ fun InfoSheet(info: Info, onDismiss: () -> Unit) {
 @Composable
 fun SectionHeader(title: String, info: Info? = null, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth().padding(top = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(title, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.titleMedium, color = LocalPal.current.ink)
+        Text(title, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, color = LocalPal.current.ink)
         if (info != null) InfoButton(info)
     }
 }
@@ -412,7 +412,7 @@ fun Details(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -
     Column(modifier.fillMaxWidth()) {
         Text(
             stringResource(if (open) R.string.details_hide else R.string.details_show),
-            Modifier.clickable(role = Role.Button) { open = !open }.padding(vertical = 8.dp),
+            Modifier.defaultMinSize(minHeight = 48.dp).clickable(role = Role.Button) { open = !open }.padding(vertical = 14.dp),
             style = MaterialTheme.typography.labelLarge, color = if (pal.night) pal.gold else pal.wood,
         )
         if (open) Column(Modifier.fillMaxWidth().pixelPanel(PanelStyle.Quiet, pal, pixel()).padding(10.dp),

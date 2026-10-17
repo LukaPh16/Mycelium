@@ -99,3 +99,35 @@ Type:
 Components (app/src/main/java/app/mycelium/app/ui/): PixelPanel (wood or paper), PixelButton (primary, secondary,
 danger; pressed state moves down 1 art px), InfoButton ("i" in a circle -> InfoSheet), PixelDialog (dialogue box with
 a name tab), EmptyState (sprite + text + action), StatusChip, SectionHeader (title + optional InfoButton), PixelToast.
+
+## Floating-island terrarium (native, unattended rebuild)
+
+Home is a full-screen native scene in `app/src/main/java/app/mycelium/app/garden/` (Compose Canvas, no WebView):
+`World.kt` (tile-built islands, decor, creature surfaces; fixed seed), `Scene.kt` (terrain baked once into a bitmap,
+Bayer-dithered sky per clock phase day/dusk/night, parallax pillars and clouds, night tint, glow, fireflies/pollen),
+`Pets.kt` (creatures from call("terrarium") + call("garden") + today's stats; seeded placement, max 12 + "+N"),
+`GardenView.kt` (one ~10 fps clock while resumed; Reduce motion / Battery-saver = static; pinch and double-tap zoom in
+whole-number steps 1x-2x, pan with inertia, reset button; tap = hop + ring), `GardenSheet.kt` (peek / half / full sheet,
+creature card, Shoo away with confirm, Change creature), `Sprites.kt` (atlas loader with fallback).
+Sprites: `scripts/gen_sprites.py` -> `app/src/main/assets/sprites/` + `atlas.json`, list in docs/SPRITES.md.
+Pixel size: base = screen width / 320 (4 device px per art px on a 1280 px phone; 1x..2x zoom = 4..8).
+The web terrarium module stays in `app/src/main/assets/terrarium/` for other UIs (Lovable); the app no longer hosts it.
+
+### Island palette (32 colors, light from top-left, shadows purple/blue, highlights yellow-green, no black)
+Sky #5FA8F0 #8CC4F7 #A9D8FF · Cloud #9CC4E8 #C9E2F7 #F4FAFF · Grass #2F7A2E #46A83A #6DCB45 #A8E85A ·
+Earth #3A2A22 #5B3A2A #7F5232 #A8723F #C99A5B · Rock #2B2842 #433B63 #5F5385 #8A74A6 #B59BC9 · Wood #5A3B28 #8A5A36 #B98450 ·
+Blossom #E7679A #F59BB8 #FFD3E1 #B9E6E8 #DFF6F4 · Vine #1E4A2B #2F7A3A · Parchment #F1E4C3 · Ink #2B2233.
+
+### UI tokens (replace the earlier table)
+| Token | Day | Night |
+|---|---|---|
+| bg | #DFF6F4 | #1B1A33 |
+| paper (panels) | #F1E4C3 | #3A2A22 (warm wood) |
+| paperEdge | #C99A5B | #5B3A2A |
+| wood / woodDark / woodLight | #8A5A36 / #5A3B28 / #B98450 | #5A3B28 / #2B2233 / #8A5A36 |
+| ink / inkMuted | #2B2233 / #5F5385 | #F1E4C3 / #C99A5B |
+| leaf (primary) / onLeaf | #6DCB45 / #2B2233 | #6DCB45 / #1B1A33 |
+| berry (danger, Snoops) | #E7679A | #F59BB8 |
+| topBar | #5A3B28 (55% over the scene) | #2B2842 |
+Auto theme follows the phone clock (night 20:00-06:00). Spacing on an 8 dp grid (screen padding 16, gaps 8/16),
+icons 24 dp, touch targets 48 dp, "i" buttons pinned to the right end of every header and card title.

@@ -288,7 +288,7 @@ private fun TopBar(screen: Screen, protection: Protection, translucent: Boolean,
             Modifier.size(48.dp).clickable(role = Role.Button, onClick = onBack ?: onMenu).semantics { contentDescription = label },
             contentAlignment = Alignment.Center,
         ) {
-            PixelGlyph(if (onBack == null) Glyphs.menu else Glyphs.back, ink, sizeDp = 22)
+            PixelGlyph(if (onBack == null) Glyphs.menu else Glyphs.back, ink, sizeDp = 24)
         }
         val title = stringResource(screen.topTitle)
         Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
@@ -331,7 +331,7 @@ private fun DrawerContent(current: String, advanced: Boolean, go: (String) -> Un
                         .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    PixelGlyph(s.glyph, if (selected) pal.leaf else pal.inkMuted, sizeDp = 20)
+                    PixelGlyph(s.glyph, if (selected) pal.leaf else pal.inkMuted, sizeDp = 24)
                     Spacer(Modifier.width(16.dp))
                     Text(stringResource(s.title), style = MaterialTheme.typography.titleSmall, color = pal.ink)
                 }

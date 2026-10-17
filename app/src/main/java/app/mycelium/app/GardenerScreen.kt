@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -157,13 +158,13 @@ fun GardenerScreen() {
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             if (aiState == "no_key") Text(
                 stringResource(R.string.chat_ai_needs),
-                Modifier.weight(1f).clickable(role = Role.Button) { go(Routes.SETTINGS) }.padding(vertical = 8.dp),
+                Modifier.weight(1f).defaultMinSize(minHeight = 48.dp).clickable(role = Role.Button) { go(Routes.SETTINGS) }.padding(vertical = 8.dp),
                 style = MaterialTheme.typography.bodySmall, color = pal.inkMuted,
             ) else SwitchRow(stringResource(if (aiReady) R.string.chat_ask_ai else R.string.chat_ask_ai_offline), askAi, { askAi = it },
                 Modifier.weight(1f), enabled = aiReady, info = Info(R.string.info_ask_ai_t, R.string.info_ask_ai_b))
             if (msgs.isNotEmpty()) PixelButton(stringResource(R.string.chat_clear), { confirmClear = true }, kind = ButtonKind.Quiet)
         }
-        LazyColumn(Modifier.weight(1f).fillMaxWidth(), state = list, contentPadding = PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        LazyColumn(Modifier.weight(1f).fillMaxWidth(), state = list, contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             item { Greeting() }
             items(msgs) { m ->
                 if (m.user) UserBubble(m.sentences.first().first)
@@ -252,7 +253,7 @@ private fun BotBubble(m: Msg, onCite: (Long) -> Unit, onAction: (Action) -> Unit
     LaunchedEffect(m) { while (shown < total) { delay(18); shown = (shown + 2).coerceAtMost(total) } }   // typewriter
     Row(verticalAlignment = Alignment.Top) {
         PixelSprite(R.drawable.sprite_gardener, artPixelDp = 1.5f, modifier = Modifier.padding(top = 22.dp))
-        Spacer(Modifier.width(6.dp))
+        Spacer(Modifier.width(8.dp))
         Box(Modifier.weight(1f)) {
             DialogBox(stringResource(R.string.chat_gardener), scroll = false) {
                 var left = shown
@@ -298,10 +299,11 @@ private fun CiteChip(id: Long, onClick: () -> Unit) {
     Text(
         "#$id",
         Modifier
+            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
             .pixelPanel(PanelStyle.Quiet, pal, pixel())
             .clickable(role = Role.Button, onClick = onClick)
             .semantics { contentDescription = cd }
-            .padding(horizontal = 10.dp, vertical = 6.dp),
+            .padding(horizontal = 12.dp, vertical = 14.dp),
         style = MaterialTheme.typography.labelMedium, color = pal.ink,
     )
 }

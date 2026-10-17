@@ -62,7 +62,7 @@ fun SettingsScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit) {
     var presets by remember { mutableStateOf(emptyList<JSONObject>()) }
     LaunchedEffect(Unit) { presets = Api.io("presets").optJSONArray("presets").objects() }
     val creatureName = presets.firstOrNull { it.getString("id") == prefs.newCreature }?.optString("name") ?: stringResource(R.string.set_creature_surprise)
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         PixelPanel(Modifier.fillMaxWidth()) {
             SectionHeader(stringResource(R.string.set_look))
             SettingRow(stringResource(R.string.set_theme), Info(R.string.info_theme_t, R.string.info_theme_b))

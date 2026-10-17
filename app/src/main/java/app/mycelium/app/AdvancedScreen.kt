@@ -58,7 +58,7 @@ fun AdvancedScreen() {
     var confirmWipe by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val mono = TextStyle(fontFamily = FontFamily.Monospace, color = pal.ink)
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         PixelPanel(Modifier.fillMaxWidth()) {
             SectionHeader(stringResource(R.string.adv_sim), Info(R.string.info_sim_t, R.string.info_sim_b))
             Text(stringResource(R.string.adv_sim_body), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
