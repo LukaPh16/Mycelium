@@ -23,6 +23,8 @@ const BridgeFeed = {
   assetUrl(path) { return '/assets/' + path; },
 };
 window.Feed = window.Feed || BridgeFeed;
+// The host app picks the scene: ?theme=day (warm daylight) or night (default).
+if (/[?&]theme=day/.test(location.search)) document.documentElement.classList.add('day');
 const Feed = window.Feed;
 
 // ---- placeholder art: identical to scripts/make_placeholders.py (frame_pixels). Keep the two in sync. ----
@@ -347,24 +349,29 @@ function layout() {
 }
 
 /** Glass frame and a pixel ground strip, drawn on one background canvas. */
+/** A scene color from terrarium.css (day or night). */
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
 function drawBackground() {
   const c = document.getElementById('bg');
   const dpr = window.devicePixelRatio || 1;
   const px = Math.max(2, Math.round(3 * dpr));
-  const box = c.getBoundingClientRect();
-  c.width = Math.round(box.width * dpr);
-  c.height = Math.round(box.height * dpr);
+  // Size from innerWidth/innerHeight: Android WebView can resolve 100vh to 0 when it starts at zero height.
+  c.style.width = innerWidth + 'px';
+  c.style.height = innerHeight + 'px';
+  c.width = Math.round(innerWidth * dpr);
+  c.height = Math.round(innerHeight * dpr);
   const ctx = c.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   const cols = Math.ceil(c.width / px), rows = Math.ceil(c.height / px);
   const cell = (x, y, color) => { ctx.fillStyle = color; ctx.fillRect(x * px, y * px, px, px); };
   ctx.clearRect(0, 0, c.width, c.height);
   for (let x = 0; x < cols; x++) for (let y = rows - 4; y < rows; y++) {
-    cell(x, y, y === rows - 4 ? '#7A5A44' : ((x * 7 + y * 3) % 5 === 0 ? '#4E342E' : '#5D4037'));
+    cell(x, y, y === rows - 4 ? css('--soil-top') : ((x * 7 + y * 3) % 5 === 0 ? css('--soil-dark') : css('--soil')));
   }
-  for (let x = 0; x < cols; x++) { cell(x, 0, '#B3E5FC'); cell(x, rows - 5, '#81D4FA'); }
-  for (let y = 0; y < rows - 4; y++) { cell(0, y, '#B3E5FC'); cell(cols - 1, y, '#B3E5FC'); }
-  for (let i = 2; i < Math.min(12, rows - 6); i++) cell(2, i, 'rgba(255,255,255,0.6)');   // glass highlight
+  for (let x = 0; x < cols; x++) { cell(x, 0, css('--frame')); cell(x, rows - 5, css('--frame-low')); }
+  for (let y = 0; y < rows - 4; y++) { cell(0, y, css('--frame')); cell(cols - 1, y, css('--frame')); }
+  for (let i = 2; i < Math.min(12, rows - 6); i++) cell(2, i, css('--shine'));   // glass highlight
 }
 
 // ---- legend ----
@@ -456,6 +463,11 @@ async function boot() {
     applyTerrarium(terrarium);
     Feed.onUpdate(onUpdate);
     window.addEventListener('resize', layout);
+    if (window.ResizeObserver) {                    // the WebView often starts at 0 px: redraw whenever the viewport settles
+      const ro = new ResizeObserver(() => layout());
+      ro.observe(document.documentElement);
+      ro.observe(document.getElementById('grid'));
+    }
     requestAnimationFrame(loop);
     // Desktop helpers: ?legend=1 opens the legend, ?panel=<app_id> opens that organism's panel.
     const q = new URLSearchParams(location.search);

@@ -21,6 +21,7 @@ import android.util.Log
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import app.mycelium.engine.MyceliumEngine
+import app.mycelium.engine.R
 import app.mycelium.engine.attr.Attribution
 import app.mycelium.engine.classify.Classifier
 import app.mycelium.engine.db.Row
@@ -310,7 +311,7 @@ class MyceliumVpnService : VpnService() {
 
     private fun startForegroundNotification() {
         val nm = getSystemService(NotificationManager::class.java)
-        nm.createNotificationChannel(NotificationChannel(CHANNEL, "Garden watch", NotificationManager.IMPORTANCE_LOW))
+        nm.createNotificationChannel(NotificationChannel(CHANNEL, getString(R.string.mycelium_notif_channel), NotificationManager.IMPORTANCE_LOW))
         val stop = PendingIntent.getService(
             this, 1, Intent(this, MyceliumVpnService::class.java).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE,
         )
@@ -318,12 +319,13 @@ class MyceliumVpnService : VpnService() {
             PendingIntent.getActivity(this, 2, it, PendingIntent.FLAG_IMMUTABLE)
         }
         val n = Notification.Builder(this, CHANNEL)
-            .setSmallIcon(android.R.drawable.ic_menu_view)
-            .setContentTitle("Mycelium is watching the garden")
+            .setSmallIcon(R.drawable.ic_stat_mycelium)
+            .setContentTitle(getString(R.string.mycelium_notif_title))
+            .setContentText(getString(R.string.mycelium_notif_text))
             .setOngoing(true)
             .setContentIntent(open)
             .addAction(Notification.Action.Builder(
-                Icon.createWithResource(this, android.R.drawable.ic_menu_close_clear_cancel), "Stop", stop,
+                Icon.createWithResource(this, R.drawable.ic_stat_mycelium), getString(R.string.mycelium_notif_pause), stop,
             ).build())
             .build()
         ServiceCompat.startForeground(this, NOTIFICATION_ID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED)

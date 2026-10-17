@@ -1,3 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mycelium</string>
+
+    <!-- common -->
+    <string name="got_it">Got it</string>
+    <string name="info_about">What is %1$s?</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="open_settings">Open settings</string>
+    <string name="loading">Loading…</string>
+    <string name="error_generic">That did not work: %1$s</string>
+    <string name="none">None</string>
+    <string name="dash">–</string>
+
+    <!-- navigation -->
+    <string name="nav_open">Open menu</string>
+    <string name="nav_back">Back</string>
+    <string name="nav_terrarium">Terrarium</string>
+    <string name="nav_apps">My Apps</string>
+    <string name="nav_activity">Activity</string>
+    <string name="nav_insights">Insights</string>
+    <string name="nav_gardener">Ask the Gardener</string>
+    <string name="title_gardener">Gardener</string>
+    <string name="nav_setup">Setup Check</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_help">Help</string>
+    <string name="nav_about">About &amp; Privacy</string>
+    <string name="nav_advanced">Advanced</string>
+    <string name="drawer_tagline">Your data stays on your phone.</string>
+
+    <!-- screen info (title + plain words) -->
+    <string name="info_terrarium_t">The Terrarium</string>
+    <string name="info_terrarium_b">Every app you watch lives here as a little creature. It grows when its app talks to the internet, and grows faster when it meets trackers. Tap a creature to see what it has been up to.</string>
+    <string name="info_apps_t">My Apps</string>
+    <string name="info_apps_b">Pick the apps Mycelium should watch. Only these apps go through Mycelium; all other apps are left alone. You can change this any time.</string>
+    <string name="info_activity_t">Activity</string>
+    <string name="info_activity_b">A live list of what your watched apps did. Most entries are lookups: an app asking where a website lives. Mycelium sees the name of the website, never what is sent.</string>
+    <string name="info_insights_t">Insights</string>
+    <string name="info_insights_b">Garden shows each app with the trackers it met, and lets you block them. Charts show totals and how activity changed over time.</string>
+    <string name="info_gardener_t">Ask the Gardener</string>
+    <string name="info_gardener_b">Ask questions in plain words. The Gardener answers from what this phone has seen, and every sentence links to the events it is based on. It works offline and never makes things up.</string>
+    <string name="info_setup_t">Setup Check</string>
+    <string name="info_setup_b">A checklist of phone settings that help Mycelium see clearly and keep running. Tap Fix to jump to the right setting.</string>
+    <string name="info_settings_t">Settings</string>
+    <string name="info_settings_b">Change the look, add your own AI key, or turn on advanced tools.</string>
+    <string name="info_help_t">Help</string>
+    <string name="info_help_b">Short explanations of every word Mycelium uses.</string>
+    <string name="info_about_t">About &amp; Privacy</string>
+    <string name="info_about_b">What stays on your phone, what can leave it, and who made the parts of this app.</string>
+    <string name="info_advanced_t">Advanced tools</string>
+    <string name="info_advanced_b">Tools for curious people and developers: ask the database directly, export or wipe it, run a demo, and see technical details.</string>
+
+    <!-- status and protection -->
+    <string name="status_protected">Protected</string>
+    <string name="status_paused">Paused</string>
+    <string name="status_safe_mode">Safe Mode</string>
+    <string name="status_demo">Demo</string>
+    <string name="prot_title">Protection</string>
+    <plurals name="watching_apps">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="prot_protected_body">Mycelium is watching %1$s. Everything it notices stays on this phone.</string>
+    <string name="prot_paused_body">Mycelium is resting. Your apps work normally, but nothing is recorded.</string>
+    <string name="prot_safe_body">No internet right now. Mycelium answers your apps on the phone and sends nothing. It sorts what it caught when you are back online.</string>
+    <string name="prot_dead_body">Protection stopped unexpectedly. Try starting it again.</string>
+    <string name="prot_demo_body">A demo with made-up apps is playing. Stop it to see your real garden.</string>
+    <string name="prot_start">Start protection</string>
+    <string name="prot_pause">Pause</string>
+    <string name="prot_choose_apps">Choose apps</string>
+    <string name="prot_consent_denied">Android needs your OK before protection can start.</string>
+    <string name="prot_no_apps">Pick at least one app to watch first.</string>
+    <string name="prot_started">Protection is on.</string>
+    <string name="prot_paused_toast">Protection paused.</string>
+    <string name="sim_banner">DEMO · made-up data</string>
+    <string name="sim_stop">Stop demo</string>
+    <string name="info_status_t">Protected, Paused, Safe Mode</string>
+    <string name="info_status_b">Protected: Mycelium is watching your chosen apps. Paused: it is off and records nothing. Safe Mode: there is no internet, so it answers apps on the phone and sorts what it caught later.</string>
+
+    <!-- home -->
+    <string name="home_paused_title">Your garden is resting</string>
+    <string name="home_paused_body">Start protection to see what your apps do.</string>
+    <string name="home_empty_title">No creatures yet</string>
+    <string name="home_empty_body">Pick the apps you want to watch. Each one gets a little creature that grows when the app talks to the internet.</string>
+    <string name="home_choose">Choose apps</string>
+    <string name="home_safe_body">You\'re offline. Mycelium is holding on to what it catches.</string>
+
+    <!-- my apps -->
+    <string name="apps_search">Search apps</string>
+    <string name="apps_show_system">Show system apps</string>
+    <string name="info_system_t">System apps</string>
+    <string name="info_system_b">Apps that came with your phone, like the dialer or settings. They are hidden to keep the list short; apps you already watch are always shown.</string>
+    <plurals name="apps_watching">
+        <item quantity="one">Watching %d app</item>
+        <item quantity="other">Watching %d apps</item>
+    </plurals>
+    <string name="apps_apply">Save</string>
+    <plurals name="apps_lookups">
+        <item quantity="one">%d lookup today</item>
+        <item quantity="other">%d lookups today</item>
+    </plurals>
+    <string name="apps_saved">Saved. Your garden is updated.</string>
+    <string name="apps_no_match">No apps match \"%1$s\".</string>
+    <string name="apps_none">No downloaded apps found. Turn on Show system apps to see the ones that came with your phone.</string>
+    <string name="preset_title">Choose a creature for %1$s</string>
+    <string name="preset_keep">Keep this one</string>
+    <string name="preset_current">(now)</string>
+    <string name="info_preset_t">Creatures</string>
+    <string name="info_preset_b">Each watched app gets a creature. It is just for fun: every creature grows the same way. You can change it later in Insights.</string>
+
+    <!-- activity -->
+    <string name="act_all_apps">All apps</string>
+    <plurals name="act_count">
+        <item quantity="one">%d event</item>
+        <item quantity="other">%d events</item>
+    </plurals>
+    <string name="act_empty_title">Nothing yet</string>
+    <string name="act_empty_body">Start protection and open one of your watched apps. Each time it looks up a website, it appears here.</string>
+    <string name="act_detail_title">What happened</string>
+    <string name="act_time">Time</string>
+    <string name="act_app">App</string>
+    <string name="act_domain">Website</string>
+    <string name="act_type">Type</string>
+    <string name="act_company">Company</string>
+    <string name="act_category">Kind</string>
+    <string name="act_result">Result</string>
+    <string name="act_how">How we know the app</string>
+    <string name="act_port">Port</string>
+    <string name="act_note">Note</string>
+    <string name="act_not_watched">not watched now</string>
+    <string name="act_unknown_app">Unknown app</string>
+    <string name="act_raw">Raw data</string>
+    <string name="how_uid_dns">Android told us which app asked.</string>
+    <string name="how_uid_tcp">Android told us which app connected.</string>
+    <string name="how_guess_fg">Best guess: the app that was on screen.</string>
+    <string name="how_unknown">We could not tell which app.</string>
+    <string name="verdict_allowed">Allowed</string>
+    <string name="verdict_blocked">Blocked</string>
+    <string name="verdict_offline">Caught in Safe Mode</string>
+    <string name="verdict_error">No answer</string>
+    <string name="kind_dns">Lookup</string>
+    <string name="kind_tripwire">Tripwire hit</string>
+    <string name="kind_block">Block added</string>
+    <string name="kind_unblock">Block removed</string>
+    <string name="kind_vpn">Protection</string>
+    <string name="kind_anomaly">Something odd</string>
+    <string name="kind_ai">AI request</string>
+    <string name="info_how_t">How we know the app</string>
+    <string name="info_how_b">Usually Android tells Mycelium exactly which app asked. When it can\'t, Mycelium guesses the app that was on screen, and says so.</string>
+
+    <!-- insights -->
+    <string name="ins_tab_garden">Garden</string>
+    <string name="ins_tab_charts">Charts</string>
+    <string name="ins_stage">Stage %1$d of %2$d</string>
+    <string name="ins_growth">Growth</string>
+    <string name="ins_growth_value">%1$s, next stage at %2$s</string>
+    <string name="ins_growth_top">%1$s, fully grown</string>
+    <string name="ins_lookups_today">Lookups today</string>
+    <string name="ins_trackers_today">Tracker lookups today</string>
+    <string name="ins_blocked_today">Blocked today</string>
+    <string name="ins_data_today">Data used today</string>
+    <string name="ins_odd_today">Odd moments today</string>
+    <string name="ins_parasites">Trackers met today</string>
+    <string name="ins_no_parasites">No trackers met today.</string>
+    <string name="ins_parasite_line">%1$s · %2$d</string>
+    <string name="ins_block">Block</string>
+    <string name="ins_unblock">Unblock</string>
+    <string name="ins_unblock_all">Unblock everywhere</string>
+    <string name="ins_blocked_toast">%1$s is blocked for %2$s.</string>
+    <string name="ins_unblocked_toast">%1$s is unblocked.</string>
+    <string name="ins_change_creature">Change creature</string>
+    <string name="ins_empty_title">The garden is empty</string>
+    <string name="ins_empty_body">Choose apps to watch and they will show up here with everything they did today.</string>
+    <string name="info_stage_t">Stage and growth</string>
+    <string name="info_stage_b">Growth is points earned from the app\'s activity: each lookup counts 1, a tracker lookup counts 2. At enough points the creature reaches the next stage.</string>
+    <string name="info_parasites_t">Trackers</string>
+    <string name="info_parasites_b">Companies that collect data about you, like ad and analytics networks. Block one to stop this app from reaching it. The app may lose an ad or a feature, but usually keeps working.</string>
+    <string name="info_data_t">Data used</string>
+    <string name="info_data_b">How much data the app sent and received, counted by Android. Android adds it up in blocks of about two hours, so the newest use appears a little later.</string>
+    <string name="info_odd_t">Odd moments</string>
+    <string name="info_odd_b">Unusual behaviour, for example many new websites at once, activity in the middle of the night, or a first contact with a tracker company.</string>
+    <string name="ins_period_day">24 h</string>
+    <string name="ins_period_week">7 days</string>
+    <string name="ins_period_month">30 days</string>
+    <string name="ins_pick_app">Pick an app</string>
+    <string name="ins_summary">Summary</string>
+    <string name="ins_lookups">Lookups</string>
+    <string name="ins_unique_domains">Different websites</string>
+    <string name="ins_tracker_lookups">Tracker lookups</string>
+    <string name="ins_companies">Tracker companies</string>
+    <string name="ins_blocked">Blocked</string>
+    <string name="ins_fg_bg">On screen / background</string>
+    <string name="ins_seen">First and last seen</string>
+    <string name="ins_bytes">Data in / out</string>
+    <string name="ins_timeline">Activity over time</string>
+    <string name="ins_timeline_note">Green: lookups. Red: tracker lookups.</string>
+    <string name="ins_top_apps">Busiest apps</string>
+    <string name="ins_top_companies">Most active trackers</string>
+    <string name="ins_by_lookups">Lookups</string>
+    <string name="ins_by_trackers">Trackers</string>
+    <string name="ins_by_bytes">Data</string>
+    <string name="ins_by_background">Background</string>
+    <string name="ins_no_data">No data for this period yet.</string>
+    <string name="ins_company_line">%1$d lookups · %2$d apps</string>
+    <string name="info_lookups_t">Lookups</string>
+    <string name="info_lookups_b">A lookup is an app asking \"where does this website live?\". It happens before almost everything an app does online, so it is a good sign of activity.</string>
+    <string name="info_fgbg_t">On screen or background</string>
+    <string name="info_fgbg_b">On screen: you were using the app. Background: the app was active while you were not looking at it.</string>
+    <string name="info_top_t">Busiest apps</string>
+    <string name="info_top_b">Your watched apps ranked by what you pick: lookups, tracker lookups, data, or background activity.</string>
+
+    <!-- gardener (chat) -->
+    <string name="chat_hint">Ask about your apps</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_preview">Preview</string>
+    <string name="chat_clear">Clear</string>
+    <string name="chat_clear_q">Clear the conversation?</string>
+    <string name="chat_clear_body">Deletes all questions and answers. Your data and stats stay.</string>
+    <string name="chat_ask_ai">Ask AI</string>
+    <string name="info_ask_ai_t">Ask AI</string>
+    <string name="info_ask_ai_b">Optional. With your own key and internet, a cloud AI can phrase the answer. Before anything is sent you see exactly what will go out, and nothing leaves until you tap Send. Without it, the Gardener answers on your phone.</string>
+    <string name="chat_ai_needs">Ask AI needs your own key (Settings) and an internet connection. Answers come from this phone only.</string>
+    <string-array name="chat_suggestions">
+        <item>What just happened?</item>
+        <item>Who sent the most data today?</item>
+        <item>What happened last night?</item>
+        <item>Which apps talk to Meta?</item>
+        <item>What did I block?</item>
+    </string-array>
+    <string name="chat_engine_template">Answered on this phone · %1$d ms</string>
+    <string name="chat_engine_cloud">Answered by AI · %1$d ms</string>
+    <string name="chat_engine_template_plain">Answered on this phone</string>
+    <string name="chat_engine_cloud_plain">Answered by AI</string>
+    <string name="chat_fallback">The AI could not answer (%1$s), so this answer comes from your phone.</string>
+    <string name="chat_gardener">Gardener</string>
+    <string name="chat_preview_title">This will be sent to the AI provider</string>
+    <string name="chat_preview_body">Model %1$s · %2$d bytes. Only these facts leave your phone. Your key goes in a header, never in the text.</string>
+    <string name="chat_start_watching">Start watching %1$s</string>
+    <string name="chat_stop_watching">Stop watching %1$s</string>
+    <string name="chat_now_watching">Now watching %1$s.</string>
+    <string name="chat_stopped_watching">Stopped watching %1$s.</string>
+    <string name="chat_evidence">Evidence #%1$d</string>
+    <string name="chat_evidence_cd">Show evidence %1$d</string>
+    <string name="chat_empty_title">Ask the Gardener</string>
+    <string name="chat_empty_body">Ask in plain words, like \"What just happened?\". The Gardener only talks about what this phone has seen.</string>
+    <string name="chat_thinking">The Gardener is thinking…</string>
+
+    <!-- setup check -->
+    <string name="setup_intro">A quick check that Mycelium can see clearly and keep running. Green means good.</string>
+    <string name="setup_all_good">All set. Your garden is in good hands.</string>
+    <string name="setup_fix">Fix</string>
+    <string name="setup_open_app_info">Open app info</string>
+    <string name="setup_by_hand">Check by hand</string>
+    <string name="setup_vpn_t">Protection is on</string>
+    <string name="setup_vpn_ok">Running.</string>
+    <string name="setup_vpn_bad">Paused. Start it to record what your apps do.</string>
+    <string name="setup_apps_t">Apps chosen</string>
+    <string name="setup_apps_ok">Watching %1$s.</string>
+    <string name="setup_apps_bad">No apps chosen yet.</string>
+    <string name="setup_usage_t">Usage access</string>
+    <string name="setup_usage_ok">Allowed.</string>
+    <string name="setup_usage_bad">Needed to tell which app is on screen and how much data apps use.</string>
+    <string name="setup_notif_t">Notifications</string>
+    <string name="setup_notif_ok">Allowed.</string>
+    <string name="setup_notif_bad">Allow them so you can see and pause protection from the notification.</string>
+    <string name="setup_dns_t">Private DNS</string>
+    <string name="setup_dns_ok">Not forcing a provider. Good.</string>
+    <string name="setup_dns_bad">Set to \"%1$s\". This hides lookups from Mycelium. Turn Private DNS off.</string>
+    <string name="setup_battery_t">Battery</string>
+    <string name="setup_battery_ok">Mycelium may keep running in the background.</string>
+    <string name="setup_battery_bad">Android may stop Mycelium to save battery. Allow unrestricted battery use.</string>
+    <string name="setup_chrome_t">Chrome secure DNS</string>
+    <string name="setup_chrome_body">Chrome can hide its lookups. In Chrome open Settings, Privacy and security, and turn Use secure DNS off.</string>
+    <string name="setup_xiaomi_t">Xiaomi and HyperOS</string>
+    <string name="setup_xiaomi_body">Open app info and set Autostart on, Battery saver to No restrictions, and Pause app activity if unused off.</string>
+    <string name="info_dns_t">Private DNS</string>
+    <string name="info_dns_b">A phone setting that sends lookups straight to a chosen company, around Mycelium. When it names a provider, Mycelium sees nothing. Off or Automatic is fine.</string>
+
+    <!-- settings -->
+    <string name="set_look">Look</string>
+    <string name="set_theme_auto">Auto</string>
+    <string name="set_theme_day">Day</string>
+    <string name="set_theme_night">Night</string>
+    <string name="info_theme_t">Day and Night</string>
+    <string name="info_theme_b">Auto follows your phone\'s dark mode. Day is warm paper, Night is a starry blue.</string>
+    <string name="set_ai">AI helper (optional)</string>
+    <string name="set_ai_state">State: %1$s</string>
+    <string name="set_ai_model">Model: %1$s</string>
+    <string name="ai_state_no_key">no key</string>
+    <string name="ai_state_ready">ready</string>
+    <string name="ai_state_offline">offline</string>
+    <string name="set_ai_key_hint">Paste your Anthropic API key</string>
+    <string name="set_ai_save">Save key</string>
+    <string name="set_ai_clear">Remove key</string>
+    <string name="set_ai_saved">Key saved. It is stored encrypted on this phone.</string>
+    <string name="set_ai_removed">Key removed.</string>
+    <string name="set_ai_bad">Not saved: %1$s</string>
+    <string name="info_ai_t">Your own AI key</string>
+    <string name="info_ai_b">Only needed for Ask AI. The key is encrypted with your phone\'s secure storage and never shown, logged or exported. You pay your AI provider directly; Mycelium never sees your bill.</string>
+    <string name="set_advanced">Advanced tools</string>
+    <string name="set_advanced_switch">Show advanced tools</string>
+    <string name="set_open_advanced">Open advanced tools</string>
+    <string name="set_more">More</string>
+
+    <!-- advanced -->
+    <string name="adv_sql">Ask the database (SQL)</string>
+    <string name="adv_sql_default">SELECT kind, COUNT(*) n FROM event GROUP BY kind</string>
+    <string name="adv_run">Run</string>
+    <string name="adv_raw">Raw engine call</string>
+    <string name="adv_method">method</string>
+    <string name="adv_args">arguments (JSON)</string>
+    <string name="adv_call">Call</string>
+    <string name="adv_db">Database</string>
+    <string name="adv_export">Export database</string>
+    <string name="adv_wipe">Wipe data</string>
+    <string name="adv_wipe_q">Wipe all captured data?</string>
+    <string name="adv_wipe_body">Deletes events, Safe Mode catches, data use and chat. Your app choices, blocks and creatures stay.</string>
+    <string name="adv_wipe_confirm">Wipe</string>
+    <string name="adv_sim">Demo</string>
+    <string name="adv_sim_body">Plays five made-up apps for about 100 seconds. Demo rows are marked and hidden again when the demo stops.</string>
+    <string name="adv_sim_1x">Start 1×</string>
+    <string name="adv_sim_4x">Start 4×</string>
+    <string name="adv_diag">Diagnostics</string>
+    <string name="adv_page_size">Memory page size</string>
+    <string name="adv_page_size_value">%1$d bytes</string>
+    <string name="adv_android">Android</string>
+    <string name="adv_android_value">%1$s (API %2$d)</string>
+    <string name="adv_rate">Lookups per minute</string>
+    <string name="adv_how">How apps were recognised</string>
+    <string name="adv_how_none">No lookups yet.</string>
+    <string name="adv_state">Engine state</string>
+    <string name="adv_traffic">Refresh data use</string>
+    <string name="adv_seed">Load all apps</string>
+    <string name="info_sql_t">SQL</string>
+    <string name="info_sql_b">Read-only questions to the database, for example counting events. Only SELECT works; nothing can be changed here.</string>
+    <string name="info_sim_t">Demo</string>
+    <string name="info_sim_b">Fills the garden with made-up activity so you can see how Mycelium looks without waiting. A red banner shows while it plays.</string>
+
+    <!-- help -->
+    <string name="help_intro">Mycelium watches the apps you choose and shows who they talk to. Here is what the words mean.</string>
+    <string name="help_words">Words</string>
+    <string name="help_howto">How do I…</string>
+    <string-array name="help_terms">
+        <item>Garden and Terrarium</item>
+        <item>Creature</item>
+        <item>Watched app</item>
+        <item>Lookup</item>
+        <item>Tracker</item>
+        <item>Blocked</item>
+        <item>Protected</item>
+        <item>Paused</item>
+        <item>Safe Mode</item>
+        <item>Stage and growth</item>
+        <item>Packet type</item>
+        <item>Tripwire</item>
+        <item>Something odd</item>
+        <item>Demo</item>
+    </string-array>
+    <string-array name="help_defs">
+        <item>Your watched apps, each shown as a little creature that grows with its app\'s activity.</item>
+        <item>The character for one app. It is just for fun; all creatures grow the same way.</item>
+        <item>An app you picked. Only these go through Mycelium; other apps are untouched.</item>
+        <item>An app asking \"where does this website live?\". Mycelium sees these, never the content.</item>
+        <item>A company that collects data about you, like ad and analytics networks.</item>
+        <item>You told Mycelium to stop an app from reaching that tracker.</item>
+        <item>Mycelium is running and watching your chosen apps.</item>
+        <item>Mycelium is off. Apps work normally and nothing is recorded.</item>
+        <item>No internet right now. Mycelium answers apps on the phone, sends nothing, and sorts what it caught when you are back online.</item>
+        <item>How grown a creature is. Every lookup adds growth; trackers add double.</item>
+        <item>What kind of traffic it was, like a lookup or a tracker. Each type has its own color.</item>
+        <item>A trap address. When a blocked app tries to connect anyway, it bumps into the tripwire and you see it.</item>
+        <item>Unusual behaviour, like many new websites at once or activity in the middle of the night.</item>
+        <item>Made-up activity to show how Mycelium looks. A red banner shows while it plays.</item>
+    </string-array>
+    <string-array name="help_howto_q">
+        <item>Start watching apps</item>
+        <item>Block a tracker</item>
+        <item>Use Ask AI</item>
+        <item>Keep Mycelium running</item>
+    </string-array>
+    <string-array name="help_howto_a">
+        <item>Open My Apps, tick the apps, tap Save, then tap the status chip at the top and Start protection.</item>
+        <item>Open Insights, Garden. Under an app, find the tracker and tap Block. Tap Unblock to undo.</item>
+        <item>Add your own key in Settings. In Ask the Gardener turn on Ask AI. You see what would be sent and choose Send or Cancel.</item>
+        <item>Open Setup Check and fix anything that is not green, especially battery and Private DNS.</item>
+    </string-array>
+
+    <!-- about -->
+    <string name="about_tagline">Your data is kept and processed on your device.</string>
+    <string name="about_stays_t">What stays on your phone</string>
+    <string name="about_stays_b">Every lookup, statistic, alert and Gardener answer is made and kept on this phone. There is no account, no analytics and no server of ours.</string>
+    <string name="about_leaves_t">What can leave your phone</string>
+    <string name="about_leaves_b">Only when you add your own AI key, turn on Ask AI and tap Send: the facts shown in the preview go to the AI provider. Nothing else, ever.</string>
+    <string name="about_limits_t">What Mycelium can\'t see</string>
+    <string name="about_limits_b">It sees which websites apps look up, not what they send. Apps with their own private DNS, or fixed addresses, can slip past. Data use is counted by Android in blocks of about two hours.</string>
+    <string name="about_credits_t">Credits</string>
+    <string name="about_credits_b">Pixel art: original, made for Mycelium. Font: Pixelify Sans by the Pixelify Sans Project Authors, SIL Open Font License 1.1. Full list in docs/CREDITS.md.</string>
+    <string name="about_license">Read the font license</string>
+    <string name="about_version">Version %1$s</string>
 </resources>

@@ -25,6 +25,9 @@ fun hhmmss(ts: Long): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Da
 
 fun dateTime(ts: Long): String = if (ts <= 0) "-" else SimpleDateFormat("MM-dd HH:mm", Locale.US).format(Date(ts))
 
+/** Date and time in the phone's own format, with seconds. */
+fun fullTime(ts: Long): String = java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.MEDIUM).format(Date(ts))
+
 fun human(bytes: Long): String = when {
     bytes >= 1L shl 30 -> "%.1f GB".format(bytes / 1073741824.0)
     bytes >= 1L shl 20 -> "%.1f MB".format(bytes / 1048576.0)

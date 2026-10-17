@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- VPN notification. The app module can override these by name. -->
+    <string name="mycelium_notif_channel">Garden protection</string>
+    <string name="mycelium_notif_title">Your garden is protected</string>
+    <string name="mycelium_notif_text">Watching your chosen apps. Everything stays on this phone.</string>
+    <string name="mycelium_notif_pause">Pause</string>
+</resources>

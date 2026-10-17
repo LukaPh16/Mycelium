@@ -1,13 +1,34 @@
 :root {
-  --ink: #E8F5E9;
-  --muted: #A5B8A8;
-  --panel: rgba(16, 28, 20, 0.94);
-  --glass: #0E1A14;
+  /* Night (default): starry glass, matching the app's night palette. Scene colors live here; packet type colors come only from packet_types.json. */
+  --ink: #F2E8D2;
+  --muted: #A99F8E;
+  --panel: rgba(42, 47, 69, 0.95);
+  --glass: #161B2B;
+  --frame: #7E5434;
+  --frame-low: #5E3D24;
+  --shine: rgba(255, 255, 255, 0.6);
+  --soil-top: #7A5A44;
+  --soil: #5D4037;
+  --soil-dark: #4E342E;
 }
+/* Day: warm daylight in the glass, matching the app's parchment theme (?theme=day). */
+html.day {
+  --ink: #3B2A1A;
+  --muted: #7D6A55;
+  --panel: rgba(251, 241, 218, 0.97);
+  --glass: #DCEFD9;
+  --frame: #9A6233;
+  --frame-low: #C28A52;
+  --shine: rgba(255, 255, 255, 0.85);
+  --soil-top: #8D6E4F;
+  --soil: #6D4C33;
+  --soil-dark: #5C3A1E;
+}
+html.day #legend button, html.day #panel .close { color: var(--ink); }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: var(--glass); color: var(--ink); font: 14px/1.35 system-ui, sans-serif; }
 #terrarium { position: relative; min-height: 100%; padding: 14px 14px 40px; }
-#bg { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; pointer-events: none; }
+#bg { position: fixed; left: 0; top: 0; image-rendering: pixelated; pointer-events: none; }   /* sized in JS */
 #grid { position: relative; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; padding-bottom: 60px; }
 .cell { display: flex; flex-direction: column; align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .cell canvas.org { width: 100%; height: 150px; image-rendering: pixelated; }
