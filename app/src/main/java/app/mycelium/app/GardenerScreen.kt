@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import app.mycelium.app.ui.ButtonKind
 import app.mycelium.app.ui.DialogBox
+import app.mycelium.app.ui.Details
+import app.mycelium.app.ui.LoadingState
+import app.mycelium.app.ui.LocalReduceMotion
 import app.mycelium.app.ui.EmptyState
 import app.mycelium.app.ui.Info
 import app.mycelium.app.ui.InfoButton
@@ -58,6 +62,7 @@ import app.mycelium.app.ui.SwitchRow
 import app.mycelium.app.ui.pixel
 import app.mycelium.app.ui.pixelPanel
 import app.mycelium.engine.MyceliumEngine
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -70,6 +75,7 @@ private class Msg(
     val latencyMs: Long? = null,
     val fallback: String? = null,
     val action: Action? = null,
+    val fresh: Boolean = false,
 ) {
     var actionNote by mutableStateOf<String?>(null)
 }
@@ -102,7 +108,7 @@ private fun fromResult(r: JSONObject): Msg {
         else -> null
     }
     return Msg(false, sentencesOf(r.optJSONArray("sentences")), r.optString("engine").ifEmpty { null },
-        if (r.has("latency_ms")) r.getLong("latency_ms") else null, r.optString("fallback_reason").ifEmpty { null }, action)
+        if (r.has("latency_ms")) r.getLong("latency_ms") else null, r.optString("fallback_reason").ifEmpty { null }, action, fresh = true)
 }
 
 @Composable
@@ -111,7 +117,8 @@ fun GardenerScreen() {
     val ctx = LocalContext.current
     val go = LocalGo.current
     val stateJson by MyceliumEngine.state.collectAsState()
-    val aiReady = remember(stateJson) { JSONObject(stateJson).optString("ai") == "ready" }
+    val aiState = remember(stateJson) { JSONObject(stateJson).optString("ai") }
+    val aiReady = aiState == "ready"
     var askAi by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(aiReady) { if (!aiReady) askAi = false }
     val msgs = remember { mutableStateListOf<Msg>() }
@@ -122,7 +129,7 @@ fun GardenerScreen() {
     var confirmClear by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val list = rememberLazyListState()
-    val colors = rememberTypeColors()
+    val types = rememberTypes()
     val labels = rememberLabels()
     val suggestions = stringArrayResource(R.array.chat_suggestions)
 
@@ -148,19 +155,16 @@ fun GardenerScreen() {
 
     Column(Modifier.fillMaxSize().imePadding()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-            SwitchRow(stringResource(R.string.chat_ask_ai), askAi, { askAi = it }, Modifier.weight(1f), enabled = aiReady,
-                info = Info(R.string.info_ask_ai_t, R.string.info_ask_ai_b))
+            if (aiState == "no_key") Text(
+                stringResource(R.string.chat_ai_needs),
+                Modifier.weight(1f).clickable(role = Role.Button) { go(Routes.SETTINGS) }.padding(vertical = 8.dp),
+                style = MaterialTheme.typography.bodySmall, color = pal.inkMuted,
+            ) else SwitchRow(stringResource(if (aiReady) R.string.chat_ask_ai else R.string.chat_ask_ai_offline), askAi, { askAi = it },
+                Modifier.weight(1f), enabled = aiReady, info = Info(R.string.info_ask_ai_t, R.string.info_ask_ai_b))
             if (msgs.isNotEmpty()) PixelButton(stringResource(R.string.chat_clear), { confirmClear = true }, kind = ButtonKind.Quiet)
         }
-        if (!aiReady) Text(
-            stringResource(R.string.chat_ai_needs),
-            Modifier.padding(horizontal = 16.dp).clickable(role = Role.Button) { go(Routes.SETTINGS) },
-            style = MaterialTheme.typography.bodySmall, color = pal.inkMuted,
-        )
         LazyColumn(Modifier.weight(1f).fillMaxWidth(), state = list, contentPadding = PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            if (msgs.isEmpty() && !busy) item {
-                EmptyState(R.drawable.sprite_mushroom_happy, stringResource(R.string.chat_empty_title), stringResource(R.string.chat_empty_body))
-            }
+            item { Greeting() }
             items(msgs) { m ->
                 if (m.user) UserBubble(m.sentences.first().first)
                 else BotBubble(m, onCite = { id -> scope.launch { record = Api.io("record", obj("id" to id)) } }) { a ->
@@ -171,7 +175,7 @@ fun GardenerScreen() {
                     }
                 }
             }
-            if (busy) item { Text(stringResource(R.string.chat_thinking), style = MaterialTheme.typography.bodyMedium, color = pal.inkMuted) }
+            if (busy) item { LoadingState(stringResource(R.string.chat_thinking)) }
         }
         Row(Modifier.horizontalScroll(rememberScrollState()).padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             for (s in suggestions) PixelButton(s, { send(s) }, kind = ButtonKind.Quiet, enabled = !busy)
@@ -202,10 +206,11 @@ fun GardenerScreen() {
             }
         }) {
             Text(stringResource(R.string.chat_preview_body, p.optString("model"), p.optInt("payload_bytes")), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+            Text(stringResource(R.string.chat_preview_exact), style = MaterialTheme.typography.titleSmall, color = pal.ink)
             Text(p.getJSONObject("payload").toString(2), fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall, color = pal.ink)
         }
     }
-    record?.optJSONObject("record")?.let { rec -> EventDialog(rec, colors, labels, advanced = false) { record = null } }
+    record?.optJSONObject("record")?.let { rec -> EventDialog(rec, types, labels, advanced = false) { record = null } }
     if (confirmClear) PixelDialog(stringResource(R.string.chat_clear_q), onDismiss = { confirmClear = false }, actions = {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             PixelButton(stringResource(R.string.cancel), { confirmClear = false }, kind = ButtonKind.Secondary)
@@ -223,26 +228,47 @@ private fun UserBubble(text: String) {
     }
 }
 
+/** The Gardener says hello and what it can (and can't) answer. */
+@Composable
+private fun Greeting() {
+    val pal = LocalPal.current
+    Row(verticalAlignment = Alignment.Top) {
+        PixelSprite(R.drawable.sprite_gardener, artPixelDp = 2f, modifier = Modifier.padding(top = 18.dp))
+        Spacer(Modifier.width(8.dp))
+        Box(Modifier.weight(1f)) {
+            DialogBox(stringResource(R.string.chat_gardener), scroll = false) {
+                Text(stringResource(R.string.chat_hello), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+            }
+        }
+    }
+}
+
 @Composable
 private fun BotBubble(m: Msg, onCite: (Long) -> Unit, onAction: (Action) -> Unit) {
     val pal = LocalPal.current
+    val still = LocalReduceMotion.current
+    val total = m.sentences.sumOf { it.first.length }
+    var shown by remember(m) { mutableIntStateOf(if (m.fresh && !still) 0 else total) }
+    LaunchedEffect(m) { while (shown < total) { delay(18); shown = (shown + 2).coerceAtMost(total) } }   // typewriter
     Row(verticalAlignment = Alignment.Top) {
-        PixelSprite(R.drawable.sprite_mushroom_happy, artPixelDp = 1.5f, modifier = Modifier.padding(top = 22.dp))
+        PixelSprite(R.drawable.sprite_gardener, artPixelDp = 1.5f, modifier = Modifier.padding(top = 22.dp))
         Spacer(Modifier.width(6.dp))
         Box(Modifier.weight(1f)) {
             DialogBox(stringResource(R.string.chat_gardener), scroll = false) {
-                for ((text, ids) in m.sentences) {
-                    Text(text, style = MaterialTheme.typography.bodyMedium, color = pal.ink)
-                    if (ids.isNotEmpty()) Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        for (id in ids) CiteChip(id) { onCite(id) }
-                    }
+                var left = shown
+                for ((text, _) in m.sentences) {
+                    if (left <= 0) break
+                    Text(text.take(left), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+                    left -= text.length
                 }
+                if (shown < total) return@DialogBox
                 m.action?.let { a ->
                     val note = m.actionNote
                     if (note == null) PixelButton(stringResource(if (a.method == "unwatch") R.string.chat_stop_watching else R.string.chat_start_watching, a.label), { onAction(a) })
                     else Text(note, style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
                 }
-                m.fallback?.let { Text(stringResource(R.string.chat_fallback, it), style = MaterialTheme.typography.bodySmall, color = pal.berry) }
+                m.fallback?.let { Text(stringResource(R.string.chat_fallback), style = MaterialTheme.typography.bodySmall, color = pal.berry) }
+                val ids = m.sentences.flatMap { it.second }.distinct()
                 val engine = when {
                     m.engine == "cloud" && m.latencyMs != null -> stringResource(R.string.chat_engine_cloud, m.latencyMs.toInt())
                     m.engine == "cloud" -> stringResource(R.string.chat_engine_cloud_plain)
@@ -250,7 +276,16 @@ private fun BotBubble(m: Msg, onCite: (Long) -> Unit, onAction: (Action) -> Unit
                     m.engine != null -> stringResource(R.string.chat_engine_template_plain)
                     else -> null
                 }
-                if (engine != null) Text(engine, style = MaterialTheme.typography.labelSmall, color = pal.inkMuted)
+                if (ids.isNotEmpty() || engine != null || m.fallback != null) Details {
+                    if (ids.isNotEmpty()) {
+                        Text(stringResource(R.string.chat_evidence_intro), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+                        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            for (id in ids) CiteChip(id) { onCite(id) }
+                        }
+                    }
+                    m.fallback?.let { Text(stringResource(R.string.chat_fallback_reason, it), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted) }
+                    if (engine != null) Text(engine, style = MaterialTheme.typography.labelSmall, color = pal.inkMuted)
+                }
             }
         }
     }

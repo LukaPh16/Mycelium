@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.sp
 import app.mycelium.app.R
 import kotlin.math.max
@@ -50,6 +51,9 @@ val NightPal = Pal(
 
 val LocalPal = staticCompositionLocalOf { DayPal }
 
+/** True when the user asked for less motion (Settings > Motion): no typewriter, no bobbing. */
+val LocalReduceMotion = staticCompositionLocalOf { false }
+
 enum class ThemeMode { AUTO, DAY, NIGHT }
 
 /** Pixelify Sans (SIL OFL 1.1), a variable font: titles and buttons only. Body text uses the system font. */
@@ -76,7 +80,7 @@ private val Type = Typography(
 fun pixel(): Float = max(1f, (LocalDensity.current.density * 2f).roundToInt().toFloat())
 
 @Composable
-fun MyceliumTheme(mode: ThemeMode, content: @Composable () -> Unit) {
+fun MyceliumTheme(mode: ThemeMode, textSize: TextSize = TextSize.NORMAL, reduceMotion: Boolean = false, content: @Composable () -> Unit) {
     val night = when (mode) {
         ThemeMode.DAY -> false
         ThemeMode.NIGHT -> true
@@ -100,7 +104,12 @@ fun MyceliumTheme(mode: ThemeMode, content: @Composable () -> Unit) {
             error = p.berry, outline = p.wood, outlineVariant = p.paperEdge,
         )
     }
-    CompositionLocalProvider(LocalPal provides p) {
+    val d = LocalDensity.current
+    CompositionLocalProvider(
+        LocalPal provides p,
+        LocalReduceMotion provides reduceMotion,
+        LocalDensity provides Density(d.density, d.fontScale * textSize.scale),   // in-app text size on top of the phone's
+    ) {
         MaterialTheme(colorScheme = scheme, typography = Type, content = content)
     }
 }

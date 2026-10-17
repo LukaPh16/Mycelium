@@ -3,6 +3,8 @@ package app.mycelium.app
 import android.Manifest
 import android.net.VpnService
 import android.os.Build
+import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -43,6 +45,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -105,7 +108,21 @@ class MainActivity : ComponentActivity() {
         MyceliumEngine.init(this)
         val prefs = UiPrefs(this)
         if (Build.VERSION.SDK_INT >= 33) requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
-        setContent { MyceliumTheme(prefs.theme) { AppShell(prefs, ::startProtection) } }
+        setContent { MyceliumTheme(prefs.theme, prefs.textSize, prefs.reduceMotion) { AppShell(prefs, ::startProtection, openRoute) } }
+        openFromIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        openFromIntent(intent)
+    }
+
+    /** Debug builds only: `adb shell am start -n app.mycelium/app.mycelium.app.MainActivity --es route activity` opens a screen. */
+    private val openRoute = mutableStateOf<String?>(null)
+
+    private fun openFromIntent(intent: Intent?) {
+        if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE == 0) return
+        intent?.getStringExtra("route")?.let { openRoute.value = it }
     }
 
     /** Starts protection; shows Android's VPN dialog when needed. Reports "ok", "consent_denied" or an engine error code. */
@@ -136,6 +153,8 @@ object Routes {
     const val ADVANCED = "advanced"
     const val HELP = "help"
     const val ABOUT = "about"
+    const val LIMITS = "limits"
+    const val LICENSES = "licenses"
 }
 
 private class Screen(
@@ -154,6 +173,9 @@ private val SCREENS = listOf(
     Screen(Routes.HELP, R.string.nav_help, Info(R.string.info_help_t, R.string.info_help_b), Glyphs.help),
     Screen(Routes.ABOUT, R.string.nav_about, Info(R.string.info_about_t, R.string.info_about_b), Glyphs.leaf),
     Screen(Routes.ADVANCED, R.string.nav_advanced, Info(R.string.info_advanced_t, R.string.info_advanced_b), Glyphs.gear, inDrawer = false),
+    Screen(Routes.LIMITS, R.string.nav_limits, Info(R.string.info_limits_t, R.string.info_limits_b), Glyphs.help, inDrawer = false,
+        topTitle = R.string.title_limits),
+    Screen(Routes.LICENSES, R.string.nav_licenses, Info(R.string.info_licenses_t, R.string.info_licenses_b), Glyphs.leaf, inDrawer = false),
 )
 
 private fun protectionOf(state: JSONObject): Protection = when {
@@ -164,7 +186,7 @@ private fun protectionOf(state: JSONObject): Protection = when {
 }
 
 @Composable
-private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit) {
+private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit, openRoute: MutableState<String?>) {
     val pal = LocalPal.current
     val nav = rememberNavController()
     val drawer = rememberDrawerState(DrawerValue.Closed)
@@ -188,6 +210,7 @@ private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit
     val start: () -> Unit = { startProtection { code -> toast(messages[code] ?: ctx.getString(R.string.error_generic, code)) } }
 
     BackHandler(drawer.isOpen) { scope.launch { drawer.close() } }
+    LaunchedEffect(openRoute.value) { openRoute.value?.let { navigateTo(nav, it); openRoute.value = null } }
     CompositionLocalProvider(LocalToast provides toast, LocalGo provides go) {
         ModalNavigationDrawer(
             drawerState = drawer,
@@ -210,16 +233,18 @@ private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit
                 Column(Modifier.fillMaxSize()) {
                     if (protection == Protection.Demo) DemoBanner()
                     NavHost(nav, startDestination = Routes.HOME, modifier = Modifier.fillMaxSize().navigationBarsPadding()) {
-                        composable(Routes.HOME) { HomeScreen(protection, start) }
-                        composable(Routes.APPS) { MyAppsScreen() }
+                        composable(Routes.HOME) { HomeScreen(prefs, protection, start) }
+                        composable(Routes.APPS) { MyAppsScreen(prefs, protection) }
                         composable(Routes.ACTIVITY) { ActivityScreen(feed, prefs.advanced) }
                         composable(Routes.INSIGHTS) { InsightsScreen() }
                         composable(Routes.GARDENER) { GardenerScreen() }
                         composable(Routes.SETUP) { SetupScreen(protection, start) }
-                        composable(Routes.SETTINGS) { SettingsScreen(prefs) }
+                        composable(Routes.SETTINGS) { SettingsScreen(prefs, protection, start) }
                         composable(Routes.ADVANCED) { AdvancedScreen() }
                         composable(Routes.HELP) { HelpScreen() }
                         composable(Routes.ABOUT) { AboutScreen() }
+                        composable(Routes.LIMITS) { LimitsScreen() }
+                        composable(Routes.LICENSES) { LicensesScreen() }
                     }
                 }
                 // Toasts drop in under the top bar, so they never cover a screen's own bottom controls.

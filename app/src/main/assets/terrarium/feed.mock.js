@@ -6,6 +6,7 @@
  *   open http://localhost:8000/app/src/main/assets/terrarium/index.html?mock=1
  * Live traffic is simulated: Chrome gains a dns or tracker packet every 300 ms and crosses stage thresholds.
  * Acks are kept in localStorage, so a reload never replays an acked upgrade (as with the real engine).
+ * The fixture Host has no translations: sentences show their string keys and arguments.
  */
 (function () {
   const ASSETS = '../../../../../engine/src/main/assets/';
@@ -18,6 +19,12 @@
     { app_id: 'org.mozilla.firefox', label: 'Firefox', preset_id: 'preset07', counts: { dns: 12, tcp: 1, other: 2 } },
   ];
   let types = [];
+  const shooed = new Set();
+  window.MyceliumHost = {
+    strings: () => '{}',
+    settings: () => JSON.stringify({ reduce_motion: /[?&]still=1/.test(location.search), battery_saver: false }),
+    plural: (key, n, args) => key + ' ' + args,
+  };
   const cbs = [];
 
   function growth(c) { return Object.entries(c).reduce((s, [t, n]) => s + n * (WEIGHTS[t] == null ? 1 : WEIGHTS[t]), 0); }
@@ -47,6 +54,15 @@
       console.log('ack', appId, stage);
       return Promise.resolve({ ok: true });
     },
+    getSnoops(appIds) {
+      const out = {};
+      for (const id of appIds) {
+        out[id] = { contacts: 120, blocked: shooed.size, snoops: (id === 'com.android.chrome' ? ['Google', 'Meta', 'AppsFlyer', 'Criteo'] : ['Adjust'])
+          .map((c, i) => ({ company: c, category: ['ads', 'social', 'analytics', 'ads'][i % 4], hits: 10 - i, shooed: shooed.has(id + '|' + c) })) };
+      }
+      return Promise.resolve(out);
+    },
+    shoo(appId, company) { shooed.add(appId + '|' + company); return Promise.resolve({ ok: true }); },
     setPreset(appId, presetId) { apps.find((a) => a.app_id === appId).preset_id = presetId; return Promise.resolve({ ok: true }); },
     onUpdate(cb) { cbs.push(cb); },
     _push(ev) { cbs.forEach((cb) => cb(ev)); },

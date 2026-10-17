@@ -35,7 +35,33 @@ PAL = {
     "m": "#24391F",  # background soil
     "Y": "#F2C14E",  # moon / sparkle
     "B": "#8CC7DE",  # magnifier glass
+    "V": "#8A5BB0",  # Snoop body
+    "v": "#5E3A80",  # Snoop shade
+    "w": "#FFFFFF",  # Snoop eye white
+    "T": "#E8C26A",  # straw hat
+    "t": "#B98A3A",  # straw hat shade
+    "L": "#5E9C3A",  # leaf
+    "l": "#3F6B2A",  # leaf dark
 }
+
+SNOOP = [  # 16x16 nosy bug with big eyes; outline added in snoop()
+    "................",
+    "................",
+    "................",
+    "................",
+    ".....vVVVVv.....",
+    "...vVVVVVVVVv...",
+    "..vVwwVVVVwwVv..",
+    "..VVwEVVVVwEVV..",
+    "..VVwwVVVVwwVV..",
+    "..VVVVVVVVVVVV..",
+    "..vVVVVEEVVVVv..",
+    "...vVVVVVVVVv...",
+    "....vvVVVVvv....",
+    "................",
+    "................",
+    "................",
+]
 
 
 def mushroom(face="happy"):
@@ -111,6 +137,35 @@ def mushroom(face="happy"):
     return px
 
 
+def snoop():
+    """16x16 Snoop (a tracker), original: round bug, big eyes, antennae, little legs."""
+    px = {(x, y): k for y, row in enumerate(SNOOP) for x, k in enumerate(row) if k != "."}
+    body = set(px)
+    for (x, y) in body:
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            if (x + dx, y + dy) not in body:
+                px[(x + dx, y + dy)] = "K"
+    for p in ((5, 2), (4, 1), (10, 2), (11, 1), (4, 14), (3, 15), (7, 14), (8, 14), (11, 14), (12, 15)):
+        px[p] = "K"
+    px[(3, 0)] = "Y"
+    px[(12, 0)] = "Y"
+    return px
+
+
+def gardener():
+    """32x32 Gardener mascot: the happy mushroom in a straw hat, holding a sprout."""
+    px = mushroom("happy")
+    for x in range(10, 22):  # hat crown with an outline
+        for y in range(0, 4):
+            px[(x, y)] = "K" if y == 0 or x in (10, 21) else ("t" if y == 3 else "T")
+    for x in range(3, 29):  # brim
+        px[(x, 4)] = "K" if x in (3, 28) else "T"
+    for p, k in (((25, 22), "l"), ((25, 21), "l"), ((25, 20), "l"), ((24, 19), "L"), ((23, 18), "L"), ((24, 18), "L"),
+                 ((26, 19), "L"), ((27, 18), "L"), ((26, 18), "L"), ((22, 21), "K"), ((23, 21), "S"), ((24, 21), "S")):
+        px[p] = k
+    return px
+
+
 def background(n, step=1):
     """n x n icon background: deep green with soft spores and a soil band."""
     px = {}
@@ -181,6 +236,9 @@ def main():
         render([(logo, 14, 14, False)], 60, int(4 * d), RES / f"drawable-{name}/splash_icon.png")  # 60 cells = 240 dp
     for face in ("happy", "sleepy", "wow"):
         sprite(mushroom(face), RES / f"drawable-nodpi/sprite_mushroom_{face}.png")
+    sprite(snoop(), RES / "drawable-nodpi/sprite_snoop.png", 16)
+    sprite(snoop(), ROOT / "app/src/main/assets/terrarium/snoop.png", 16)
+    sprite(gardener(), RES / "drawable-nodpi/sprite_gardener.png")
     # status-bar icon: silhouette without the face, so it reads at 24 dp
     silhouette = {p: k for p, k in mushroom().items() if k not in ("E", "P")}
     vector(silhouette, ROOT / "engine/src/main/res/drawable/ic_stat_mycelium.xml")

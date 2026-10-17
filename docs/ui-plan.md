@@ -23,6 +23,12 @@ Top bar: ☰  title  [status chip: Protected / Paused / Safe Mode]   tap chip ->
 ```
 Back: system back pops screens; on home with the drawer open it closes the drawer. Predictive back enabled.
 
+## Main-surface words (Phase 2)
+DNS lookup = "contact", domain = "website or service", tracker = "Snoop" (pest sprite), block = "Shoo away",
+VPN = "Protection", Sanctuary = "Safe Mode (offline)", anomaly = "Odd behavior". Technical words only in "i" sheets
+and Details expanders. Copy stays honest: Mycelium sees contacts of chosen apps only, never contents, and never stops
+all tracking (see the "What Mycelium can't see" page).
+
 ## Glossary (plain words, used in InfoButtons and Help)
 
 | Word | Meaning |

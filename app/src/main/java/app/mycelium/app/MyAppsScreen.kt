@@ -1,6 +1,18 @@
 package app.mycelium.app
 
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.text.style.TextOverflow
+import app.mycelium.app.ui.EmptyState
+import app.mycelium.app.ui.ErrorState
+import app.mycelium.app.ui.LoadingState
+import app.mycelium.app.ui.PixelDialog
+import app.mycelium.app.ui.Protection
+import app.mycelium.app.ui.UiPrefs
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,80 +67,113 @@ import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 
-private class AppRow(val label: String, val pkg: String, val watched: Boolean, val lookups: Long)
+private class AppRow(val label: String, val pkg: String, val watched: Boolean, val contacts: Long, val system: Boolean)
 
-/** Choose the apps to watch. Saving watches new apps before unwatching, so a swap never passes through 0 apps. */
+/** Choose the apps to watch: one big switch per app, saved at once. */
 @Composable
-fun MyAppsScreen() {
+fun MyAppsScreen(prefs: UiPrefs, protection: Protection) {
     val pal = LocalPal.current
     val ctx = LocalContext.current
     val toast = LocalToast.current
-    var query by remember { mutableStateOf("") }
-    var showSystem by remember { mutableStateOf(false) }
-    var rows by remember { mutableStateOf(emptyList<AppRow>()) }
-    val selected = remember { mutableStateListOf<String>() }
-    var loaded by remember { mutableStateOf(false) }
-    var picking by remember { mutableStateOf(emptyList<AppRow>()) }
+    var query by rememberSaveable { mutableStateOf("") }
+    var showSystem by rememberSaveable { mutableStateOf(false) }
+    var rows by remember { mutableStateOf<List<AppRow>?>(null) }
+    var failed by remember { mutableStateOf(false) }
+    var reload by remember { mutableIntStateOf(0) }
+    var picking by remember { mutableStateOf<AppRow?>(null) }
+    var confirmLast by remember { mutableStateOf<AppRow?>(null) }
+    val busy = remember { mutableStateListOf<String>() }
     val scope = rememberCoroutineScope()
-    if (picking.isNotEmpty()) {
-        PresetPicker(picking.first().pkg, picking.first().label, onDone = { picking = picking.drop(1) })
-        return
+    picking?.let { r -> PresetPicker(r.pkg, r.label, onDone = { picking = null }); return }
+    LaunchedEffect(query, showSystem, reload) {
+        val r = Api.io("apps", obj("query" to query, "include_system" to showSystem))
+        failed = r.has("error")
+        rows = r.optJSONArray("apps").objects()
+            .map { AppRow(it.getString("label"), it.getString("package"), it.getBoolean("watched"), it.optLong("lookups_24h"), it.optBoolean("system")) }
     }
-    LaunchedEffect(query, showSystem) {
-        rows = Api.io("apps", obj("query" to query, "include_system" to showSystem)).optJSONArray("apps").objects()
-            .map { AppRow(it.getString("label"), it.getString("package"), it.getBoolean("watched"), it.getLong("lookups_24h")) }
-        if (!loaded) { selected.addAll(rows.filter { it.watched }.map { it.pkg }); loaded = true }
+    val watching = rows?.count { it.watched } ?: 0
+
+    fun toggle(r: AppRow, on: Boolean) {
+        scope.launch {
+            busy += r.pkg
+            val res = if (on) {
+                val presets = if (prefs.newCreature.isNotEmpty()) obj(r.pkg to prefs.newCreature) else null
+                Api.io("watch", obj("packages" to JSONArray(listOf(r.pkg)), "presets" to presets))
+            } else Api.io("unwatch", obj("packages" to JSONArray(listOf(r.pkg))))
+            val rejected = res.optJSONObject("rejected")?.optString(r.pkg).orEmpty()
+            toast(when {
+                res.has("error") || rejected.isNotEmpty() -> ctx.getString(R.string.apps_failed, r.label)
+                on -> ctx.getString(R.string.apps_now_watching, r.label)
+                else -> ctx.getString(R.string.apps_stopped_watching, r.label)
+            })
+            busy -= r.pkg
+            reload++
+        }
     }
+
     Column(Modifier.fillMaxSize()) {
         Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(pluralStringResource(R.plurals.apps_watching, watching, watching), Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleMedium, color = pal.ink)
+                InfoButton(Info(R.string.info_watching_t, R.string.info_watching_b))
+            }
             OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.apps_search)) }, singleLine = true)
             SwitchRow(stringResource(R.string.apps_show_system), showSystem, { showSystem = it }, info = Info(R.string.info_system_t, R.string.info_system_b))
         }
-        LazyColumn(Modifier.weight(1f).fillMaxWidth(), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp)) {
-            if (loaded && rows.isEmpty()) item {
-                Text(if (query.isBlank()) stringResource(R.string.apps_none) else stringResource(R.string.apps_no_match, query),
-                    Modifier.padding(16.dp), color = pal.inkMuted)
-            }
-            items(rows, key = { it.pkg }) { r ->
-                val on = r.pkg in selected
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 3.dp)
-                        .then(if (on) Modifier.pixelPanel(PanelStyle.Quiet, pal, pixel()) else Modifier)
-                        .clickable(role = Role.Checkbox) { if (on) selected.remove(r.pkg) else selected.add(r.pkg) }
-                        .padding(horizontal = 6.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Checkbox(on, null, colors = CheckboxDefaults.colors(checkedColor = pal.leaf, checkmarkColor = pal.onAccent))
-                    Spacer(Modifier.width(10.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text(r.label, style = MaterialTheme.typography.bodyLarge, color = pal.ink)
-                        Text(pluralStringResource(R.plurals.apps_lookups, r.lookups.toInt(), r.lookups.toInt()),
-                            style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
-                    }
+        val list = rows
+        when {
+            failed -> ErrorState(stringResource(R.string.apps_error_title), stringResource(R.string.apps_error_body), { reload++ })
+            list == null -> LoadingState(stringResource(R.string.apps_loading))
+            list.isEmpty() -> EmptyState(R.drawable.sprite_mushroom_wow, stringResource(R.string.apps_none_title),
+                if (query.isBlank()) stringResource(R.string.apps_none) else stringResource(R.string.apps_no_match, query))
+            else -> LazyColumn(Modifier.weight(1f).fillMaxWidth(), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                items(list, key = { it.pkg }) { r ->
+                    AppLine(r, enabled = r.pkg !in busy, onToggle = { on ->
+                        if (!on && watching == 1 && protection != Protection.Paused) confirmLast = r else toggle(r, on)
+                    }, onCreature = { picking = r })
                 }
             }
         }
-        Row(
-            Modifier.fillMaxWidth().pixelPanel(PanelStyle.Wood, pal, pixel()).padding(horizontal = 16.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(pluralStringResource(R.plurals.apps_watching, selected.size, selected.size), Modifier.weight(1f),
-                style = MaterialTheme.typography.titleSmall, color = if (pal.night) pal.ink else pal.onAccent)
-            PixelButton(stringResource(R.string.apps_apply), enabled = loaded, onClick = {
-                scope.launch {
-                    val current = Api.io("watched").optJSONArray("apps").objects().map { it.getString("package") }.toSet()
-                    val add = selected.toSet() - current
-                    val remove = current - selected.toSet()
-                    val r1 = if (add.isNotEmpty()) Api.io("watch", obj("packages" to JSONArray(add.toList()))) else JSONObject()
-                    val r2 = if (remove.isNotEmpty()) Api.io("unwatch", obj("packages" to JSONArray(remove.toList()))) else JSONObject()
-                    val err = r1.optString("error").ifEmpty { r2.optString("error") }
-                    toast(if (err.isEmpty()) ctx.getString(R.string.apps_saved) else ctx.getString(R.string.error_generic, err))
-                    picking = rows.filter { it.pkg in add }
-                }
-            })
+    }
+    confirmLast?.let { r ->
+        PixelDialog(stringResource(R.string.apps_last_q), onDismiss = { confirmLast = null }, actions = {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                PixelButton(stringResource(R.string.not_now), { confirmLast = null }, kind = ButtonKind.Secondary)
+                PixelButton(stringResource(R.string.apps_last_ok), { confirmLast = null; toggle(r, false) }, kind = ButtonKind.Danger)
+            }
+        }) { Text(stringResource(R.string.apps_last_body, r.label), style = MaterialTheme.typography.bodyMedium, color = pal.ink) }
+    }
+}
+
+@Composable
+private fun AppLine(r: AppRow, enabled: Boolean, onToggle: (Boolean) -> Unit, onCreature: () -> Unit) {
+    val pal = LocalPal.current
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .pixelPanel(if (r.watched) PanelStyle.Paper else PanelStyle.Quiet, pal, pixel())
+            .toggleable(r.watched, enabled = enabled, role = Role.Switch, onValueChange = onToggle)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(r.label, style = MaterialTheme.typography.bodyLarge, color = pal.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                if (r.watched) pluralStringResource(R.plurals.apps_contacts, r.contacts.toInt(), r.contacts.toInt())
+                else stringResource(if (r.system) R.string.apps_system_app else R.string.apps_not_watched),
+                style = MaterialTheme.typography.bodySmall, color = pal.inkMuted,
+            )
+            if (r.watched) Text(
+                stringResource(R.string.apps_change_creature),
+                Modifier.clickable(role = Role.Button, onClick = onCreature).padding(vertical = 6.dp),
+                style = MaterialTheme.typography.labelLarge, color = if (pal.night) pal.gold else pal.wood,
+            )
         }
+        Spacer(Modifier.width(12.dp))
+        Switch(r.watched, null, enabled = enabled, modifier = Modifier.scale(1.25f),
+            colors = SwitchDefaults.colors(checkedTrackColor = pal.leaf, checkedThumbColor = pal.paper, uncheckedTrackColor = pal.paperEdge))
     }
 }
 
@@ -149,6 +194,7 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
             InfoButton(Info(R.string.info_preset_t, R.string.info_preset_b))
         }
         PixelButton(stringResource(R.string.preset_keep), onDone, Modifier.fillMaxWidth(), kind = ButtonKind.Secondary)
+        if (presets.isEmpty()) LoadingState(stringResource(R.string.loading))
         Spacer(Modifier.height(6.dp))
         LazyColumn(Modifier.weight(1f)) {
             items(presets, key = { it.getString("id") }) { p ->

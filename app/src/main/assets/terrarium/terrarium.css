@@ -1,58 +1,110 @@
+/* Pixelify Sans (SIL OFL 1.1, see licenses/OFL-PixelifySans.txt): titles, the sign and buttons only. */
+@font-face { font-family: 'Pixelify'; src: url('pixelify_sans.ttf') format('truetype'); font-weight: 400 700; }
+
 :root {
-  /* Night (default): starry glass, matching the app's night palette. Scene colors live here; packet type colors come only from packet_types.json. */
+  /* Night panels (default), matching the app's night palette. The sky follows the phone clock (terrarium.js).
+     Packet type colors come only from packet_types.json. */
   --ink: #F2E8D2;
   --muted: #A99F8E;
-  --panel: rgba(42, 47, 69, 0.95);
-  --glass: #161B2B;
-  --frame: #7E5434;
-  --frame-low: #5E3D24;
-  --shine: rgba(255, 255, 255, 0.6);
-  --soil-top: #7A5A44;
+  --paper: #2A2F45;
+  --paper-edge: #3A4060;
+  --wood: #5E3D24;
+  --wood-dark: #2E1D10;
+  --wood-light: #7E5434;
+  --leaf: #7FC15A;
+  --berry: #E2775E;
+  --gold: #F2C14E;
+  --star-off: rgba(255, 255, 255, 0.25);
+  --on-accent: #1A1E2E;
+  --plate-ink: #F2E8D2;
+  --grass: #4E8A35;
   --soil: #5D4037;
   --soil-dark: #4E342E;
+  --label-bg: rgba(26, 30, 46, 0.8);
 }
-/* Day: warm daylight in the glass, matching the app's parchment theme (?theme=day). */
+/* Day panels: warm paper and wood (?theme=day). */
 html.day {
   --ink: #3B2A1A;
   --muted: #7D6A55;
-  --panel: rgba(251, 241, 218, 0.97);
-  --glass: #DCEFD9;
-  --frame: #9A6233;
-  --frame-low: #C28A52;
-  --shine: rgba(255, 255, 255, 0.85);
-  --soil-top: #8D6E4F;
+  --paper: #FBF1DA;
+  --paper-edge: #E2CC9F;
+  --wood: #9A6233;
+  --wood-dark: #5C3A1E;
+  --wood-light: #C28A52;
+  --leaf: #5E9C3A;
+  --berry: #C8553D;
+  --gold: #E3A73C;
+  --star-off: rgba(59, 42, 26, 0.3);
+  --on-accent: #FFF8E7;
+  --plate-ink: #FFF4DC;
+  --grass: #5E9C3A;
   --soil: #6D4C33;
   --soil-dark: #5C3A1E;
+  --label-bg: rgba(251, 241, 218, 0.88);
 }
-html.day #legend button, html.day #panel .close { color: var(--ink); }
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; background: var(--glass); color: var(--ink); font: 14px/1.35 system-ui, sans-serif; }
-#terrarium { position: relative; min-height: 100%; padding: 14px 14px 40px; }
-#bg { position: fixed; left: 0; top: 0; image-rendering: pixelated; pointer-events: none; }   /* sized in JS */
-#grid { position: relative; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; padding-bottom: 60px; }
-.cell { display: flex; flex-direction: column; align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.cell canvas.org { width: 100%; height: 150px; image-rendering: pixelated; }
-.cell canvas.bar { width: 80%; height: 6px; margin-top: 4px; image-rendering: pixelated; }
-.cell .label { margin-top: 4px; font-weight: 600; text-align: center; }
-.cell .total { color: var(--muted); font-size: 12px; }
-#empty { position: relative; text-align: center; color: var(--muted); margin-top: 30vh; }
+html, body { margin: 0; height: 100%; background: #12152A; color: var(--ink); font: 15px/1.4 system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent; }
+#scene, #fx { position: fixed; left: 0; top: 0; image-rendering: pixelated; pointer-events: none; }
+#fx { z-index: 5; }
+#terrarium { position: relative; min-height: 100%; padding: 12px 12px 80px; }
 
-#legend { position: fixed; right: 8px; top: 8px; max-width: 70vw; background: var(--panel); border-radius: 8px; padding: 6px 8px; font-size: 12px; }
-#legend button { background: none; border: 0; color: var(--ink); font-weight: 600; padding: 2px; }
-#legend ul { list-style: none; margin: 4px 0 0; padding: 0; display: none; }
+/* Pixel frames: hard 3 px edges from layered shadows (no blur), so corners stay notched. */
+#sign, #dialog .box, #legend, #dialog .plate, .cell .label, .pbtn, #error {
+  --edge: var(--wood-dark);
+  box-shadow: 0 -3px 0 0 var(--edge), 0 3px 0 0 var(--edge), -3px 0 0 0 var(--edge), 3px 0 0 0 var(--edge);
+}
+
+#sign { position: relative; z-index: 2; margin: 6px 4px 16px; padding: 10px 14px; background: var(--wood); color: var(--plate-ink);
+  font: 600 16px/1.3 'Pixelify', system-ui, sans-serif; text-align: center; }
+
+#grid { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 18px 12px; }
+.cell { display: flex; flex-direction: column; align-items: center; cursor: pointer; outline: none; }
+.cell:focus-visible .label { outline: 3px solid var(--gold); }
+.stagebox { position: relative; width: 100%; height: 160px; }
+.cell canvas.org { width: 100%; height: 100%; image-rendering: pixelated; }
+.cell canvas.bar { width: 70%; height: 6px; margin-top: 4px; image-rendering: pixelated; }
+.cell .label { margin-top: 10px; padding: 3px 10px; background: var(--label-bg); color: var(--ink); max-width: 100%;
+  font: 600 15px/1.3 'Pixelify', system-ui, sans-serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cell canvas.stars { margin-top: 8px; image-rendering: pixelated; }
+#empty { position: relative; z-index: 2; text-align: center; color: #F2E8D2; margin-top: 30vh; font: 600 17px 'Pixelify', sans-serif; }
+
+.snoops { position: absolute; inset: 0; pointer-events: none; }
+.snoop { position: absolute; pointer-events: auto; background: none; border: 0; padding: 6px; margin: -6px; cursor: pointer; }
+.snoop img { display: block; image-rendering: pixelated; }
+.snoops .more { position: absolute; right: 4px; top: 4px; padding: 1px 6px; background: var(--berry); color: #FFF;
+  font: 700 13px 'Pixelify', sans-serif; }
+
+#legend { position: fixed; z-index: 3; right: 14px; bottom: 14px; max-width: 72vw; background: var(--paper); padding: 2px 8px; font-size: 13px; }
+#legend button { background: none; border: 0; color: var(--ink); font: 600 14px 'Pixelify', sans-serif; padding: 6px 4px; min-height: 40px; }
+#legend ul { list-style: none; margin: 2px 0 8px; padding: 0; display: none; }
 #legend.open ul { display: block; }
-#legend li { display: flex; align-items: center; gap: 6px; margin: 2px 0; }
-#legend li.dim { opacity: 0.45; }
-.sw { display: inline-block; width: 10px; height: 10px; flex: none; image-rendering: pixelated; }
+#legend li { display: flex; align-items: center; gap: 8px; margin: 3px 0; color: var(--ink); }
+#legend li.dim { opacity: 0.5; }
+.sw { display: inline-block; width: 10px; height: 10px; flex: none; }
 
-#panel { position: fixed; left: 8px; right: 8px; bottom: 8px; max-height: 70vh; overflow: auto; background: var(--panel); border-radius: 10px; padding: 12px 14px; }
-#panel h2 { margin: 0 24px 2px 0; font-size: 18px; }
-#panel .sub { margin: 0 0 8px; color: var(--muted); }
-#panel table { border-collapse: collapse; width: 100%; font-size: 13px; }
-#panel td { padding: 2px 4px; }
-#panel td.n { text-align: right; font-variant-numeric: tabular-nums; }
-#panel tr.zero { opacity: 0.45; }
-#panel .close { position: absolute; right: 8px; top: 6px; background: none; border: 0; color: var(--ink); font-size: 22px; }
-#panel button.change, #panel .presets button { margin: 8px 6px 0 0; background: #2E7D32; color: #fff; border: 0; border-radius: 6px; padding: 6px 10px; }
-#panel .presets button { background: #37474F; }
-#error { position: fixed; left: 8px; right: 8px; top: 40%; background: #B71C1C; color: #fff; padding: 10px; border-radius: 8px; }
+#dialog { position: fixed; inset: 0; z-index: 10; display: flex; align-items: flex-end; justify-content: center; padding: 16px 16px 28px; }
+#dialog[hidden] { display: none; }
+#dialog .backdrop { position: absolute; inset: 0; background: rgba(10, 8, 20, 0.5); }
+#dialog .box { position: relative; width: 100%; max-width: 520px; max-height: 80vh; overflow: auto; background: var(--paper);
+  padding: 32px 16px 16px; }
+#dialog .plate { position: absolute; left: 14px; top: 0; transform: translateY(-50%); max-width: calc(100% - 28px); padding: 6px 14px;
+  background: var(--wood); color: var(--plate-ink); font: 700 16px/1.25 'Pixelify', sans-serif; }
+#dialog .row { display: flex; gap: 14px; align-items: flex-start; }
+#dialog .portrait { flex: none; image-rendering: pixelated; background: var(--paper-edge); }
+#dialog .text { flex: 1; min-width: 0; }
+#dialog .text p { margin: 0 0 8px; color: var(--ink); }
+#dialog .text p.small { font-size: 13px; color: var(--muted); }
+#dialog .buttons { display: flex; justify-content: flex-end; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
+.chips { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 3px 12px; }
+
+.pbtn { min-height: 44px; padding: 8px 16px; border: 0; font: 700 15px/1.2 'Pixelify', sans-serif; cursor: pointer;
+  color: var(--ink); background: var(--paper-edge); }
+.pbtn:active { transform: translateY(2px); }
+.pbtn.primary { background: var(--leaf); color: var(--on-accent); }
+.pbtn.danger { background: var(--berry); color: #FFF8E7; }
+.pbtn.chip { min-height: 40px; padding: 6px 12px; font-size: 14px; }
+.pbtn.chip.on { background: var(--leaf); color: var(--on-accent); }
+
+#error { position: fixed; z-index: 20; left: 16px; right: 16px; top: 35%; padding: 14px; background: var(--paper); color: var(--ink);
+  text-align: center; font: 600 15px 'Pixelify', sans-serif; --edge: var(--berry); }

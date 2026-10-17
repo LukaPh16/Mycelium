@@ -31,6 +31,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,6 +58,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.mycelium.app.R
+import kotlinx.coroutines.delay
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -381,3 +383,65 @@ fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit, modi
     }
 }
 
+
+/** "Just a moment": a little mushroom that hops while data loads (still when motion is reduced). */
+@Composable
+fun LoadingState(text: String, modifier: Modifier = Modifier) {
+    val pal = LocalPal.current
+    val still = LocalReduceMotion.current
+    var hop by remember { mutableStateOf(false) }
+    LaunchedEffect(still) { while (!still) { delay(350); hop = !hop } }
+    Column(modifier.fillMaxWidth().padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        PixelSprite(R.drawable.sprite_mushroom_happy, artPixelDp = 2f, modifier = Modifier.offset(y = if (hop) (-4).dp else 0.dp))
+        Text(text, style = MaterialTheme.typography.bodyMedium, color = pal.inkMuted, textAlign = TextAlign.Center)
+    }
+}
+
+/** Something went wrong: a surprised mushroom, plain words, and a way to try again. */
+@Composable
+fun ErrorState(title: String, body: String, onRetry: (() -> Unit)?, modifier: Modifier = Modifier) {
+    EmptyState(R.drawable.sprite_mushroom_wow, title, body, if (onRetry != null) stringResource(R.string.try_again) else null, onRetry ?: {}, modifier)
+}
+
+/** A "Details" toggle: technical facts stay folded away until asked for. */
+@Composable
+fun Details(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+    val pal = LocalPal.current
+    var open by remember { mutableStateOf(false) }
+    Column(modifier.fillMaxWidth()) {
+        Text(
+            stringResource(if (open) R.string.details_hide else R.string.details_show),
+            Modifier.clickable(role = Role.Button) { open = !open }.padding(vertical = 8.dp),
+            style = MaterialTheme.typography.labelLarge, color = if (pal.night) pal.gold else pal.wood,
+        )
+        if (open) Column(Modifier.fillMaxWidth().pixelPanel(PanelStyle.Quiet, pal, pixel()).padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp), content = content)
+    }
+}
+
+/** A row of choices drawn as pixel buttons; the chosen one is green. */
+@Composable
+fun <T> ChoiceRow(options: List<Pair<T, String>>, selected: T, onSelect: (T) -> Unit, modifier: Modifier = Modifier) {
+    Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        for ((value, label) in options) PixelButton(label, { onSelect(value) }, Modifier.weight(1f),
+            kind = if (value == selected) ButtonKind.Primary else ButtonKind.Secondary)
+    }
+}
+
+/** A settings line: label, optional smaller hint, an "i", and the control on the right (or below when given). */
+@Composable
+fun SettingRow(label: String, info: Info?, hint: String? = null, onClick: (() -> Unit)? = null, trailing: @Composable (() -> Unit)? = null) {
+    val pal = LocalPal.current
+    Row(
+        Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
+            .then(if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(label, style = MaterialTheme.typography.bodyLarge, color = pal.ink)
+            if (hint != null) Text(hint, style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+        }
+        if (info != null) InfoButton(info)
+        if (trailing != null) trailing()
+    }
+}
