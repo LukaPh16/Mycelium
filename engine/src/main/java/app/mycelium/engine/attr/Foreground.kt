@@ -62,7 +62,7 @@ class Foreground(private val context: Context, private val onUsed: (Map<String, 
 
         fun granted(context: Context): Boolean {
             val ops = context.getSystemService(AppOpsManager::class.java)
-            val mode = ops.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+            val mode = ops.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
             return if (mode == AppOpsManager.MODE_DEFAULT) {
                 context.checkSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
             } else mode == AppOpsManager.MODE_ALLOWED

@@ -14,9 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.webkit.WebViewAssetLoader
-import app.mycelium.engine.MyceliumEngine
 import app.mycelium.engine.bridge.WebBridge
-import org.json.JSONObject
 
 private const val HOST = "appassets.androidplatform.net"
 private const val URL = "https://$HOST/assets/terrarium/index.html"
@@ -46,11 +44,7 @@ fun TerrariumTab() {
             loadUrl(URL)
         }
     }
-    LaunchedEffect(web) {
-        MyceliumEngine.events.collect { ev ->
-            if (JSONObject(ev).optString("type") == "terrarium_update") web.evaluateJavascript(WebBridge.pushScript(ev), null)
-        }
-    }
+    LaunchedEffect(web) { WebBridge.attach(web, this) }   // terrarium_update -> window.Feed._push(...)
     DisposableEffect(web) { onDispose { web.destroy() } }
     AndroidView(factory = { web }, modifier = Modifier.fillMaxSize())
 }

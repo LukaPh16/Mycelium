@@ -1,7 +1,32 @@
 # Mycelium engine API
 
-All features go through `MyceliumEngine.call(method, argsJson)`, JSON in, JSON out.
-Errors look like `{"error":"<code>"}`.
+All features go through `MyceliumEngine.call(method, argsJson)`, JSON in, JSON out, UI-agnostic.
+Errors look like `{"error":"<code>"}`; bad JSON args give `bad_args`, unexpected failures `{"error":"internal","message":...}`.
+Call `MyceliumEngine.init(context)` once first. Calls are synchronous (database reads); call them off the main thread.
+
+| Area | Methods |
+|---|---|
+| VPN | `vpn` (start / stop / status) |
+| App selection | `apps`, `watched`, `watch`, `unwatch`, `seed_apps`, `usage_access`, `usage_access_settings` |
+| Data | `events`, `record`, `garden`, `stats`, `timeline`, `how_breakdown`, `anomalies`, `sql`, `refresh_traffic` |
+| Rules | `block`, `unblock`, `rules` |
+| Chat | `chat`, `chat_history`, `chat_clear` |
+| Cloud AI (optional) | `ai_key`, `ai_status`, `ai_settings`, `ai_preview`, `ai_ask` |
+| Terrarium | `terrarium`, `presets`, `terrarium_ack`, `set_preset`, `packet_types` |
+| Demo and tools | `simulate`, `export_db`, `wipe` |
+
+## WebView adapter
+Any web UI can use the same API through `app.mycelium.engine.bridge.WebBridge`:
+```kotlin
+webView.addJavascriptInterface(WebBridge(), WebBridge.NAME)        // window.MyceliumBridge.call(method, argsJson) -> JSON string
+val job = WebBridge.attach(webView, scope)                          // pushes terrarium_update events: window.Feed._push(event)
+```
+```js
+const r = JSON.parse(window.MyceliumBridge.call('terrarium', '{}'));   // same JSON as call("terrarium")
+```
+Only an allow-list of methods is reachable (default: `terrarium`, `presets`, `packet_types`, `terrarium_ack`, `set_preset`;
+pass your own set to `WebBridge(allowed)`); anything else returns `{"error":"not_allowed"}`. Serve the page with
+`WebViewAssetLoader` (https://appassets.androidplatform.net/assets/...), not `file://`. See docs/terrarium.md.
 
 ## state
 `MyceliumEngine.state` (StateFlow<String>):
@@ -10,11 +35,14 @@ Errors look like `{"error":"<code>"}`.
 ```
 
 ## events
-`MyceliumEngine.events` (SharedFlow<String>), one JSON per emission. A new event row:
+`MyceliumEngine.events` (SharedFlow<String>), one JSON object per emission, by `type`:
 ```
-{"type":"event","row":{"id":42,"ts":1760000000000,"kind":"dns","how":"unknown","domain":"example.com","qtype":1,"verdict":"allowed","answer":"93.184.216.34"}}
+{"type":"event","row":{"id":42,"ts":1760000000000,"kind":"dns","ptype":"tracker","package":"com.android.chrome","how":"uid_dns",
+                       "domain":"googleads.g.doubleclick.net","qtype":1,"company":"Google","category":"ads","verdict":"allowed","fg":1}}
+{"type":"terrarium_update","app_id":"com.android.chrome","stage":2,"stage_shown":1,"counts":{"dns":120,"tracker":31,...}}
+{"type":"wiped"}
 ```
-Null columns are omitted.
+Null columns are omitted. Event kinds: dns, tripwire, block, unblock, vpn, anomaly, ai.
 
 ## vpn
 ```
@@ -68,6 +96,11 @@ Domains match subdomains. Errors: `unknown_fn`, `missing_<arg>`, `bad_by`, `bad_
 
 ## timeline
 Shortcut for `call("stats", {"fn":"timeline", ...})`, same args and result.
+```
+call("timeline", {"bucket_ms":3600000,"package":"com.android.chrome"})
+  -> {"fn":"timeline","from_ms":...,"to_ms":...,"bucket_ms":3600000,"package":"com.android.chrome",
+      "buckets":[{"start_ms":...,"lookups":14,"tracker_hits":3,"blocked":0,"bg":2}, ...24],"event_ids":[...]}
+```
 
 ## sql
 Read-only SQL for the AI and power users. One `SELECT` or `WITH` statement, no `;`, no PRAGMA/ATTACH or write keywords,
