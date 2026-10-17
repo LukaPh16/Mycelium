@@ -39,13 +39,20 @@ class SpriteAtlas(private val context: Context) {
 
     fun has(name: String) = name in entries
 
-    operator fun get(name: String): Sprite = cache.getOrPut(name) {
+    @Synchronized operator fun get(name: String): Sprite = cache.getOrPut(name) {
         val e = entries[name] ?: Entry("", 16, 16, 8, 15, 1, 0)
         val bmp = runCatching {
             context.assets.open("sprites/${e.file}").use { BitmapFactory.decodeStream(it, null, BitmapFactory.Options().apply { inScaled = false }) }
         }.getOrNull()?.takeIf { it.width >= e.w && it.height >= e.h }
         val frames = if (bmp != null) minOf(e.frames, bmp.width / e.w).coerceAtLeast(1) else e.frames
         Sprite(name, (bmp ?: fallback(e.w, e.h, e.frames)).asImageBitmap(), e.w, e.h, e.ax, e.ay, frames, e.fps)
+    }
+
+    companion object {
+        @Volatile private var shared: SpriteAtlas? = null
+
+        /** One atlas for the whole app, so the scene and the sheet share bitmaps. */
+        fun of(context: Context): SpriteAtlas = shared ?: synchronized(this) { shared ?: SpriteAtlas(context.applicationContext).also { shared = it } }
     }
 
     /** A soft purple blob with two eyes, so a missing sprite still reads as "something lives here". */

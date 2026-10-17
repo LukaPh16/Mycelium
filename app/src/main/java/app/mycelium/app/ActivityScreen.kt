@@ -258,7 +258,7 @@ internal fun EventDialog(e: JSONObject, types: Map<String, PacketType>, labels: 
 
 /** "Shoo away" with a confirm step: blocks that Snoop (company) for this one app. */
 @Composable
-fun ShooDialog(pkg: String, appLabel: String, company: String, onDone: () -> Unit) {
+fun ShooDialog(pkg: String, appLabel: String, company: String, onShooed: () -> Unit = {}, onDone: () -> Unit) {
     val pal = LocalPal.current
     val ctx = LocalContext.current
     val toast = LocalToast.current
@@ -270,6 +270,7 @@ fun ShooDialog(pkg: String, appLabel: String, company: String, onDone: () -> Uni
                 scope.launch {
                     val r = Api.io("block", obj("scope" to "company", "value" to company, "package" to pkg))
                     toast(if (r.has("error")) ctx.getString(R.string.shoo_failed) else ctx.getString(R.string.shoo_done, company, appLabel))
+                    if (!r.has("error")) onShooed()
                     onDone()
                 }
             }, kind = ButtonKind.Danger)

@@ -80,11 +80,11 @@ class Camera {
  */
 @Composable
 fun GardenView(
-    still: Boolean, pets: List<Pet>, selected: String?, fx: GardenFx, camera: Camera,
+    still: Boolean, pets: List<Pet>, selected: String?, fx: GardenFx, camera: Camera, focus: String?, bottomInsetPx: Int,
     onTapPet: (Pet) -> Unit, onTapSnoop: (Pet, SnoopVisit) -> Unit, onTapEmpty: () -> Unit, modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val atlas = remember { SpriteAtlas(context.applicationContext) }
+    val atlas = remember { SpriteAtlas.of(context) }
     val measurer = rememberTextMeasurer()
     val scope = rememberCoroutineScope()
     BoxWithConstraints(modifier) {
@@ -124,6 +124,13 @@ fun GardenView(
             clamp()
         }
 
+        LaunchedEffect(focus, spots) {   // the sheet asked to look at a creature: center it above the sheet
+            val spot = spots[focus] ?: return@LaunchedEffect
+            camera.fling?.cancel()
+            camera.x = spot.x - viewW / camera.scale / 2f
+            camera.y = spot.y - (viewH - bottomInsetPx) / camera.scale * 0.6f
+            clamp()
+        }
         var ms by remember { mutableLongStateOf(0L) }
         var phase by remember { mutableStateOf(skyPhaseNow()) }
         val lifecycle = LocalLifecycleOwner.current.lifecycle

@@ -7,6 +7,18 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalDensity
+import app.mycelium.app.garden.GardenSheet
+import app.mycelium.app.garden.SheetState
+import app.mycelium.app.garden.SheetStop
+import app.mycelium.app.garden.SnoopVisit
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -74,6 +86,12 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
     var selected by remember { mutableStateOf<String?>(null) }
     val fx = remember { GardenFx() }
     val camera = remember { Camera() }
+    var focus by remember { mutableStateOf<String?>(null) }
+    var picking by remember { mutableStateOf(false) }
+    var shoo by remember { mutableStateOf<Pair<Pet, SnoopVisit>?>(null) }
+    val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
+    val sheet = remember { SheetState(with(density) { 104.dp.toPx() }) }
     LaunchedEffect(reload) {
         while (true) {
             watched = Api.io("watched").optJSONArray("apps")?.length() ?: 0
@@ -95,13 +113,44 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
                 R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_empty_title), stringResource(R.string.home_empty_body),
                 action = stringResource(R.string.home_choose), onAction = { go(Routes.APPS) }, modifier = Modifier.padding(top = topInset + 48.dp),
             )
-            else -> {
+            else -> BoxWithConstraints(Modifier.fillMaxSize()) {
+                val navBar = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                val full = with(density) { (maxHeight - topInset - 8.dp).toPx() }
+                val peek = with(density) { (104.dp + navBar).toPx() }
+                LaunchedEffect(full, peek) {
+                    sheet.stops = floatArrayOf(peek, full * 0.5f, full)
+                    if (sheet.height.value < peek || sheet.stop == SheetStop.PEEK) sheet.height.snapTo(peek)
+                }
+                fun open(pet: Pet) {
+                    selected = pet.pkg; focus = pet.pkg; picking = false
+                    if (sheet.stop == SheetStop.PEEK) scope.launch { sheet.go(SheetStop.HALF) }
+                }
+                val sheetPx = sheet.height.value.toInt()
                 GardenView(
                     still = prefs.reduceMotion || prefs.batterySaver, pets = pets, selected = selected, fx = fx, camera = camera,
-                    onTapPet = { selected = it.pkg }, onTapSnoop = { p, _ -> selected = p.pkg }, onTapEmpty = { selected = null },
+                    focus = focus, bottomInsetPx = sheetPx,
+                    onTapPet = { open(it) }, onTapSnoop = { p, _ -> open(p) },
+                    onTapEmpty = { selected = null; focus = null; picking = false },
                     modifier = Modifier.fillMaxSize(),
                 )
-                Column(Modifier.align(Alignment.BottomEnd).navigationBarsPadding().padding(16.dp), horizontalAlignment = Alignment.End,
+                val current = pets.firstOrNull { it.pkg == selected }
+                GardenSheet(
+                    sheet, pets, current, picking && current != null,
+                    onSelect = { p -> if (p == null) { selected = null; focus = null } else open(p) },
+                    onShoo = { p, v -> shoo = p to v },
+                    onChangeCreature = { picking = true; scope.launch { sheet.go(SheetStop.FULL) } },
+                    picker = { current?.let { PresetPicker(it.pkg, it.label, onDone = { picking = false; reload++ }) } },
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                )
+                BackHandler(selected != null || sheet.stop != SheetStop.PEEK) {
+                    when {
+                        picking -> picking = false
+                        selected != null -> { selected = null; focus = null }
+                        else -> scope.launch { sheet.go(SheetStop.PEEK) }
+                    }
+                }
+                Column(Modifier.align(Alignment.BottomEnd).padding(bottom = with(density) { sheet.height.value.toDp() } + 8.dp, end = 16.dp),
+                    horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (pets.size > MAX_PETS) Text(
                         stringResource(R.string.garden_more, pets.size - MAX_PETS),
@@ -116,6 +165,9 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
                     ) { PixelGlyph(Glyphs.target, pal.ink, sizeDp = 20) }
                 }
             }
+        }
+        shoo?.let { (pet, v) ->
+            ShooDialog(pet.pkg, pet.label, v.company, onShooed = { fx.shooed(pet, v.company); reload++ }) { shoo = null }
         }
         if (watched != 0) when (protection) {
             Protection.Paused -> StatusPill(R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_paused_short), stringResource(R.string.prot_start_short), start, topInset)

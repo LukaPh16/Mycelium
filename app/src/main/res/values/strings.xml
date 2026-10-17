@@ -106,6 +106,31 @@
     <string name="home_safe_body">You\'re offline. Mycelium is holding on to what it catches and will sort it when you\'re back.</string>
 
     <string name="garden_reset">Back to the whole garden</string>
+    <plurals name="sheet_pets">
+        <item quantity="one">%d pet</item>
+        <item quantity="other">%d pets</item>
+    </plurals>
+    <plurals name="sheet_snoops">
+        <item quantity="one">%d Snoop</item>
+        <item quantity="other">%d Snoops</item>
+    </plurals>
+    <plurals name="sheet_shooed">
+        <item quantity="one">%d shooed</item>
+        <item quantity="other">%d shooed</item>
+    </plurals>
+    <string name="sheet_list_title">Your creatures</string>
+    <string name="sheet_napping">Napping</string>
+    <string name="sheet_awake">Awake</string>
+    <plurals name="sheet_snoop_chip">
+        <item quantity="one">%d Snoop</item>
+        <item quantity="other">%d Snoops</item>
+    </plurals>
+    <string name="sheet_next">Next stage at %1$d growth (now %2$d)</string>
+    <string name="sheet_grown">Fully grown!</string>
+    <string name="sheet_snoops_title">Snoops today</string>
+    <string name="sheet_all">All creatures</string>
+    <string name="info_growth_t">Stage and growth</string>
+    <string name="info_growth_b">Every contact the app makes adds a little growth; Snoop visits count double. With enough growth the creature reaches its next stage (3 stages). It naps when its app has been quiet for 3 hours.</string>
     <string name="garden_more">+%1$d more in My Apps</string>
 
     <!-- terrarium web page (passed to terrarium.js) -->
