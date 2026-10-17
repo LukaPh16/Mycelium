@@ -83,6 +83,7 @@ fun MyAppsScreen(prefs: UiPrefs, protection: Protection) {
     var reload by remember { mutableIntStateOf(0) }
     var picking by remember { mutableStateOf<AppRow?>(null) }
     var confirmLast by remember { mutableStateOf<AppRow?>(null) }
+    var resetting by remember { mutableStateOf<AppRow?>(null) }
     val busy = remember { mutableStateListOf<String>() }
     val scope = rememberCoroutineScope()
     picking?.let { r -> PresetPicker(r.pkg, r.label, onDone = { picking = null }); return }
@@ -108,7 +109,8 @@ fun MyAppsScreen(prefs: UiPrefs, protection: Protection) {
                 else -> ctx.getString(R.string.apps_stopped_watching, r.label)
             })
             busy -= r.pkg
-            reload++
+            // update this row in place: the list keeps its order, so it never jumps while you scroll
+            if (!res.has("error") && rejected.isEmpty()) rows = rows?.map { if (it.pkg == r.pkg) AppRow(it.label, it.pkg, on, it.contacts, it.system) else it }
         }
     }
 
@@ -133,11 +135,12 @@ fun MyAppsScreen(prefs: UiPrefs, protection: Protection) {
                 items(list, key = { it.pkg }) { r ->
                     AppLine(r, enabled = r.pkg !in busy, onToggle = { on ->
                         if (!on && watching == 1 && protection != Protection.Paused) confirmLast = r else toggle(r, on)
-                    }, onCreature = { picking = r })
+                    }, onCreature = { picking = r }, onReset = { resetting = r })
                 }
             }
         }
     }
+    resetting?.let { r -> ResetRecordDialog(r.pkg, r.label) { done -> resetting = null; if (done) rows = rows?.map { if (it.pkg == r.pkg) AppRow(it.label, it.pkg, it.watched, 0, it.system) else it } } }
     confirmLast?.let { r ->
         PixelDialog(stringResource(R.string.apps_last_q), onDismiss = { confirmLast = null }, actions = {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -149,7 +152,7 @@ fun MyAppsScreen(prefs: UiPrefs, protection: Protection) {
 }
 
 @Composable
-private fun AppLine(r: AppRow, enabled: Boolean, onToggle: (Boolean) -> Unit, onCreature: () -> Unit) {
+private fun AppLine(r: AppRow, enabled: Boolean, onToggle: (Boolean) -> Unit, onCreature: () -> Unit, onReset: () -> Unit) {
     val pal = LocalPal.current
     Row(
         Modifier
@@ -166,11 +169,13 @@ private fun AppLine(r: AppRow, enabled: Boolean, onToggle: (Boolean) -> Unit, on
                 else stringResource(if (r.system) R.string.apps_system_app else R.string.apps_not_watched),
                 style = MaterialTheme.typography.bodySmall, color = pal.inkMuted,
             )
-            if (r.watched) Text(
-                stringResource(R.string.apps_change_creature),
-                Modifier.defaultMinSize(minHeight = 48.dp).clickable(role = Role.Button, onClick = onCreature).padding(vertical = 14.dp),
-                style = MaterialTheme.typography.labelLarge, color = if (pal.night) pal.gold else pal.wood,
-            )
+            if (r.watched) Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                for ((label, action) in listOf(R.string.apps_change_creature to onCreature, R.string.reset_record to onReset)) Text(
+                    stringResource(label),
+                    Modifier.defaultMinSize(minHeight = 48.dp).clickable(role = Role.Button, onClick = action).padding(vertical = 14.dp),
+                    style = MaterialTheme.typography.labelLarge, color = if (pal.night) pal.gold else pal.wood,
+                )
+            }
         }
         Spacer(Modifier.width(12.dp))
         Switch(r.watched, null, enabled = enabled, modifier = Modifier.scale(1.25f),
@@ -244,4 +249,25 @@ fun PresetThumb(preset: JSONObject, boxDp: Int = 64, stageNo: Int = 1) {
             PixelBitmap(img, artPixelDp = fit, srcSize = IntSize(fw, fh))
         }
     }
+}
+
+/** "Reset this app's record": deletes what Mycelium noticed about one app; its creature starts over. */
+@Composable
+fun ResetRecordDialog(pkg: String, label: String, onDone: (Boolean) -> Unit) {
+    val pal = LocalPal.current
+    val ctx = LocalContext.current
+    val toast = LocalToast.current
+    val scope = rememberCoroutineScope()
+    PixelDialog(stringResource(R.string.reset_record_q, label), onDismiss = { onDone(false) }, actions = {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            PixelButton(stringResource(R.string.cancel), { onDone(false) }, kind = ButtonKind.Secondary)
+            PixelButton(stringResource(R.string.reset_record_ok), {
+                scope.launch {
+                    val r = Api.io("wipe", obj("confirm" to true, "package" to pkg))
+                    toast(if (r.has("error")) ctx.getString(R.string.reset_record_failed) else ctx.getString(R.string.reset_record_done, label))
+                    onDone(!r.has("error"))
+                }
+            }, kind = ButtonKind.Danger)
+        }
+    }) { Text(stringResource(R.string.reset_record_body, label), style = MaterialTheme.typography.bodyMedium, color = pal.ink) }
 }

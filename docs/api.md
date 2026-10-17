@@ -199,11 +199,16 @@ call("chat_clear") -> {"ok":true}
 
 ## cloud AI (optional, user's own key)
 There is no on-device AI. Logs stay on the device; a cloud request is never automatic and only sends the payload the
-user was shown. Provider: Anthropic Messages API, default model `claude-opus-5-5`, 20 s timeout.
+user was shown. Providers: `openrouter` (default; OpenAI-style chat completions at openrouter.ai, `Authorization: Bearer`,
+default model `openrouter/auto`) or `anthropic` (Messages API, default model `claude-opus-5-5`). 20 s timeout.
+```
+call("ai_settings", {"provider":"openrouter","model":"anthropic/claude-sonnet-4.5"}) -> {"provider":"openrouter","model":"..."}
+```
+Changing the provider resets the model to that provider's default unless a model is given. Error: `unknown_provider`.
 ```
 call("ai_key", {"key":"sk-ant-..."}) -> {"ok":true,"state":"ready"}     // stored encrypted (Android Keystore AES-GCM), never echoed
 call("ai_key", {"clear":true})       -> {"ok":true,"state":"no_key"}
-call("ai_status")                    -> {"state":"no_key|ready|offline","model":"claude-opus-5-5"}
+call("ai_status")                    -> {"state":"no_key|ready|offline","provider":"openrouter","model":"openrouter/auto"}
 call("ai_settings", {"model":"claude-opus-5-5"}) -> {"model":"claude-opus-5-5"}
 call("ai_preview", {"text":"What did Chrome do today?"})
   -> {"preview_id":"5f0c...","model":"claude-opus-5-5","payload_bytes":2210,"request_bytes":3604,
@@ -275,7 +280,12 @@ call("simulate", {"stop":true})                -> {"ok":true,"mode":"online"}   
 call("export_db")               -> {"ok":true,"path":"/storage/emulated/0/Android/data/app.mycelium/files/mycelium-1760000000000.db","bytes":524288}
 call("wipe", {"confirm":true})  -> {"ok":true}     // without confirm: {"error":"confirm_required"}
 ```
+```
+call("wipe", {"confirm":true, "package":"com.glovo"})  -> {"ok":true,"package":"com.glovo","rows":212}   // one app's record only
+```
 `wipe` deletes event, queue, traffic and chat rows; app selection, rules and organisms stay. It emits `{"type":"wiped"}` on `events`.
+With `package` it deletes only that app's event, queue and traffic rows (chat stays), sets its organism back to stage 1,
+and emits `{"type":"wiped","package":...}`.
 
 ## unknown method
 ```

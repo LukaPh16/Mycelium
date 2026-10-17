@@ -28,8 +28,18 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
+/** Cloud providers for the user's own key. OpenRouter speaks the OpenAI chat format and routes to many models. */
+enum class Provider(val id: String, val url: String, val defaultModel: String) {
+    OPENROUTER("openrouter", "https://openrouter.ai/api/v1/chat/completions", "openrouter/auto"),
+    ANTHROPIC("anthropic", "https://api.anthropic.com/v1/messages", "claude-opus-5-5");
+
+    companion object {
+        fun of(id: String?) = entries.firstOrNull { it.id == id } ?: OPENROUTER
+    }
+}
+
 /**
- * Optional cloud analysis with the user's own Anthropic key. Never automatic: [preview] builds the exact payload on
+ * Optional cloud analysis with the user's own key (OpenRouter or Anthropic). Never automatic: [preview] builds the exact payload on
  * device (question + capped FACTS); only [ask] with that preview's id sends it. The reply goes through the same
  * Validator as the template chatbot; any failure falls back to the template answer.
  */
@@ -44,6 +54,7 @@ class CloudAi(
 ) {
     private class Preview(
         val question: String, val payload: JsonObject, val body: String, val template: JsonObject, val model: String, val created: Long,
+        val provider: Provider,
     )
 
     /** [event] is the kind='ai' row to write when something was sent (null when nothing left the device). */
@@ -53,19 +64,21 @@ class CloudAi(
     private val exec = Executors.newCachedThreadPool { r -> Thread(r, "cloud-ai").apply { isDaemon = true } }
 
     /** Runs router + stats on device and returns exactly what [ask] would send. Nothing leaves the device here. */
-    fun preview(text: String, apps: List<AppRef>, companies: Collection<String>, now: Long, model: String): JsonObject {
+    fun preview(text: String, apps: List<AppRef>, companies: Collection<String>, now: Long, model: String,
+                provider: Provider = Provider.ANTHROPIC): JsonObject {
         val question = text.trim().take(MAX_QUESTION)
         val template = bot.answer(question, apps, companies, now)
         val payload = payload(question, template)
-        val body = requestBody(model, payload)
+        val body = requestBody(model, payload, provider)
         val id = UUID.randomUUID().toString()
         synchronized(previews) {
             previews.entries.removeIf { now - it.value.created > TTL_MS }
             while (previews.size >= MAX_PREVIEWS) previews.remove(previews.keys.first())
-            previews[id] = Preview(question, payload, body, template, model, now)
+            previews[id] = Preview(question, payload, body, template, model, now, provider)
         }
         return buildJsonObject {
             put("preview_id", id)
+            put("provider", provider.id)
             put("model", model)
             put("payload_bytes", payload.toString().toByteArray().size)
             put("request_bytes", body.toByteArray().size)
@@ -88,12 +101,12 @@ class CloudAi(
         var status: String
         var result: JsonObject
         try {
-            val reply = callWithTimeout(key, p.model, p.body)
+            val reply = callWithTimeout(key, p.model, p.body, p.provider)
             if (reply.status != 200) {
                 status = "http_${reply.status}"
                 result = fallback(p, status)
             } else {
-                val parsed = parse(reply.body)
+                val parsed = if (p.provider == Provider.ANTHROPIC) parse(reply.body) else parseChat(reply.body)
                 if (parsed.first == null) {
                     status = parsed.second
                     result = fallback(p, status)
@@ -126,7 +139,7 @@ class CloudAi(
         }
         val latency = (System.nanoTime() - started) / 1_000_000
         val bytes = p.body.toByteArray().size
-        val note = "bytes=$bytes model=${p.model} latency_ms=$latency status=$status"
+        val note = "bytes=$bytes provider=${p.provider.id} model=${p.model} latency_ms=$latency status=$status"
         log("ai send $note")
         return Outcome(
             JsonObject(result + ("latency_ms" to JsonPrimitive(latency))),
@@ -211,7 +224,24 @@ class CloudAi(
 
     // ---- request / reply ----
 
-    fun requestBody(model: String, payload: JsonObject): String = buildJsonObject {
+    fun requestBody(model: String, payload: JsonObject, provider: Provider = Provider.ANTHROPIC): String =
+        if (provider == Provider.ANTHROPIC) anthropicBody(model, payload) else chatBody(model, payload)
+
+    /** OpenAI-style chat completion (OpenRouter): system + user message, strict JSON schema output. */
+    private fun chatBody(model: String, payload: JsonObject): String = buildJsonObject {
+        put("model", model)
+        put("max_tokens", 4096)
+        put("response_format", buildJsonObject {
+            put("type", "json_schema")
+            put("json_schema", buildJsonObject { put("name", "answer"); put("strict", true); put("schema", Json.parseToJsonElement(SCHEMA)) })
+        })
+        put("messages", JsonArray(listOf(
+            buildJsonObject { put("role", "system"); put("content", SYSTEM) },
+            buildJsonObject { put("role", "user"); put("content", "FACTS:\n$payload") },
+        )))
+    }.toString()
+
+    private fun anthropicBody(model: String, payload: JsonObject): String = buildJsonObject {
         put("model", model)
         put("max_tokens", 4096)
         put("system", SYSTEM)
@@ -226,15 +256,20 @@ class CloudAi(
         })))
     }.toString()
 
-    fun headers(key: String, model: String): Map<String, String> = buildMap {
+    fun headers(key: String, model: String, provider: Provider = Provider.ANTHROPIC): Map<String, String> = buildMap {
         put("content-type", "application/json")
+        if (provider != Provider.ANTHROPIC) {
+            put("authorization", "Bearer $key")
+            put("x-title", "Mycelium")
+            return@buildMap
+        }
         put("x-api-key", key)
         put("anthropic-version", "2023-06-01")
         if (model in FALLBACK_MODELS) put("anthropic-beta", "server-side-fallback-2026-07-01")
     }
 
-    private fun callWithTimeout(key: String, model: String, body: String): HttpReply {
-        val f = CompletableFuture.supplyAsync({ transport(URL, headers(key, model), body, timeoutMs.toInt()) }, exec)
+    private fun callWithTimeout(key: String, model: String, body: String, provider: Provider): HttpReply {
+        val f = CompletableFuture.supplyAsync({ transport(provider.url, headers(key, model, provider), body, timeoutMs.toInt()) }, exec)
         return try {
             f.get(timeoutMs, TimeUnit.MILLISECONDS)
         } catch (e: TimeoutException) {
@@ -264,6 +299,31 @@ class CloudAi(
         }
     } catch (_: Exception) {
         null to "invalid_json"
+    }
+
+    /** OpenAI-style reply: choices[0].message.content holds the JSON (sometimes fenced); refusal / length map like Anthropic. */
+    private fun parseChat(body: String): Pair<List<Sentence>?, String> = try {
+        val choice = Json.parseToJsonElement(body).jsonObject.getValue("choices").jsonArray[0].jsonObject
+        val msg = choice.getValue("message").jsonObject
+        when {
+            msg["refusal"]?.jsonPrimitive?.contentOrNull?.isNotBlank() == true -> null to "refusal"
+            choice["finish_reason"]?.jsonPrimitive?.contentOrNull == "length" -> null to "max_tokens"
+            else -> {
+                val raw = msg.getValue("content").jsonPrimitive.content
+                val text = raw.substring(raw.indexOf('{').coerceAtLeast(0), (raw.lastIndexOf('}') + 1).coerceAtLeast(0))
+                sentencesOf(text)
+            }
+        }
+    } catch (_: Exception) {
+        null to "invalid_json"
+    }
+
+    private fun sentencesOf(text: String): Pair<List<Sentence>?, String> {
+        val out = Json.parseToJsonElement(text).jsonObject.getValue("sentences").jsonArray.map { s ->
+            val o = s.jsonObject
+            Sentence(o.getValue("text").jsonPrimitive.content.trim(), o.getValue("cites").jsonArray.map { it.jsonPrimitive.content.toLong() })
+        }
+        return if (out.isEmpty()) null to "invalid_json" else out to "ok"
     }
 
     /** Cites must be ids present in the payload, then the Step 8 Validator applies. Returns kept and dropped count. */
@@ -306,7 +366,7 @@ class CloudAi(
 
     companion object {
         const val URL = "https://api.anthropic.com/v1/messages"
-        const val DEFAULT_MODEL = "claude-opus-5-5"
+        const val DEFAULT_MODEL = "claude-opus-5-5"   // Anthropic default; OpenRouter uses Provider.OPENROUTER.defaultModel
         const val MAX_PAYLOAD_BYTES = 8192
         const val MAX_ROWS = 50
         private const val MAX_STRING = 300

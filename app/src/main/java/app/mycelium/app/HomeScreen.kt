@@ -89,6 +89,7 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
     var focus by remember { mutableStateOf<String?>(null) }
     var picking by remember { mutableStateOf(false) }
     var shoo by remember { mutableStateOf<Pair<Pet, SnoopVisit>?>(null) }
+    var resetting by remember { mutableStateOf<Pet?>(null) }
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
     val sheet = remember { SheetState(with(density) { 104.dp.toPx() }) }
@@ -139,6 +140,7 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
                     onSelect = { p -> if (p == null) { selected = null; focus = null } else open(p) },
                     onShoo = { p, v -> shoo = p to v },
                     onChangeCreature = { picking = true; scope.launch { sheet.go(SheetStop.FULL) } },
+                    onReset = { resetting = it },
                     picker = { current?.let { PresetPicker(it.pkg, it.label, onDone = { picking = false; reload++ }) } },
                     modifier = Modifier.align(Alignment.BottomCenter),
                 )
@@ -166,6 +168,7 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
                 }
             }
         }
+        resetting?.let { pet -> ResetRecordDialog(pet.pkg, pet.label) { done -> resetting = null; if (done) reload++ } }
         shoo?.let { (pet, v) ->
             ShooDialog(pet.pkg, pet.label, v.company, onShooed = { fx.shooed(pet, v.company); reload++ }) { shoo = null }
         }

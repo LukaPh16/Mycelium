@@ -407,7 +407,7 @@ private fun rememberEventFeed(): List<JSONObject> {
             val o = JSONObject(it)
             when (o.optString("type")) {
                 "event" -> { feed.add(0, o.getJSONObject("row")); while (feed.size > 400) feed.removeAt(feed.lastIndex) }
-                "wiped" -> feed.clear()
+                "wiped" -> o.optString("package").let { p -> if (p.isEmpty()) feed.clear() else feed.removeAll { it.optString("package") == p } }
             }
         }
     }

@@ -206,9 +206,10 @@ private fun AiKeyPanel() {
     val ctx = LocalContext.current
     val toast = LocalToast.current
     var key by remember { mutableStateOf("") }
+    var model by remember { mutableStateOf("") }
     var status by remember { mutableStateOf(JSONObject()) }
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) { status = Api.io("ai_status") }
+    LaunchedEffect(Unit) { status = Api.io("ai_status"); model = status.optString("model") }
     val state = when (status.optString("state")) {
         "ready" -> stringResource(R.string.ai_state_ready)
         "offline" -> stringResource(R.string.ai_state_offline)
@@ -218,8 +219,20 @@ private fun AiKeyPanel() {
         SectionHeader(stringResource(R.string.set_ai), Info(R.string.info_ai_t, R.string.info_ai_b))
         Text(stringResource(R.string.set_ai_intro), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
         Text(stringResource(R.string.set_ai_state, state), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
-        Text(stringResource(R.string.set_ai_model, status.optString("model")), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
-        OutlinedTextField(key, { key = it }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.set_ai_key_hint)) },
+        val provider = status.optString("provider", "openrouter")
+        SettingRow(stringResource(R.string.set_ai_provider), Info(R.string.info_ai_provider_t, R.string.info_ai_provider_b))
+        ChoiceRow(listOf("openrouter" to stringResource(R.string.set_ai_openrouter), "anthropic" to stringResource(R.string.set_ai_anthropic)), provider, { id ->
+            scope.launch { Api.io("ai_settings", obj("provider" to id)); status = Api.io("ai_status"); model = status.optString("model") }
+        })
+        OutlinedTextField(model, { model = it }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.set_ai_model_hint)) }, singleLine = true)
+        if (model.trim() != status.optString("model") && model.isNotBlank()) PixelButton(stringResource(R.string.set_ai_use_model), {
+            scope.launch {
+                status = Api.io("ai_settings", obj("model" to model.trim())).let { Api.io("ai_status") }
+                toast(ctx.getString(R.string.set_ai_model_saved, status.optString("model")))
+            }
+        }, Modifier.fillMaxWidth(), kind = ButtonKind.Secondary)
+        OutlinedTextField(key, { key = it }, Modifier.fillMaxWidth(),
+            label = { Text(stringResource(if (provider == "anthropic") R.string.set_ai_key_hint_anthropic else R.string.set_ai_key_hint)) },
             singleLine = true, visualTransformation = PasswordVisualTransformation())
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             PixelButton(stringResource(R.string.set_ai_save), {

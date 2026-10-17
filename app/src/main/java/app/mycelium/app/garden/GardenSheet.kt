@@ -82,7 +82,7 @@ class SheetState(initial: Float) {
 @Composable
 fun GardenSheet(
     state: SheetState, pets: List<Pet>, selected: Pet?, pickingCreature: Boolean,
-    onSelect: (Pet?) -> Unit, onShoo: (Pet, SnoopVisit) -> Unit, onChangeCreature: (Pet) -> Unit,
+    onSelect: (Pet?) -> Unit, onShoo: (Pet, SnoopVisit) -> Unit, onChangeCreature: (Pet) -> Unit, onReset: (Pet) -> Unit,
     picker: @Composable () -> Unit, modifier: Modifier = Modifier,
 ) {
     val pal = LocalPal.current
@@ -107,7 +107,8 @@ fun GardenSheet(
         }
         when {
             pickingCreature -> Box(Modifier.weight(1f)) { picker() }
-            selected != null -> PetCard(selected, onBack = { onSelect(null) }, onShoo = onShoo, onChangeCreature = onChangeCreature, modifier = Modifier.weight(1f))
+            selected != null -> PetCard(selected, onBack = { onSelect(null) }, onShoo = onShoo, onChangeCreature = onChangeCreature,
+                onReset = onReset, modifier = Modifier.weight(1f))
             else -> PetList(pets, onSelect = { onSelect(it) }, modifier = Modifier.weight(1f))
         }
     }
@@ -190,7 +191,7 @@ private fun Chip(text: String, color: Color) {
 }
 
 @Composable
-private fun PetCard(pet: Pet, onBack: () -> Unit, onShoo: (Pet, SnoopVisit) -> Unit, onChangeCreature: (Pet) -> Unit, modifier: Modifier) {
+private fun PetCard(pet: Pet, onBack: () -> Unit, onShoo: (Pet, SnoopVisit) -> Unit, onChangeCreature: (Pet) -> Unit, onReset: (Pet) -> Unit, modifier: Modifier) {
     val pal = LocalPal.current
     LazyColumn(modifier.fillMaxWidth(), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
@@ -228,6 +229,8 @@ private fun PetCard(pet: Pet, onBack: () -> Unit, onShoo: (Pet, SnoopVisit) -> U
                 PixelButton(stringResource(R.string.sheet_all), onBack, Modifier.weight(1f), kind = ButtonKind.Secondary)
                 PixelButton(stringResource(R.string.terr_change), { onChangeCreature(pet) }, Modifier.weight(1f), kind = ButtonKind.Secondary)
             }
+            Spacer(Modifier.height(8.dp))
+            PixelButton(stringResource(R.string.reset_record), { onReset(pet) }, Modifier.fillMaxWidth(), kind = ButtonKind.Quiet)
         }
     }
 }

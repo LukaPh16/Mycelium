@@ -10,6 +10,7 @@ import android.util.Log
 import app.mycelium.engine.ai.CloudAi
 import app.mycelium.engine.ai.Http
 import app.mycelium.engine.ai.KeyVault
+import app.mycelium.engine.ai.Provider
 import app.mycelium.engine.chat.AppRef
 import app.mycelium.engine.chat.ChatBot
 import app.mycelium.engine.chat.TemplateWriter
@@ -153,17 +154,25 @@ object MyceliumEngine {
                 "chat_history" -> chatHistory(args.int("limit") ?: 50)
                 "chat_clear" -> chatClear()
                 "ai_key" -> aiKey(args)
-                "ai_status" -> buildJsonObject { put("state", aiState()); put("model", aiModel()) }.toString()
+                "ai_status" -> buildJsonObject { put("state", aiState()); put("provider", aiProvider().id); put("model", aiModel()) }.toString()
                 "ai_settings" -> {
-                    args.str("model")?.let { prefs.edit().putString("model", it).apply() }
-                    buildJsonObject { put("model", aiModel()) }.toString()
+                    args.str("provider")?.let { id ->
+                        val p = Provider.entries.firstOrNull { it.id == id } ?: return error("unknown_provider")
+                        if (p != aiProvider()) prefs.edit().putString("provider", p.id).remove("model").apply()   // new provider: its default model
+                    }
+                    args.str("model")?.trim()?.takeIf { it.isNotEmpty() }?.let { prefs.edit().putString("model", it).apply() }
+                    buildJsonObject { put("provider", aiProvider().id); put("model", aiModel()) }.toString()
                 }
                 "ai_preview" -> {
                     val text = args.str("text") ?: return error("missing_text")
-                    cloud.preview(text, chatApps(), Classifier.trackers.companies, System.currentTimeMillis(), aiModel()).toString()
+                    cloud.preview(text, chatApps(), Classifier.trackers.companies, System.currentTimeMillis(), aiModel(), aiProvider()).toString()
                 }
                 "ai_ask" -> aiAsk(args.str("preview_id"))
-                "wipe" -> if (args.bool("confirm")) wipe() else error("confirm_required")
+                "wipe" -> when {
+                    !args.bool("confirm") -> error("confirm_required")
+                    args.str("package") != null -> wipeApp(args.str("package")!!)
+                    else -> wipe()
+                }
                 "refresh_traffic" -> if (!Foreground.granted(app)) error("usage_access_required") else {
                     val n = traffic.collect()
                     feed.touchAll()
@@ -292,7 +301,9 @@ object MyceliumEngine {
         else -> "offline"
     }
 
-    private fun aiModel() = prefs.getString("model", null) ?: CloudAi.DEFAULT_MODEL
+    private fun aiProvider() = Provider.of(prefs.getString("provider", null))
+
+    private fun aiModel() = prefs.getString("model", null) ?: aiProvider().defaultModel
 
     /** Last [limit] turns, oldest first. */
     private fun chatHistory(limit: Int): String {
@@ -334,6 +345,26 @@ object MyceliumEngine {
         publish()
         _events.tryEmit("""{"type":"wiped"}""")
         return ok()
+    }
+
+    /** One app's record: its events, Sanctuary catches and byte counts; its creature starts over at stage 1. */
+    private fun wipeApp(pkg: String): String {
+        var deleted = 0
+        writer.runAndWait { d ->
+            d.beginTransaction()
+            try {
+                for (t in listOf("event", "queue", "traffic")) deleted += d.delete(t, "package=?", arrayOf(pkg))
+                d.execSQL("UPDATE organism SET stage_shown=1 WHERE package=?", arrayOf(pkg))
+                d.setTransactionSuccessful()
+            } finally {
+                d.endTransaction()
+            }
+        }
+        queued.set(readQuery("SELECT COUNT(*) n FROM queue WHERE done=0", emptyList()).firstOrNull()?.get("n")?.let { (it as Number).toInt() } ?: 0)
+        if (::feed.isInitialized) feed.touchAll()
+        publish()
+        _events.tryEmit(buildJsonObject { put("type", "wiped"); put("package", pkg) }.toString())
+        return buildJsonObject { put("ok", true); put("package", pkg); put("rows", deleted) }.toString()
     }
 
     private fun JsonObject.str(k: String) = this[k]?.jsonPrimitive?.contentOrNull?.trim()?.ifEmpty { null }
