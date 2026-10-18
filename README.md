@@ -72,3 +72,5 @@ Or Tools → **Export DB** (a consistent single file) and `adb pull` the path it
 - [docs/terrarium.md](docs/terrarium.md): real sprites, thresholds and colors, replacing the terrarium UI
 - [docs/schema.sql](docs/schema.sql): the database
 - `CLAUDE.md`: project rules
+
+  :)
