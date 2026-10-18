@@ -88,7 +88,7 @@ private const val MAX_ZOOM = 3f
 @Composable
 fun GardenView(
     still: Boolean, pets: List<Pet>, selected: String?, fx: GardenFx, camera: Camera, focus: String?,
-    topInsetPx: Int, bottomInsetPx: Int, fitBottomPx: Int,
+    topInsetPx: Int, bottomInsetPx: Int, fitBottomPx: Int, sky: Sky = Sky.CLEAR, season: Season = Season.SPRING,
     onTapPet: (Pet) -> Unit, onTapSnoop: (Pet, SnoopVisit) -> Unit, onTapEmpty: () -> Unit, modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -122,7 +122,10 @@ fun GardenView(
         val baseSpots = remember(layout, pets.map { it.pkg + it.seed }, moved.toMap()) { placePets(layout, pets, moved) }
         val spots = lifted?.let { l -> dragAt?.let { baseSpots + (l to it) } } ?: baseSpots
         fun scale() = fit * camera.zoom
+        val homeX = layout.worldW / 2f - viewW / fit / 2
+        val homeY = 64f - topInsetPx / fit
         fun clamp() {
+            if (camera.zoom <= 1.001f) { camera.x = homeX; camera.y = homeY; return }   // at 1x the whole jar is in view and stays put
             val vw = viewW / scale()
             val vh = viewH / scale()
             camera.x = if (vw >= layout.worldW) (layout.worldW - vw) / 2 else camera.x.coerceIn(0f, layout.worldW - vw)
@@ -219,15 +222,18 @@ fun GardenView(
                     // hold a creature for a moment to pick it up; drag it; let go and it lands on the nearest surface
                     val grab = hit(down.position)?.takeIf { it.second == null }?.first
                     if (grab != null) {
-                        val stillHeld = withTimeoutOrNull(200) {
+                        // a drag that starts on a creature carries it (no need to wait); a quick tap selects it instead
+                        val released = withTimeoutOrNull(200) {
                             while (true) {
                                 val e = awaitPointerEvent()
                                 val c = e.changes.first()
-                                if (!c.pressed || (c.position - down.position).getDistance() > viewConfiguration.touchSlop) return@withTimeoutOrNull false
+                                if (!c.pressed) return@withTimeoutOrNull true
+                                if ((c.position - down.position).getDistance() > viewConfiguration.touchSlop) return@withTimeoutOrNull false
                             }
-                            @Suppress("UNREACHABLE_CODE") true
-                        } == null
-                        if (stillHeld) {
+                            @Suppress("UNREACHABLE_CODE") false
+                        } == true
+                        if (released) return@awaitEachGesture
+                        if (!released) {
                             sounds?.play("pickup")
                             lifted = grab.pkg
                             fx.hops[grab.pkg] = clockMs()
@@ -254,7 +260,7 @@ fun GardenView(
                         val ev = awaitPointerEvent()
                         val pan = ev.calculatePan()
                         if (ev.changes.count { it.pressed } >= 2) zoomTo(camera.zoom * ev.calculateZoom(), ev.calculateCentroid())
-                        if (pan != Offset.Zero && ev.changes.any { it.positionChanged() }) {
+                        if (camera.zoom > 1.001f && pan != Offset.Zero && ev.changes.any { it.positionChanged() }) {   // pan only when zoomed in
                             camera.x -= pan.x / scale()
                             camera.y -= pan.y / scale()
                             clamp()
@@ -263,7 +269,7 @@ fun GardenView(
                         }
                     } while (ev.changes.any { it.pressed })
                     val v = tracker.calculateVelocity()
-                    if (abs(v.x) + abs(v.y) > 300f) {
+                    if (camera.zoom > 1.001f && abs(v.x) + abs(v.y) > 300f) {
                         camera.fling = scope.launch {   // inertia: px/s, decays smoothly
                             var vx = v.x
                             var vy = v.y
@@ -284,7 +290,11 @@ fun GardenView(
             val s = scale()
             val cx = floor(camera.x).toInt()
             val cy = floor(camera.y).toInt()
-            placed[0] = renderer.render(cx, cy, ms, phase, pets, spots, selected, fx, lifted)
+            placed[0] = renderer.render(cx, cy, ms, phase, pets, spots, selected, fx, lifted, sky, season)
+            for (near in renderer.thunders) scope.launch {   // light travels faster than sound: the crack follows the flash
+                delay(if (near) 350L else 1400L)
+                sounds?.play(if (near) "thunder_near" else "thunder_far", volume = if (near) 0.9f else 0.7f)
+            }
             // a mood sound when a bubble pops up: only creatures on screen, at most one every 4 s
             renderer.moodStarts.firstOrNull { (p, m) ->
                 m != Mood.CONTENT && spots[p.pkg]?.let { sp -> (sp.x - camera.x) * s in 0f..size.width && (sp.y - camera.y) * s in 0f..size.height } == true

@@ -15,6 +15,13 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalDensity
 import app.mycelium.app.garden.EvolutionMoment
+import app.mycelium.app.garden.Season
+import app.mycelium.app.garden.Sky
+import app.mycelium.app.garden.SkyPhase
+import app.mycelium.app.garden.Weather
+import app.mycelium.app.garden.seasonNow
+import app.mycelium.app.garden.skyPhaseNow
+import androidx.compose.runtime.produceState
 import app.mycelium.app.garden.GardenSheet
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.DisposableEffect
@@ -102,10 +109,26 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
         if (before != null && (now - before).isNotEmpty()) sounds?.play("snoop_arrive", volume = 0.8f)
         seenSnoops[0] = now
     }
-    DisposableEffect(Unit) {   // jar ambience only while the Terrarium is on screen; the window sky follows the clock
-        sounds?.ambience(if (app.mycelium.app.garden.skyPhaseNow() == app.mycelium.app.garden.SkyPhase.NIGHT) "amb_night" else "amb_day")
-        onDispose { sounds?.ambience(null) }
+    // weather on the window: chosen in Settings, or the local weather when that is switched on (checked at most hourly)
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    var live by remember { mutableStateOf(Weather.cached(ctx)) }
+    LaunchedEffect(prefs.liveWeather) {
+        while (prefs.liveWeather) { live = Weather.refresh(ctx); delay(15 * 60_000L) }
     }
+    val phase by produceState(skyPhaseNow()) { while (true) { delay(60_000); value = skyPhaseNow() } }
+    val freshLive = live?.takeIf { prefs.liveWeather && System.currentTimeMillis() - it.at < 3 * 60 * 60_000L }
+    val sky = if (prefs.weatherMode == "AUTO") freshLive?.sky ?: Sky.CLEAR else runCatching { Sky.valueOf(prefs.weatherMode) }.getOrDefault(Sky.CLEAR)
+    val season = if (prefs.seasonMode == "AUTO") seasonNow(live?.southern ?: false) else runCatching { Season.valueOf(prefs.seasonMode) }.getOrDefault(seasonNow())
+    val ambienceName = when (sky) {   // cozy loops matched to what the window shows
+        Sky.RAIN -> "amb_rain"
+        Sky.STORM -> "amb_storm"
+        Sky.SNOW -> "amb_snow"
+        Sky.FOG -> "amb_fog"
+        else -> if (phase == SkyPhase.NIGHT) (if (season == Season.WINTER) "amb_winter" else "amb_night")
+            else when (season) { Season.SPRING -> "amb_day"; Season.SUMMER -> "amb_summer"; Season.AUTUMN -> "amb_autumn"; Season.WINTER -> "amb_winter" }
+    }
+    LaunchedEffect(ambienceName) { sounds?.ambience(ambienceName) }
+    DisposableEffect(Unit) { onDispose { sounds?.ambience(null) } }   // jar ambience only while the Terrarium is on screen
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
     val sheet = remember { SheetState(with(density) { 88.dp.toPx() }) }
@@ -145,7 +168,7 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
                 val sheetPx = sheet.height.value.toInt()
                 GardenView(
                     still = prefs.reduceMotion || prefs.batterySaver, pets = pets, selected = selected, fx = fx, camera = camera,
-                    focus = focus, bottomInsetPx = sheetPx, fitBottomPx = peek.toInt(),
+                    focus = focus, bottomInsetPx = sheetPx, fitBottomPx = peek.toInt(), sky = sky, season = season,
                     // leave room for the status note when protection is paused or offline, so the lid stays in view
                     topInsetPx = with(density) { (topInset + if (protection == Protection.Paused || protection == Protection.SafeMode) 72.dp else 0.dp).roundToPx() },
                     onTapPet = { open(it) }, onTapSnoop = { p, _ -> open(p) },

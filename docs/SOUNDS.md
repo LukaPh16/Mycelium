@@ -42,3 +42,12 @@ Synthesized from scratch by `python3 scripts/gen_sounds.py` (no samples, no down
 | ui_info | 0.14 s | opening an i sheet: page flip |
 | amb_day | 12.00 s | day ambience inside the jar: soft breeze, far birds (loop) |
 | amb_night | 12.00 s | night ambience inside the jar: crickets, faint breeze (loop) |
+| amb_rain | 12.00 s | rain weather: steady rain on the window, droplets tapping the glass (loop) |
+| amb_storm | 12.00 s | thunderstorm weather: heavy rain with a low wind rumble (loop) |
+| thunder_near | 6.05 s | lightning close by: a crack and a long rolling rumble |
+| thunder_far | 5.60 s | lightning far away: a soft distant rumble |
+| amb_snow | 12.00 s | snow weather: hushed muffled wind and faint far-off chimes (loop) |
+| amb_fog | 12.00 s | fog weather: a soft airy hush with a calm low pad (loop) |
+| amb_summer | 12.00 s | summer days: warm breeze, lazy bees, lively birds (loop) |
+| amb_autumn | 12.00 s | autumn: gusty wind and rustling leaves (loop) |
+| amb_winter | 12.00 s | winter: a cold, quiet breeze (loop) |

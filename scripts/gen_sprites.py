@@ -756,12 +756,15 @@ def room(phase):
             if y < wy0 + 140 and (x - (wx0 + wx1) / 2) ** 2 + (y - (wy0 + 140)) ** 2 > r * r:
                 continue
             win.add((x, y))
+    skycv = Canvas(W, H + 120)   # the sky is its own layer, so the sun and moon can move behind clouds and the frame
+    for p in win:
+        cv.px.pop(p, None)
     top, bot = min(p[1] for p in win), max(p[1] for p in win)
     for (x, y) in win:
         f = (y - top) / (bot - top) * 4
         b = min(3, int(f))
         th = (BAYER[(y % 4) * 4 + x % 4] + 0.5) / 16
-        cv.put(x, y, EXTRA[sky[b + 1 if (f - b) > th else b]])
+        skycv.put(x, y, EXTRA[sky[b + 1 if (f - b) > th else b]])
     haze = {"day": [RAMPS["rock"][2], RAMPS["rock"][3], RECOLOR["lilac"][3], RAMPS["rock"][4], RECOLOR["lilac"][4]],
             "dusk": [EXTRA["dusk0"], EXTRA["dusk1"], EXTRA["dusk1"], EXTRA["dusk2"], EXTRA["dusk3"]],
             "night": [EXTRA["night1"], EXTRA["night2"], EXTRA["night2"], EXTRA["night3"], EXTRA["night4"]]}[phase]
@@ -787,12 +790,7 @@ def room(phase):
         for i in range(70):
             x, y = rng.randrange(wx0, wx1), rng.randrange(wy0, 380)
             if (x, y) in win:
-                cv.put(x, y, EXTRA["star"] if i % 5 else EXTRA["star2"])
-        for (x, y) in ellipse(236, 92, 13, 13):
-            if (x - 243) ** 2 + (y - 86) ** 2 > 110:
-                cv.put(x, y, EXTRA["moon"])
-        for (x, y) in ((228, 96), (232, 101), (226, 90)):
-            cv.put(x, y, EXTRA["moon2"])
+                skycv.put(x, y, EXTRA["star"] if i % 5 else EXTRA["star2"])
     else:
         for (cx, cy, s) in ((80, 120, 1.0), (220, 170, 1.3), (130, 230, 0.8)):
             for (px_, py_, rr) in ((-14, 4, 8), (-3, -2, 11), (10, 2, 9), (20, 5, 6)):
@@ -801,9 +799,6 @@ def room(phase):
                         v = (y - (cy - 12 * s)) / (20 * s)
                         cv.put(x, y, RAMPS["cloud"][4 if v < 0.3 else (3 if v < 0.65 else 2)] if phase == "day"
                                else EXTRA["dusk4" if v < 0.4 else "dusk3"])
-        if phase == "day":
-            for (x, y) in ellipse(250, 70, 12, 12):
-                cv.put(x, y, RAMPS["sun"][4] if (x - 246) ** 2 + (y - 66) ** 2 < 50 else RAMPS["sun"][3])
     frame = set()
     for (x, y) in win:
         if any((x + dx, y + dy) not in win for dx, dy in ((3, 0), (-3, 0), (0, 3), (0, -3))) or abs(x - 160) < 3 or abs(y - 300) < 3:
@@ -827,6 +822,50 @@ def room(phase):
     for i, (bh_, col) in enumerate(((7, "rose"), (6, "sky"), (8, "leaf"))):   # books
         shade(cv, rect(2, y0 - bh_, 22 - i * 3, bh_), RECOLOR[col], ao=0.1)
         y0 -= bh_ + 1
+    return cv, skycv
+
+
+def sun(frame, dusk):
+    """The sun: a warm shaded disc with soft rays that shimmer (two frames); redder and bigger-looking at dusk."""
+    cv = Canvas(28, 28)
+    r = "sun" if not dusk else RECOLOR["coral"]
+    rays = RAMPS["sun"][3] if not dusk else EXTRA["dusk4"]
+    for k in range(8):
+        a = k / 8 * math.tau + (math.pi / 8 if frame else 0)
+        ln = 4 if (k + frame) % 2 == 0 else 3
+        for d in range(ln):
+            cv.put(14 + math.cos(a) * (10 + d), 14 + math.sin(a) * (10 + d), rays, 220 - d * 50)
+    shade(cv, ellipse(14, 14, 7.5, 7.5), r, ao=0.0, inner=False, outline=False)
+    for (x, y) in ellipse(14, 14, 9.2, 9.2):   # a soft glow ring
+        if not cv.has(x, y):
+            cv.put(x, y, RAMPS["sun"][4] if not dusk else EXTRA["dusk4"], 90)
+    return cv
+
+
+def moon_phase(k):
+    """The moon in phase k of 8 (0 new ... 4 full ... 7), lit side on the right while waxing."""
+    cv = Canvas(22, 22)
+    disc = ellipse(11, 11, 8.5, 8.5)
+    lit = set()
+    f = k / 8.0
+    for (x, y) in disc:
+        nx = (x + 0.5 - 11) / 8.5
+        ny = (y + 0.5 - 11) / 8.5
+        edge = math.sqrt(max(0.0, 1 - ny * ny))
+        term = edge * math.cos(f * math.tau)   # terminator position across the disc
+        if (f <= 0.5 and nx > term) or (f > 0.5 and nx < -term):
+            lit.add((x, y))
+    for (x, y) in disc:
+        if (x, y) in lit:
+            cv.put(x, y, EXTRA["moon"])
+        else:
+            cv.put(x, y, EXTRA["night3"], 150)   # earthshine: the dark part stays faintly visible
+    for (x, y) in ((8, 8), (13, 13), (9, 14), (14, 7)):   # craters
+        if (x, y) in lit:
+            cv.put(x, y, EXTRA["moon2"])
+    for (x, y) in ellipse(11, 11, 10.2, 10.2):
+        if not cv.has(x, y):
+            cv.put(x, y, EXTRA["moon"], 50)
     return cv
 
 
@@ -1150,6 +1189,9 @@ def main():
         add(f"snoop_{v + 1}", [snoop(v, f) for f in range(4)], 8, priority="P1")
     for a in ACCESSORIES:
         add(f"hat_{a}", [accessory(a)], anchor=[7, 9], priority="P2")
+    add("sun", [sun(f, False) for f in range(2)], 1, anchor=[14, 14], priority="P1")
+    add("sun_dusk", [sun(f, True) for f in range(2)], 1, anchor=[14, 14], priority="P1")
+    add("moon", [moon_phase(k) for k in range(8)], 0, anchor=[11, 11], priority="P1")
     add("poof", [poof(f) for f in range(5)], 12, anchor=[10, 10], priority="P1")
     add("sparkle", [sparkle(f) for f in range(3)], 10, anchor=[4, 4], priority="P2")
     add("heart", [heart()], anchor=[4, 8], priority="P2")
@@ -1159,7 +1201,9 @@ def main():
     add("firefly", [firefly(f) for f in range(2)], 4, anchor=[3, 3], priority="P2")
     add("mote", [mote()], anchor=[1, 1], priority="P3")
     for ph in ("day", "dusk", "night"):
-        add(f"room_{ph}", [room(ph)], anchor=[0, 0], priority="P1")
+        rm, sk = room(ph)
+        add(f"room_{ph}", [rm], anchor=[0, 0], priority="P1")
+        add(f"sky_{ph}", [sk], anchor=[0, 0], priority="P1")
         add(f"light_{ph}", [light(ph)], anchor=[0, 0], priority="P3")
     add("terrain", [terrain()], anchor=[0, 0], priority="P1")
     add("glass_front", [glass_front()], anchor=[0, 0], priority="P1")
@@ -1187,6 +1231,7 @@ def main():
         "surfaces": surfaces,
         "decor": decor,
         "fireflies": [JAR["x0"] + 10, JAR["top"] + 20, JAR["x1"] - 10, 440],
+        "window": {"x0": 18, "x1": 302, "y0": 18, "y1": 470, "arch_cy": 158, "arch_r": 142},   # the sky pane (weather is clipped to it)
         "glows": [{"x": d["x"], "y": d["y"]} for d in decor if d["sprite"].startswith("glowcap")],
     }
     (OUT / "terrarium_layout.json").write_text(json.dumps(layout, indent=1))
@@ -1239,9 +1284,9 @@ def contact_sheet():
     for (x, y, im) in placed:
         sheet.alpha_composite(im.resize((im.width * scale, im.height * scale), Image.NEAREST), (x, y))
     sheet.save(ROOT / "docs/sprites_contact.png")
-    scene = Image.open(OUT / "room_day.png").convert("RGBA").crop((0, 0, W, H))
-    for n in ("terrain", "glass_front", "light_day"):
-        scene.alpha_composite(Image.open(OUT / f"{n}.png").convert("RGBA"))
+    scene = Image.open(OUT / "sky_day.png").convert("RGBA").crop((0, 0, W, H))
+    for n in ("room_day", "terrain", "glass_front", "light_day"):
+        scene.alpha_composite(Image.open(OUT / f"{n}.png").convert("RGBA").crop((0, 0, W, H)))
     scene.resize((W * 2, H * 2), Image.NEAREST).save(ROOT / "docs/terrarium_preview.png")
 
 

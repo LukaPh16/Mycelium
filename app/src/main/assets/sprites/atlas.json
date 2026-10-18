@@ -7027,6 +7027,45 @@
    "priority": "P2"
   },
   {
+   "name": "sun",
+   "file": "sun.png",
+   "w": 28,
+   "h": 28,
+   "anchor": [
+    14,
+    14
+   ],
+   "frames": 2,
+   "fps": 1,
+   "priority": "P1"
+  },
+  {
+   "name": "sun_dusk",
+   "file": "sun_dusk.png",
+   "w": 28,
+   "h": 28,
+   "anchor": [
+    14,
+    14
+   ],
+   "frames": 2,
+   "fps": 1,
+   "priority": "P1"
+  },
+  {
+   "name": "moon",
+   "file": "moon.png",
+   "w": 22,
+   "h": 22,
+   "anchor": [
+    11,
+    11
+   ],
+   "frames": 8,
+   "fps": 0,
+   "priority": "P1"
+  },
+  {
    "name": "poof",
    "file": "poof.png",
    "w": 20,
@@ -7157,6 +7196,19 @@
    "priority": "P1"
   },
   {
+   "name": "sky_day",
+   "file": "sky_day.png",
+   "w": 320,
+   "h": 720,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P1"
+  },
+  {
    "name": "light_day",
    "file": "light_day.png",
    "w": 320,
@@ -7183,6 +7235,19 @@
    "priority": "P1"
   },
   {
+   "name": "sky_dusk",
+   "file": "sky_dusk.png",
+   "w": 320,
+   "h": 720,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P1"
+  },
+  {
    "name": "light_dusk",
    "file": "light_dusk.png",
    "w": 320,
@@ -7198,6 +7263,19 @@
   {
    "name": "room_night",
    "file": "room_night.png",
+   "w": 320,
+   "h": 720,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P1"
+  },
+  {
+   "name": "sky_night",
+   "file": "sky_night.png",
    "w": 320,
    "h": 720,
    "anchor": [

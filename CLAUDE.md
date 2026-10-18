@@ -6,6 +6,8 @@ Main message: your data is kept and processed on your device.
 - There is no on-device AI. AI analysis of logs is cloud-only and needs the user's own API key.
   It runs only when the user asks, and only sends the facts the user was shown first.
 - No accounts, no analytics, no other network calls of our own.
+- One opt-in exception (off by default, user-approved): "Use my local weather" sends approximate location rounded to
+  ~11 km to Open-Meteo (no key, no account) at most hourly, only while the Terrarium is open, for the window weather.
 A separate team builds the final UI in Lovable; we build the engine, the chatbot, and a plain debug UI.
 
 ## How to work
@@ -27,7 +29,7 @@ A separate team builds the final UI in Lovable; we build the engine, the chatbot
   Test-only: org.xerial:sqlite-jdbc (fixture-DB tests for stats; never in the APK).
 - Cloud AI calls use java.net.HttpURLConnection (no extra HTTP library).
 - Not allowed: Room, Retrofit, OkHttp, analytics, TTS, speech-to-text, on-device LLMs,
-  any cloud API other than the user-keyed AI call in Step 9.
+  any cloud API other than the user-keyed AI call in Step 9 and the opt-in Open-Meteo weather lookup.
 
 ## Layout
 - :engine  Android library. ALL logic. No UI.

@@ -175,13 +175,13 @@ def reverb(sig, wet=0.18, room=0.35):
     return out
 
 
-def finish(sig, rms_db=-18.0, peak=0.9, fade_in=0.002, fade_out=0.01):
+def finish(sig, rms_db=-18.0, peak=0.9, fade_in=0.002, fade_out=0.01, trim=True):
     """Remove DC, match loudness (RMS of the loud part), soft-limit peaks, fade the ends so nothing ever clicks."""
     if not sig:
         return sig
     mean = sum(sig) / len(sig)
     sig = array("f", (v - mean for v in sig))
-    while len(sig) > SR // 50 and abs(sig[-1]) < 1e-4:   # trim silent tail
+    while trim and len(sig) > SR // 50 and abs(sig[-1]) < 1e-4:   # trim silent tail
         sig.pop()
     m = max(abs(v) for v in sig) or 1.0
     loud = [v for v in sig if abs(v) > m * 0.05] or list(sig)   # loudness of the part you actually hear
@@ -189,19 +189,20 @@ def finish(sig, rms_db=-18.0, peak=0.9, fade_in=0.002, fade_out=0.01):
     g = 10 ** (rms_db / 20) / rms
     sig = array("f", (peak * math.tanh(v * g / peak) for v in sig))   # gentle limiter instead of hard clipping
     fi, fo = n(fade_in), n(fade_out)
-    for i in range(min(fi, len(sig))):
+    for i in range(min(fi, len(sig)) if fi else 0):
         sig[i] *= i / fi
-    for i in range(min(fo, len(sig))):
+    for i in range(min(fo, len(sig)) if fo else 0):
         sig[-1 - i] *= i / fo
     return sig
 
 
-LEVEL = {"ui": -24.0, "amb": -27.0}   # everything else: -18 dB RMS, so all effects feel equally loud
+LEVEL = {"ui": -24.0, "amb": -27.0, "thunder": -20.0}   # everything else: -18 dB RMS, so all effects feel equally loud
 
 
 def write(name, sig, what, peak=None):
     OUT.mkdir(parents=True, exist_ok=True)
-    sig = finish(lowpass(sig, 9000), LEVEL.get(name.split("_")[0], -18.0))
+    loop = name.startswith("amb_")   # loops are crossfaded already: no edge fades or trimming, or the seam would dip
+    sig = finish(lowpass(sig, 9000), LEVEL.get(name.split("_")[0], -18.0), fade_in=0 if loop else 0.002, fade_out=0 if loop else 0.01, trim=not loop)
     with wave.open(str(OUT / f"{name}.wav"), "wb") as w:
         w.setnchannels(1)
         w.setsampwidth(2)
@@ -389,6 +390,78 @@ def ambience():
     write("amb_night", loop_seamless(reverb(night, 0.25, 0.6)[:n(dur + 1)], 1.0), "night ambience inside the jar: crickets, faint breeze (loop)")
 
 
+def brown(dur, seed):
+    """Deep rumbly noise (integrated white noise, kept centered)."""
+    rng = random.Random(seed)
+    out = array("f", [0.0]) * n(dur)
+    y = 0.0
+    for i in range(len(out)):
+        y = (y + rng.uniform(-1, 1) * 0.02) * 0.998
+        out[i] = y * 8
+    return out
+
+
+def drops(dur, rate, seed, lo=2500, hi=7000, level=0.5):
+    """Raindrops tapping glass: tiny filtered clicks scattered in time."""
+    rng = random.Random(seed)
+    parts = []
+    for _ in range(int(dur * rate)):
+        st = rng.uniform(0, dur - 0.05)
+        tick = env(bandpass(noise(0.03, rng.randint(1, 9999)), rng.uniform(lo, lo * 1.5), hi), 0.0005, 0.006, 0.15, 0.015)
+        parts.append((tick, st, level * rng.uniform(0.3, 1.0)))
+    return mix(*parts, length=n(dur))
+
+
+def weather_sounds():
+    dur = 12.0
+    rain_bed = lowpass(highpass(noise(dur + 1, 151, "pink"), 300), 3500)
+    rain = mix((rain_bed, 0, 0.55), (drops(dur + 1, 45, 152), 0, 0.5), length=n(dur + 1))
+    write("amb_rain", loop_seamless(reverb(rain, 0.15, 0.5)[:n(dur + 1)], 1.0), "rain weather: steady rain on the window, droplets tapping the glass (loop)")
+    heavy = mix((lowpass(highpass(noise(dur + 1, 161, "pink"), 200), 4500), 0, 0.7), (drops(dur + 1, 90, 162), 0, 0.55),
+                (lowpass(brown(dur + 1, 163), lambda t: 120 + 60 * math.sin(2 * math.pi * t / 7)), 0, 0.35), length=n(dur + 1))
+    write("amb_storm", loop_seamless(reverb(heavy, 0.15, 0.5)[:n(dur + 1)], 1.0), "thunderstorm weather: heavy rain with a low wind rumble (loop)")
+    crack = env(highpass(noise(0.35, 171), 1200), 0.002, 0.06, 0.3, 0.25)
+    rumble = lowpass(brown(4.0, 172), lambda t: 260 - 40 * t)
+    rumble = array("f", (v * (0.4 + 0.6 * abs(math.sin(2 * math.pi * 0.7 * i / SR))) * math.exp(-i / SR / 1.6) for i, v in enumerate(rumble)))
+    write("thunder_near", reverb(mix((crack, 0, 0.8), (rumble, 0.05, 1.0)), 0.3, 0.8), "lightning close by: a crack and a long rolling rumble")
+    far = lowpass(brown(3.6, 181), 160)
+    far = array("f", (v * math.sin(math.pi * min(1, i / len(far) * 1.3)) ** 1.5 for i, v in enumerate(far)))
+    write("thunder_far", reverb(far, 0.3, 0.8), "lightning far away: a soft distant rumble")
+    rng = random.Random(191)
+    hush = lowpass(noise(dur + 1, 192, "pink"), lambda t: 350 + 150 * math.sin(2 * math.pi * t / 9))
+    bells = []
+    for k in range(5):   # faint far-off chimes, very soft
+        bells.append((bell(rng.choice((note("E6"), note("G6"), note("B6"))), 1.5, tau=0.6), rng.uniform(1, dur - 2), 0.05))
+    write("amb_snow", loop_seamless(reverb(mix((hush, 0, 0.6), *bells, length=n(dur + 1)), 0.3, 0.8)[:n(dur + 1)], 1.0),
+          "snow weather: hushed muffled wind and faint far-off chimes (loop)")
+    pad = mix(*[(env(osc("sine", note(x), dur + 1, vib=0.004, vib_rate=0.2 + i * 0.05), 2.0, 0.1, 0.8, 2.0), 0, 0.12) for i, x in enumerate(("C4", "G4", "E5"))],
+              (lowpass(noise(dur + 1, 201, "pink"), 500), 0, 0.4), length=n(dur + 1))
+    write("amb_fog", loop_seamless(reverb(pad, 0.3, 0.8)[:n(dur + 1)], 1.0), "fog weather: a soft airy hush with a calm low pad (loop)")
+    breeze = lowpass(noise(dur + 1, 211, "pink"), 600)
+    bees = lowpass(osc("saw", lambda t: 175 + 12 * math.sin(2 * math.pi * 0.7 * t), dur + 1, vib=0.02, vib_rate=31), 700)
+    bees = array("f", (v * (0.3 + 0.7 * math.sin(2 * math.pi * i / SR / 6) ** 2) for i, v in enumerate(bees)))
+    chirps = []
+    for k in range(10):
+        st = rng.uniform(0.3, dur - 1)
+        f = rng.choice((2800, 3300, 3700, 4100))
+        for j in range(rng.randint(2, 5)):
+            chirps.append((env(osc("sine", glide(f, f * 1.4, 0.05, 0.7), 0.06), 0.004, 0.02, 0.5, 0.025), st + j * 0.08, 0.13))
+    write("amb_summer", loop_seamless(reverb(mix((breeze, 0, 0.4), (bees, 0, 0.12), *chirps, length=n(dur + 1)), 0.25, 0.6)[:n(dur + 1)], 1.0),
+          "summer days: warm breeze, lazy bees, lively birds (loop)")
+    gust = lowpass(noise(dur + 1, 221, "pink"), lambda t: 400 + 500 * max(0, math.sin(2 * math.pi * t / 6)) ** 2)
+    gust = array("f", (v * (0.35 + 0.65 * max(0, math.sin(2 * math.pi * i / SR / 6)) ** 2) for i, v in enumerate(gust)))
+    leaves = []
+    for k in range(9):
+        st = rng.uniform(0.3, dur - 1)
+        leaves.append((env(bandpass(noise(0.35, 222 + k), 1500, 5000), 0.05, 0.1, 0.4, 0.15), st, 0.18))
+    write("amb_autumn", loop_seamless(reverb(mix((gust, 0, 0.6), *leaves, length=n(dur + 1)), 0.25, 0.6)[:n(dur + 1)], 1.0),
+          "autumn: gusty wind and rustling leaves (loop)")
+    whistle = bandpass(noise(dur + 1, 231, "pink"), 500, 1100)
+    whistle = array("f", (v * (0.3 + 0.7 * math.sin(2 * math.pi * i / SR / 8) ** 2) for i, v in enumerate(whistle)))
+    write("amb_winter", loop_seamless(reverb(mix((whistle, 0, 0.5), (lowpass(noise(dur + 1, 232, "pink"), 300), 0, 0.4), length=n(dur + 1)), 0.3, 0.8)[:n(dur + 1)], 1.0),
+          "winter: a cold, quiet breeze (loop)")
+
+
 def main():
     for old in OUT.glob("*.wav"):
         old.unlink()
@@ -399,6 +472,7 @@ def main():
     evolution_sounds()
     ui_sounds()
     ambience()
+    weather_sounds()
     rows = ["# Sounds", "", "Synthesized from scratch by `python3 scripts/gen_sounds.py` (no samples, no downloads) into",
             "`app/src/main/assets/sounds/`. Replace any WAV with your own (same name) to change it.", "",
             "| Sound | Length | Plays when |", "|---|---|---|"]

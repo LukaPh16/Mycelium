@@ -79,6 +79,7 @@ fun SettingsScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit) {
             ToggleRow(stringResource(R.string.set_reduce_motion), prefs.reduceMotion, prefs::chooseReduceMotion, Info(R.string.info_reduce_motion_t, R.string.info_reduce_motion_b))
             ToggleRow(stringResource(R.string.set_saver), prefs.batterySaver, prefs::chooseBatterySaver, Info(R.string.info_saver_t, R.string.info_saver_b))
         }
+        WeatherPanel(prefs)
         SoundPanel(prefs)
         PixelPanel(Modifier.fillMaxWidth()) {
             SectionHeader(stringResource(R.string.set_protection))
@@ -168,6 +169,53 @@ private fun ToggleRow(label: String, checked: Boolean, onChange: (Boolean) -> Un
         Switch(checked, null, colors = SwitchDefaults.colors(checkedTrackColor = pal.leaf, checkedThumbColor = pal.paper, uncheckedTrackColor = pal.paperEdge))
     }
 }
+
+/** Weather on the terrarium window and the season of its plants: chosen here, or the local weather (opt-in). */
+@Composable
+private fun WeatherPanel(prefs: UiPrefs) {
+    val pal = LocalPal.current
+    val ctx = LocalContext.current
+    val toast = LocalToast.current
+    val scope = rememberCoroutineScope()
+    var live by remember { mutableStateOf(app.mycelium.app.garden.Weather.cached(ctx)) }
+    var looking by remember { mutableStateOf(false) }
+    fun lookUp() { scope.launch { looking = true; live = app.mycelium.app.garden.Weather.refresh(ctx); looking = false } }
+    val ask = androidx.activity.compose.rememberLauncherForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) { ok ->
+        if (ok) { prefs.chooseLiveWeather(true); lookUp() } else toast(ctx.getString(R.string.weather_denied))
+    }
+    PixelPanel(Modifier.fillMaxWidth()) {
+        SectionHeader(stringResource(R.string.set_weather), Info(R.string.info_weather_t, R.string.info_weather_b))
+        SettingRow(stringResource(R.string.set_weather_sky), null)
+        ChoiceRow(listOf("AUTO" to stringResource(R.string.weather_auto), "CLEAR" to stringResource(R.string.weather_clear), "CLOUDY" to stringResource(R.string.weather_cloudy)),
+            prefs.weatherMode, prefs::chooseWeather)
+        ChoiceRow(listOf("RAIN" to stringResource(R.string.weather_rain), "STORM" to stringResource(R.string.weather_storm),
+            "SNOW" to stringResource(R.string.weather_snow), "FOG" to stringResource(R.string.weather_fog)), prefs.weatherMode, prefs::chooseWeather)
+        SettingRow(stringResource(R.string.set_weather_season), Info(R.string.info_season_t, R.string.info_season_b))
+        ChoiceRow(listOf("AUTO" to stringResource(R.string.weather_auto), "SPRING" to stringResource(R.string.season_spring), "SUMMER" to stringResource(R.string.season_summer)),
+            prefs.seasonMode, prefs::chooseSeason)
+        ChoiceRow(listOf("AUTUMN" to stringResource(R.string.season_autumn), "WINTER" to stringResource(R.string.season_winter)), prefs.seasonMode, prefs::chooseSeason)
+        ToggleRow(stringResource(R.string.set_weather_live), prefs.liveWeather, { on ->
+            if (!on) { prefs.chooseLiveWeather(false); app.mycelium.app.garden.Weather.forget(ctx); live = null }
+            else if (app.mycelium.app.garden.Weather.hasPermission(ctx)) { prefs.chooseLiveWeather(true); lookUp() }
+            else ask.launch(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        }, Info(R.string.info_weather_live_t, R.string.info_weather_live_b))
+        val status = when {
+            !prefs.liveWeather -> stringResource(R.string.weather_live_off)
+            looking -> stringResource(R.string.weather_looking)
+            live == null -> stringResource(R.string.weather_unavailable)
+            else -> stringResource(R.string.weather_live_now, weatherName(live!!.sky), live!!.tempC.toInt(), app.mycelium.app.ago(live!!.at))
+        }
+        Text(status, style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+        if (prefs.liveWeather && prefs.weatherMode != "AUTO") Text(stringResource(R.string.weather_manual_wins), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+    }
+}
+
+@Composable
+private fun weatherName(s: app.mycelium.app.garden.Sky): String = stringResource(when (s) {
+    app.mycelium.app.garden.Sky.CLEAR -> R.string.weather_clear; app.mycelium.app.garden.Sky.CLOUDY -> R.string.weather_cloudy
+    app.mycelium.app.garden.Sky.RAIN -> R.string.weather_rain; app.mycelium.app.garden.Sky.STORM -> R.string.weather_storm
+    app.mycelium.app.garden.Sky.SNOW -> R.string.weather_snow; app.mycelium.app.garden.Sky.FOG -> R.string.weather_fog
+})
 
 /** Sound: mute everything, a master volume, and effects / jar ambience each with a switch and a level. */
 @Composable

@@ -58,6 +58,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -142,6 +143,7 @@ class MainActivity : ComponentActivity() {
         if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE == 0) return
         intent?.getStringExtra("route")?.let { openRoute.value = it }
         intent?.getStringExtra("evolve")?.let { DebugHooks.evolve.value = it }   // replay that creature's last evolution
+        if (intent?.getBooleanExtra("drawer", false) == true) DebugHooks.drawer.value = true   // open the menu
     }
 
     /** Starts protection; shows Android's VPN dialog when needed. Reports "ok", "consent_denied" or an engine error code. */
@@ -158,6 +160,7 @@ class MainActivity : ComponentActivity() {
 /** Debug builds only: hooks for checking moments on a phone without waiting for real growth. */
 object DebugHooks {
     val evolve = mutableStateOf<String?>(null)
+    val drawer = mutableStateOf(false)
 }
 
 /** Shows a short pixel toast from anywhere. */
@@ -234,6 +237,7 @@ private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit
     val start: () -> Unit = { startProtection { code -> toast(messages[code] ?: ctx.getString(R.string.error_generic, code)) } }
 
     BackHandler(drawer.isOpen) { scope.launch { drawer.close() } }
+    LaunchedEffect(Unit) { androidx.compose.runtime.snapshotFlow { DebugHooks.drawer.value }.collect { if (it) { drawer.open(); DebugHooks.drawer.value = false } } }
     LaunchedEffect(openRoute.value) { openRoute.value?.let { navigateTo(nav, it); openRoute.value = null } }
     CompositionLocalProvider(LocalToast provides toast, LocalGo provides go) {
         ModalNavigationDrawer(
@@ -332,8 +336,10 @@ private fun TopBar(screen: Screen, protection: Protection, translucent: Boolean,
 @Composable
 private fun DrawerContent(current: String, advanced: Boolean, go: (String) -> Unit) {
     val pal = LocalPal.current
-    ModalDrawerSheet(drawerContainerColor = pal.bg, modifier = Modifier.widthIn(max = 320.dp)) {
-        Column(Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    val p = pixel()
+    ModalDrawerSheet(drawerContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+        modifier = Modifier.widthIn(max = 320.dp).drawBehind { drawRect(pal.paper); drawerGrain(pal, p) }) {
+        Column(Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Row(
                 Modifier.fillMaxWidth().pixelPanel(PanelStyle.Wood, pal, pixel()).padding(14.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -346,8 +352,10 @@ private fun DrawerContent(current: String, advanced: Boolean, go: (String) -> Un
                 }
             }
             Spacer(Modifier.height(8.dp))
-            for (s in SCREENS.filter { it.inDrawer || (advanced && it.route == Routes.ADVANCED) }) {
+            val items = SCREENS.filter { it.inDrawer || (advanced && it.route == Routes.ADVANCED) }
+            for ((i, s) in items.withIndex()) {
                 val selected = s.route == current
+                if (i > 0) DottedDivider(pal, p)
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -362,6 +370,41 @@ private fun DrawerContent(current: String, advanced: Boolean, go: (String) -> Un
                     Text(stringResource(s.title), style = MaterialTheme.typography.titleSmall, color = pal.ink)
                 }
             }
+        }
+    }
+}
+
+/** Warm paper with faint wood-grain streaks and a soft shade down the right edge: a little texture for the menu. */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawerGrain(pal: app.mycelium.app.ui.Pal, p: Float) {
+    val grain = pal.woodDark.copy(alpha = if (pal.night) 0.45f else 0.14f)
+    val light = pal.woodLight.copy(alpha = if (pal.night) 0.22f else 0.18f)
+    var y = 3 * p
+    var row = 0
+    while (y < size.height) {   // staggered grain dashes, like planks
+        var x = ((row * 37) % 23) * p
+        while (x < size.width) {
+            drawRect(grain, androidx.compose.ui.geometry.Offset(x, y), androidx.compose.ui.geometry.Size((6 + row % 5) * p, p))
+            drawRect(light, androidx.compose.ui.geometry.Offset(x + 2 * p, y - p), androidx.compose.ui.geometry.Size(3 * p, p))
+            x += (19 + (row * 7) % 13) * p
+        }
+        y += 6 * p
+        row++
+    }
+    for (k in 0 until 4) {   // soft inner shade along the right edge
+        drawRect(pal.woodDark.copy(alpha = 0.06f * (4 - k)), androidx.compose.ui.geometry.Offset(size.width - (k + 1) * p, 0f),
+            androidx.compose.ui.geometry.Size(p, size.height))
+    }
+}
+
+/** A mild dotted pixel line between menu items. */
+@Composable
+private fun DottedDivider(pal: app.mycelium.app.ui.Pal, p: Float) {
+    androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(4.dp).padding(horizontal = 16.dp)) {
+        var x = 0f
+        val y = (size.height / 2 / p).toInt() * p
+        while (x < size.width) {
+            drawRect(pal.paperEdge.copy(alpha = 0.7f), androidx.compose.ui.geometry.Offset(x, y), androidx.compose.ui.geometry.Size(p, p))
+            x += 3 * p
         }
     }
 }
