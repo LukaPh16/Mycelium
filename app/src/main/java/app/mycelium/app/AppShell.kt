@@ -86,6 +86,8 @@ import app.mycelium.app.ui.PixelSprite
 import app.mycelium.app.ui.Protection
 import app.mycelium.app.ui.StatusChip
 import app.mycelium.app.ui.UiPrefs
+import app.mycelium.app.ui.Sounds
+import app.mycelium.app.ui.LocalSounds
 import app.mycelium.app.ui.pixel
 import app.mycelium.app.ui.pixelPanel
 import app.mycelium.engine.MyceliumEngine
@@ -110,9 +112,23 @@ class MainActivity : ComponentActivity() {
         MyceliumEngine.init(this)
         val prefs = UiPrefs(this)
         if (Build.VERSION.SDK_INT >= 33) requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
-        setContent { MyceliumTheme(prefs.theme, prefs.textSize, prefs.reduceMotion) { AppShell(prefs, ::startProtection, openRoute) } }
+        sounds = Sounds(this)
+        setContent {
+            LaunchedEffect(prefs.muted, prefs.masterVolume, prefs.effectsOn, prefs.effectsVolume, prefs.ambienceOn, prefs.ambienceVolume) {
+                sounds.setVolumes(prefs.muted, prefs.masterVolume, prefs.effectsOn, prefs.effectsVolume, prefs.ambienceOn, prefs.ambienceVolume)
+            }
+            CompositionLocalProvider(LocalSounds provides sounds) {
+                MyceliumTheme(prefs.theme, prefs.textSize, prefs.reduceMotion) { AppShell(prefs, ::startProtection, openRoute) }
+            }
+        }
         openFromIntent(intent)
     }
+
+    private lateinit var sounds: Sounds
+
+    override fun onPause() { super.onPause(); if (::sounds.isInitialized) sounds.onPause() }
+    override fun onResume() { super.onResume(); if (::sounds.isInitialized) sounds.onResume() }
+    override fun onDestroy() { if (::sounds.isInitialized) sounds.release(); super.onDestroy() }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)

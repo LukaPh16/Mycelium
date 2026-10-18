@@ -81,6 +81,8 @@ private class Msg(
     val sent: String? = null,           // exactly what went to the AI helper, viewable under Details
 ) {
     var actionNote by mutableStateOf<String?>(null)
+    /** The typewriter already ran (or started): scrolling it out of view and back shows it complete. */
+    var typed = false
 }
 
 /** A watch-list change the user must tap to confirm: the engine never changes it by itself. */
@@ -240,8 +242,11 @@ private fun BotBubble(m: Msg, onCite: (Long) -> Unit, onAction: (Action) -> Unit
     val pal = LocalPal.current
     val still = LocalReduceMotion.current
     val total = m.sentences.sumOf { it.first.length }
-    var shown by remember(m) { mutableIntStateOf(if (m.fresh && !still) 0 else total) }
-    LaunchedEffect(m) { while (shown < total) { delay(18); shown = (shown + 2).coerceAtMost(total) } }   // typewriter
+    var shown by remember(m) { mutableIntStateOf(if (m.fresh && !still && !m.typed) 0 else total) }
+    LaunchedEffect(m) {   // typewriter, once per message
+        m.typed = true
+        while (shown < total) { delay(18); shown = (shown + 2).coerceAtMost(total) }
+    }
     Row(verticalAlignment = Alignment.Top) {
         PixelSprite(R.drawable.sprite_gardener, artPixelDp = 1.5f, modifier = Modifier.padding(top = 22.dp))
         Spacer(Modifier.width(8.dp))

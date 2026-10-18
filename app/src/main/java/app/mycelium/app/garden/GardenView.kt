@@ -95,6 +95,8 @@ fun GardenView(
     val atlas = remember { SpriteAtlas.of(context) }
     val layout = remember { Layout.load(context.applicationContext) }
     val measurer = rememberTextMeasurer()
+    val sounds = app.mycelium.app.ui.LocalSounds.current
+    val lastMoodSound = remember { longArrayOf(0L) }
     val scope = rememberCoroutineScope()
     BoxWithConstraints(modifier) {
         val density = LocalDensity.current
@@ -192,8 +194,15 @@ fun GardenView(
                         val h = hit(p)
                         when {
                             h == null -> onTapEmpty()
-                            h.second != null -> { fx.hops[h.first.pkg] = clockMs(); onTapSnoop(h.first, h.second!!) }
-                            else -> { fx.hops[h.first.pkg] = clockMs(); onTapPet(h.first) }
+                            h.second != null -> {
+                                sounds?.play("snoop_${listOf("mite", "moth", "leech")[(crc(h.second!!.company) % 3).toInt()]}")
+                                fx.hops[h.first.pkg] = clockMs(); onTapSnoop(h.first, h.second!!)
+                            }
+                            else -> {
+                                if (h.first.sleeping(System.currentTimeMillis())) sounds?.play("hop")   // woken up with a boing
+                                sounds?.play(h.first.voice, h.first.voicePitch)
+                                fx.hops[h.first.pkg] = clockMs(); onTapPet(h.first)
+                            }
                         }
                     },
                     onDoubleTap = { p ->   // a smooth zoom in, or back out
@@ -210,7 +219,7 @@ fun GardenView(
                     // hold a creature for a moment to pick it up; drag it; let go and it lands on the nearest surface
                     val grab = hit(down.position)?.takeIf { it.second == null }?.first
                     if (grab != null) {
-                        val stillHeld = withTimeoutOrNull(380) {
+                        val stillHeld = withTimeoutOrNull(200) {
                             while (true) {
                                 val e = awaitPointerEvent()
                                 val c = e.changes.first()
@@ -219,6 +228,7 @@ fun GardenView(
                             @Suppress("UNREACHABLE_CODE") true
                         } == null
                         if (stillHeld) {
+                            sounds?.play("pickup")
                             lifted = grab.pkg
                             fx.hops[grab.pkg] = clockMs()
                             var last = down.position
@@ -233,6 +243,7 @@ fun GardenView(
                             moved[grab.pkg] = land
                             store.edit().putString("spot_${grab.pkg}", "${land.x},${land.y}").apply()
                             fx.hops[grab.pkg] = clockMs()
+                            sounds?.play("drop")
                             lifted = null
                             dragAt = null
                             return@awaitEachGesture
@@ -274,6 +285,15 @@ fun GardenView(
             val cx = floor(camera.x).toInt()
             val cy = floor(camera.y).toInt()
             placed[0] = renderer.render(cx, cy, ms, phase, pets, spots, selected, fx, lifted)
+            // a mood sound when a bubble pops up: only creatures on screen, at most one every 4 s
+            renderer.moodStarts.firstOrNull { (p, m) ->
+                m != Mood.CONTENT && spots[p.pkg]?.let { sp -> (sp.x - camera.x) * s in 0f..size.width && (sp.y - camera.y) * s in 0f..size.height } == true
+            }?.let { (_, m) ->
+                if (clockMs() - lastMoodSound[0] > 4000) {
+                    lastMoodSound[0] = clockMs()
+                    sounds?.play(when (m) { Mood.HAPPY -> "mood_happy"; Mood.GRUMPY -> "mood_grumpy"; Mood.SICK -> "mood_sick"; else -> "mood_sleepy" }, volume = 0.7f)
+                }
+            }
             val rw = min(renderer.frame.width, ceil(viewW / s).toInt() + 2)
             val rh = min(renderer.frame.height, ceil(viewH / s).toInt() + 2)
             drawImage(frameImage, srcOffset = IntOffset.Zero, srcSize = IntSize(rw, rh),

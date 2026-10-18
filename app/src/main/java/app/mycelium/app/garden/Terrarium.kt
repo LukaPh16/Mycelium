@@ -65,6 +65,9 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
     private val tint = Paint()
     private val dot = Paint().apply { isAntiAlias = false }
     private val src = Rect()
+    private val beats = HashMap<String, Long>()
+    /** Mood moments that started this frame (a creature just showed its bubble), for sounds. */
+    val moodStarts = mutableListOf<Pair<Pet, Mood>>()
     private val dst = Rect()
 
     private fun blit(s: Sprite, f: Int, x: Int, y: Int, cx: Int, cy: Int, alpha: Int = 255, anchored: Boolean = true) {
@@ -100,6 +103,7 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
         }
         val placed = mutableListOf<Placed>()
         val now = System.currentTimeMillis()
+        moodStarts.clear()
         for (pet in pets.sortedBy { spots[it.pkg]?.y ?: 0 }) {
             val spot = spots[pet.pkg] ?: continue
             placed += drawPet(pet, spot, cx, cy, ms, now, pet.pkg == selected || pet.pkg == lifted, fx, lift = if (pet.pkg == lifted) 6 else 0)
@@ -134,6 +138,10 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
         // a mood moment every 8 s (each creature on its own beat): bubble over the head plus a little behavior
         val beat = if (ms == 0L) 0L else (ms + crc(pet.pkg) % 8000) % 8000
         val moment = ms == 0L || beat < 2200
+        if (ms != 0L) {
+            val cycle = (ms + crc(pet.pkg) % 8000) / 8000
+            if (beats.put(pet.pkg, cycle).let { it != null && it != cycle }) moodStarts += pet to (if (asleep) Mood.SLEEPY else mood)
+        }
         var moodHop = 0
         var shake = 0
         if (moment && ms != 0L) when (mood) {

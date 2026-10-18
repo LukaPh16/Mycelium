@@ -89,6 +89,13 @@ fun GardenSheet(
 ) {
     val pal = LocalPal.current
     val scope = rememberCoroutineScope()
+    val sounds = app.mycelium.app.ui.LocalSounds.current
+    val stop = state.stop
+    val firstStop = remember { arrayOf(true) }
+    androidx.compose.runtime.LaunchedEffect(stop == SheetStop.PEEK) {   // paper slides when the sheet opens or closes
+        if (firstStop[0]) { firstStop[0] = false; return@LaunchedEffect }
+        sounds?.play(if (stop == SheetStop.PEEK) "ui_sheet_close" else "ui_sheet_open")
+    }
     val drag = rememberDraggableState { d -> scope.launch { state.height.snapTo((state.height.value - d).coerceIn(state.stops[0], state.stops[2])) } }
     Column(
         modifier
