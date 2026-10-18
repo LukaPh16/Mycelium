@@ -1,1963 +1,2645 @@
 {
- "version": 1,
+ "version": 2,
+ "key_ramp": [
+  "#3D0B3D",
+  "#7A1A7A",
+  "#B32BB3",
+  "#E055E0",
+  "#FF9CFF"
+ ],
+ "recolor": {
+  "mint": [
+   "#173D38",
+   "#2F7A6E",
+   "#4FB09A",
+   "#86D9BE",
+   "#D2F7E6"
+  ],
+  "rose": [
+   "#4A1730",
+   "#9A3560",
+   "#D45A86",
+   "#F28FB0",
+   "#FFD8E6"
+  ],
+  "lilac": [
+   "#26203E",
+   "#5F5385",
+   "#8A74A6",
+   "#B59BC9",
+   "#EADCF4"
+  ],
+  "sky": [
+   "#16325C",
+   "#2F68A8",
+   "#5FA8F0",
+   "#8CC4F7",
+   "#DCEFFF"
+  ],
+  "amber": [
+   "#3E2410",
+   "#8A5422",
+   "#C98A3A",
+   "#F2BE5E",
+   "#FFEAB4"
+  ],
+  "leaf": [
+   "#183E24",
+   "#2F7A2E",
+   "#46A83A",
+   "#7FD04A",
+   "#D2F07A"
+  ],
+  "coral": [
+   "#4A1E14",
+   "#A0422A",
+   "#E0703F",
+   "#F7A06A",
+   "#FFDCBC"
+  ],
+  "cream": [
+   "#4A3022",
+   "#A8723F",
+   "#D9B98A",
+   "#F1E4C3",
+   "#FFFAEE"
+  ]
+ },
+ "hats": [
+  "acorn",
+  "leaf",
+  "flowers",
+  "bow",
+  "crown",
+  "beret",
+  "sprout",
+  "shroom"
+ ],
+ "infect": [
+  "#3A0F22",
+  "#7A1530",
+  "#B8203A",
+  "#E8455A",
+  "#FF8C8C"
+ ],
  "sprites": [
   {
    "name": "creature_preset01_s1",
    "file": "creature_preset01_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset01_s1_sleep",
    "file": "creature_preset01_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset01_s2",
    "file": "creature_preset01_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    13
+   ]
   },
   {
    "name": "creature_preset01_s2_sleep",
    "file": "creature_preset01_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    13
+   ]
   },
   {
    "name": "creature_preset01_s3",
    "file": "creature_preset01_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    20
+   ]
   },
   {
    "name": "creature_preset01_s3_sleep",
    "file": "creature_preset01_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    20
+   ]
   },
   {
    "name": "creature_preset02_s1",
    "file": "creature_preset02_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    13
+   ]
   },
   {
    "name": "creature_preset02_s1_sleep",
    "file": "creature_preset02_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    13
+   ]
   },
   {
    "name": "creature_preset02_s2",
    "file": "creature_preset02_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    18
+   ]
   },
   {
    "name": "creature_preset02_s2_sleep",
    "file": "creature_preset02_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    18
+   ]
   },
   {
    "name": "creature_preset02_s3",
    "file": "creature_preset02_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    25
+   ]
   },
   {
    "name": "creature_preset02_s3_sleep",
    "file": "creature_preset02_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    25
+   ]
   },
   {
    "name": "creature_preset03_s1",
    "file": "creature_preset03_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset03_s1_sleep",
    "file": "creature_preset03_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset03_s2",
    "file": "creature_preset03_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset03_s2_sleep",
    "file": "creature_preset03_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset03_s3",
    "file": "creature_preset03_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset03_s3_sleep",
    "file": "creature_preset03_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset04_s1",
    "file": "creature_preset04_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset04_s1_sleep",
    "file": "creature_preset04_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset04_s2",
    "file": "creature_preset04_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    13
+   ]
   },
   {
    "name": "creature_preset04_s2_sleep",
    "file": "creature_preset04_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    13
+   ]
   },
   {
    "name": "creature_preset04_s3",
    "file": "creature_preset04_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    20
+   ]
   },
   {
    "name": "creature_preset04_s3_sleep",
    "file": "creature_preset04_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    20
+   ]
   },
   {
    "name": "creature_preset05_s1",
    "file": "creature_preset05_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    17
+   ]
   },
   {
    "name": "creature_preset05_s1_sleep",
    "file": "creature_preset05_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    17
+   ]
   },
   {
    "name": "creature_preset05_s2",
    "file": "creature_preset05_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    24
+   ]
   },
   {
    "name": "creature_preset05_s2_sleep",
    "file": "creature_preset05_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    24
+   ]
   },
   {
    "name": "creature_preset05_s3",
    "file": "creature_preset05_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    33
+   ]
   },
   {
    "name": "creature_preset05_s3_sleep",
    "file": "creature_preset05_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    33
+   ]
   },
   {
    "name": "creature_preset06_s1",
    "file": "creature_preset06_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    17
+   ]
   },
   {
    "name": "creature_preset06_s1_sleep",
    "file": "creature_preset06_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    17
+   ]
   },
   {
    "name": "creature_preset06_s2",
    "file": "creature_preset06_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    24
+   ]
   },
   {
    "name": "creature_preset06_s2_sleep",
    "file": "creature_preset06_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    24
+   ]
   },
   {
    "name": "creature_preset06_s3",
    "file": "creature_preset06_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    33
+   ]
   },
   {
    "name": "creature_preset06_s3_sleep",
    "file": "creature_preset06_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    33
+   ]
   },
   {
    "name": "creature_preset07_s1",
    "file": "creature_preset07_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    10
+   ]
   },
   {
    "name": "creature_preset07_s1_sleep",
    "file": "creature_preset07_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    10
+   ]
   },
   {
    "name": "creature_preset07_s2",
    "file": "creature_preset07_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset07_s2_sleep",
    "file": "creature_preset07_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset07_s3",
    "file": "creature_preset07_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset07_s3_sleep",
    "file": "creature_preset07_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset08_s1",
    "file": "creature_preset08_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    7
+   ]
   },
   {
    "name": "creature_preset08_s1_sleep",
    "file": "creature_preset08_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    7
+   ]
   },
   {
    "name": "creature_preset08_s2",
    "file": "creature_preset08_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    12
+   ]
   },
   {
    "name": "creature_preset08_s2_sleep",
    "file": "creature_preset08_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    12
+   ]
   },
   {
    "name": "creature_preset08_s3",
    "file": "creature_preset08_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    19
+   ]
   },
   {
    "name": "creature_preset08_s3_sleep",
    "file": "creature_preset08_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    19
+   ]
   },
   {
    "name": "creature_preset09_s1",
    "file": "creature_preset09_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset09_s1_sleep",
    "file": "creature_preset09_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset09_s2",
    "file": "creature_preset09_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    14
+   ]
   },
   {
    "name": "creature_preset09_s2_sleep",
    "file": "creature_preset09_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    14
+   ]
   },
   {
    "name": "creature_preset09_s3",
    "file": "creature_preset09_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    21
+   ]
   },
   {
    "name": "creature_preset09_s3_sleep",
    "file": "creature_preset09_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    21
+   ]
   },
   {
    "name": "creature_preset10_s1",
    "file": "creature_preset10_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    15
+   ]
   },
   {
    "name": "creature_preset10_s1_sleep",
    "file": "creature_preset10_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    15
+   ]
   },
   {
    "name": "creature_preset10_s2",
    "file": "creature_preset10_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    22
+   ]
   },
   {
    "name": "creature_preset10_s2_sleep",
    "file": "creature_preset10_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    22
+   ]
   },
   {
    "name": "creature_preset10_s3",
    "file": "creature_preset10_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    31
+   ]
   },
   {
    "name": "creature_preset10_s3_sleep",
    "file": "creature_preset10_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    31
+   ]
   },
   {
    "name": "creature_preset11_s1",
    "file": "creature_preset11_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset11_s1_sleep",
    "file": "creature_preset11_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset11_s2",
    "file": "creature_preset11_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset11_s2_sleep",
    "file": "creature_preset11_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset11_s3",
    "file": "creature_preset11_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset11_s3_sleep",
    "file": "creature_preset11_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset12_s1",
    "file": "creature_preset12_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset12_s1_sleep",
    "file": "creature_preset12_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset12_s2",
    "file": "creature_preset12_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    14
+   ]
   },
   {
    "name": "creature_preset12_s2_sleep",
    "file": "creature_preset12_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    14
+   ]
   },
   {
    "name": "creature_preset12_s3",
    "file": "creature_preset12_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    21
+   ]
   },
   {
    "name": "creature_preset12_s3_sleep",
    "file": "creature_preset12_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    21
+   ]
   },
   {
    "name": "creature_preset13_s1",
    "file": "creature_preset13_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    15
+   ]
   },
   {
    "name": "creature_preset13_s1_sleep",
    "file": "creature_preset13_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    15
+   ]
   },
   {
    "name": "creature_preset13_s2",
    "file": "creature_preset13_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    22
+   ]
   },
   {
    "name": "creature_preset13_s2_sleep",
    "file": "creature_preset13_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    22
+   ]
   },
   {
    "name": "creature_preset13_s3",
    "file": "creature_preset13_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    31
+   ]
   },
   {
    "name": "creature_preset13_s3_sleep",
    "file": "creature_preset13_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    31
+   ]
   },
   {
    "name": "creature_preset14_s1",
    "file": "creature_preset14_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    16
+   ]
   },
   {
    "name": "creature_preset14_s1_sleep",
    "file": "creature_preset14_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    16
+   ]
   },
   {
    "name": "creature_preset14_s2",
    "file": "creature_preset14_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    21
+   ]
   },
   {
    "name": "creature_preset14_s2_sleep",
    "file": "creature_preset14_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    21
+   ]
   },
   {
    "name": "creature_preset14_s3",
    "file": "creature_preset14_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    28
+   ]
   },
   {
    "name": "creature_preset14_s3_sleep",
    "file": "creature_preset14_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    28
+   ]
   },
   {
    "name": "creature_preset15_s1",
    "file": "creature_preset15_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset15_s1_sleep",
    "file": "creature_preset15_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset15_s2",
    "file": "creature_preset15_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset15_s2_sleep",
    "file": "creature_preset15_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset15_s3",
    "file": "creature_preset15_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset15_s3_sleep",
    "file": "creature_preset15_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset16_s1",
    "file": "creature_preset16_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset16_s1_sleep",
    "file": "creature_preset16_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset16_s2",
    "file": "creature_preset16_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    13
+   ]
   },
   {
    "name": "creature_preset16_s2_sleep",
    "file": "creature_preset16_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    13
+   ]
   },
   {
    "name": "creature_preset16_s3",
    "file": "creature_preset16_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    20
+   ]
   },
   {
    "name": "creature_preset16_s3_sleep",
    "file": "creature_preset16_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    20
+   ]
   },
   {
    "name": "creature_preset17_s1",
    "file": "creature_preset17_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    17
+   ]
   },
   {
    "name": "creature_preset17_s1_sleep",
    "file": "creature_preset17_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    17
+   ]
   },
   {
    "name": "creature_preset17_s2",
    "file": "creature_preset17_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    24
+   ]
   },
   {
    "name": "creature_preset17_s2_sleep",
    "file": "creature_preset17_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    24
+   ]
   },
   {
    "name": "creature_preset17_s3",
    "file": "creature_preset17_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    33
+   ]
   },
   {
    "name": "creature_preset17_s3_sleep",
    "file": "creature_preset17_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    33
+   ]
   },
   {
    "name": "creature_preset18_s1",
    "file": "creature_preset18_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    17
+   ]
   },
   {
    "name": "creature_preset18_s1_sleep",
    "file": "creature_preset18_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    17
+   ]
   },
   {
    "name": "creature_preset18_s2",
    "file": "creature_preset18_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    24
+   ]
   },
   {
    "name": "creature_preset18_s2_sleep",
    "file": "creature_preset18_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    24
+   ]
   },
   {
    "name": "creature_preset18_s3",
    "file": "creature_preset18_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    33
+   ]
   },
   {
    "name": "creature_preset18_s3_sleep",
    "file": "creature_preset18_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    33
+   ]
   },
   {
    "name": "creature_preset19_s1",
    "file": "creature_preset19_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    10
+   ]
   },
   {
    "name": "creature_preset19_s1_sleep",
    "file": "creature_preset19_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    10
+   ]
   },
   {
    "name": "creature_preset19_s2",
    "file": "creature_preset19_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset19_s2_sleep",
    "file": "creature_preset19_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset19_s3",
    "file": "creature_preset19_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset19_s3_sleep",
    "file": "creature_preset19_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset20_s1",
    "file": "creature_preset20_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    7
+   ]
   },
   {
    "name": "creature_preset20_s1_sleep",
    "file": "creature_preset20_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    7
+   ]
   },
   {
    "name": "creature_preset20_s2",
    "file": "creature_preset20_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    12
+   ]
   },
   {
    "name": "creature_preset20_s2_sleep",
    "file": "creature_preset20_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    12
+   ]
   },
   {
    "name": "creature_preset20_s3",
    "file": "creature_preset20_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    19
+   ]
   },
   {
    "name": "creature_preset20_s3_sleep",
    "file": "creature_preset20_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    19
+   ]
   },
   {
    "name": "creature_preset21_s1",
    "file": "creature_preset21_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset21_s1_sleep",
    "file": "creature_preset21_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset21_s2",
    "file": "creature_preset21_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    14
+   ]
   },
   {
    "name": "creature_preset21_s2_sleep",
    "file": "creature_preset21_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    14
+   ]
   },
   {
    "name": "creature_preset21_s3",
    "file": "creature_preset21_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    21
+   ]
   },
   {
    "name": "creature_preset21_s3_sleep",
    "file": "creature_preset21_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    21
+   ]
   },
   {
    "name": "creature_preset22_s1",
    "file": "creature_preset22_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset22_s1_sleep",
    "file": "creature_preset22_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    11
+   ]
   },
   {
    "name": "creature_preset22_s2",
    "file": "creature_preset22_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset22_s2_sleep",
    "file": "creature_preset22_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    16
+   ]
   },
   {
    "name": "creature_preset22_s3",
    "file": "creature_preset22_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset22_s3_sleep",
    "file": "creature_preset22_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    23
+   ]
   },
   {
    "name": "creature_preset23_s1",
    "file": "creature_preset23_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset23_s1_sleep",
    "file": "creature_preset23_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset23_s2",
    "file": "creature_preset23_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    14
+   ]
   },
   {
    "name": "creature_preset23_s2_sleep",
    "file": "creature_preset23_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    14
+   ]
   },
   {
    "name": "creature_preset23_s3",
    "file": "creature_preset23_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    21
+   ]
   },
   {
    "name": "creature_preset23_s3_sleep",
    "file": "creature_preset23_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    21
+   ]
   },
   {
    "name": "creature_preset24_s1",
    "file": "creature_preset24_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset24_s1_sleep",
    "file": "creature_preset24_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    9
+   ]
   },
   {
    "name": "creature_preset24_s2",
    "file": "creature_preset24_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    13
+   ]
   },
   {
    "name": "creature_preset24_s2_sleep",
    "file": "creature_preset24_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    13
+   ]
   },
   {
    "name": "creature_preset24_s3",
    "file": "creature_preset24_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    20
+   ]
   },
   {
    "name": "creature_preset24_s3_sleep",
    "file": "creature_preset24_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    20
+   ]
   },
   {
    "name": "creature_preset25_s1",
    "file": "creature_preset25_s1.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    15,
+    16
+   ]
   },
   {
    "name": "creature_preset25_s1_sleep",
    "file": "creature_preset25_s1_sleep.png",
-   "w": 32,
+   "w": 30,
    "h": 32,
    "anchor": [
-    16,
+    15,
     31
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    15,
+    16
+   ]
   },
   {
    "name": "creature_preset25_s2",
    "file": "creature_preset25_s2.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    19,
+    21
+   ]
   },
   {
    "name": "creature_preset25_s2_sleep",
    "file": "creature_preset25_s2_sleep.png",
-   "w": 32,
-   "h": 40,
+   "w": 38,
+   "h": 42,
    "anchor": [
-    16,
-    39
+    19,
+    41
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    19,
+    21
+   ]
   },
   {
    "name": "creature_preset25_s3",
    "file": "creature_preset25_s3.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 4,
    "fps": 6,
-   "priority": "P1"
+   "priority": "P1",
+   "head": [
+    23,
+    28
+   ]
   },
   {
    "name": "creature_preset25_s3_sleep",
    "file": "creature_preset25_s3_sleep.png",
-   "w": 40,
-   "h": 48,
+   "w": 46,
+   "h": 54,
    "anchor": [
-    20,
-    47
+    23,
+    53
    ],
    "frames": 2,
    "fps": 2,
-   "priority": "P2"
+   "priority": "P2",
+   "head": [
+    23,
+    28
+   ]
   },
   {
    "name": "snoop_1",
    "file": "snoop_1.png",
-   "w": 16,
+   "w": 18,
    "h": 16,
    "anchor": [
-    8,
+    9,
     15
    ],
    "frames": 4,
@@ -1967,10 +2649,10 @@
   {
    "name": "snoop_2",
    "file": "snoop_2.png",
-   "w": 16,
+   "w": 18,
    "h": 16,
    "anchor": [
-    8,
+    9,
     15
    ],
    "frames": 4,
@@ -1978,598 +2660,117 @@
    "priority": "P1"
   },
   {
-   "name": "island_top_left",
-   "file": "island_top_left.png",
-   "w": 16,
+   "name": "snoop_3",
+   "file": "snoop_3.png",
+   "w": 18,
    "h": 16,
    "anchor": [
-    0,
-    0
+    9,
+    15
    ],
-   "frames": 1,
-   "fps": 0,
+   "frames": 4,
+   "fps": 8,
    "priority": "P1"
   },
   {
-   "name": "island_top",
-   "file": "island_top.png",
-   "w": 16,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "island_top_right",
-   "file": "island_top_right.png",
-   "w": 16,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "island_fill",
-   "file": "island_fill.png",
-   "w": 16,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "island_edge_left",
-   "file": "island_edge_left.png",
-   "w": 16,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "island_edge_right",
-   "file": "island_edge_right.png",
-   "w": 16,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "rock_under_left",
-   "file": "rock_under_left.png",
-   "w": 16,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "rock_under_mid",
-   "file": "rock_under_mid.png",
-   "w": 16,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "rock_under_right",
-   "file": "rock_under_right.png",
-   "w": 16,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "rock_under_tip",
-   "file": "rock_under_tip.png",
-   "w": 16,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "plank",
-   "file": "plank.png",
-   "w": 16,
-   "h": 8,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P2"
-  },
-  {
-   "name": "rope_bridge",
-   "file": "rope_bridge.png",
-   "w": 16,
+   "name": "hat_acorn",
+   "file": "hat_acorn.png",
+   "w": 14,
    "h": 10,
    "anchor": [
-    0,
-    0
+    7,
+    9
    ],
    "frames": 1,
    "fps": 0,
    "priority": "P2"
   },
   {
-   "name": "hanging_root",
-   "file": "hanging_root.png",
-   "w": 8,
-   "h": 24,
-   "anchor": [
-    4,
-    0
-   ],
-   "frames": 2,
-   "fps": 2,
-   "priority": "P2"
-  },
-  {
-   "name": "banner",
-   "file": "banner.png",
-   "w": 12,
-   "h": 22,
-   "anchor": [
-    1,
-    21
-   ],
-   "frames": 4,
-   "fps": 6,
-   "priority": "P3"
-  },
-  {
-   "name": "water",
-   "file": "water.png",
-   "w": 16,
-   "h": 8,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 3,
-   "fps": 4,
-   "priority": "P2"
-  },
-  {
-   "name": "waterfall",
-   "file": "waterfall.png",
-   "w": 10,
-   "h": 16,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 3,
-   "fps": 8,
-   "priority": "P3"
-  },
-  {
-   "name": "tree_blossom_1",
-   "file": "tree_blossom_1.png",
-   "w": 64,
-   "h": 72,
-   "anchor": [
-    32,
-    71
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "fern_1",
-   "file": "fern_1.png",
-   "w": 22,
-   "h": 18,
-   "anchor": [
-    11,
-    17
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P2"
-  },
-  {
-   "name": "mushroom_glow_1",
-   "file": "mushroom_glow_1.png",
-   "w": 18,
-   "h": 16,
-   "anchor": [
-    9,
-    15
-   ],
-   "frames": 2,
-   "fps": 2,
-   "priority": "P2"
-  },
-  {
-   "name": "vine_hanging_1",
-   "file": "vine_hanging_1.png",
-   "w": 12,
-   "h": 30,
-   "anchor": [
-    6,
-    0
-   ],
-   "frames": 2,
-   "fps": 2,
-   "priority": "P2"
-  },
-  {
-   "name": "lily_pads_1",
-   "file": "lily_pads_1.png",
-   "w": 22,
-   "h": 8,
-   "anchor": [
-    11,
-    7
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P3"
-  },
-  {
-   "name": "reeds_1",
-   "file": "reeds_1.png",
-   "w": 12,
-   "h": 22,
-   "anchor": [
-    6,
-    21
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P3"
-  },
-  {
-   "name": "moss_1",
-   "file": "moss_1.png",
-   "w": 18,
-   "h": 7,
-   "anchor": [
-    9,
-    6
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P2"
-  },
-  {
-   "name": "flowers_1",
-   "file": "flowers_1.png",
+   "name": "hat_leaf",
+   "file": "hat_leaf.png",
    "w": 14,
-   "h": 12,
+   "h": 10,
    "anchor": [
     7,
-    11
+    9
    ],
    "frames": 1,
    "fps": 0,
    "priority": "P2"
   },
   {
-   "name": "grass_tuft_1",
-   "file": "grass_tuft_1.png",
-   "w": 12,
-   "h": 8,
-   "anchor": [
-    6,
-    7
-   ],
-   "frames": 2,
-   "fps": 2,
-   "priority": "P2"
-  },
-  {
-   "name": "bonsai_1",
-   "file": "bonsai_1.png",
-   "w": 28,
-   "h": 28,
-   "anchor": [
-    14,
-    27
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P3"
-  },
-  {
-   "name": "tree_blossom_2",
-   "file": "tree_blossom_2.png",
-   "w": 64,
-   "h": 72,
-   "anchor": [
-    32,
-    71
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "fern_2",
-   "file": "fern_2.png",
-   "w": 22,
-   "h": 18,
-   "anchor": [
-    11,
-    17
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P2"
-  },
-  {
-   "name": "mushroom_glow_2",
-   "file": "mushroom_glow_2.png",
-   "w": 18,
-   "h": 16,
-   "anchor": [
-    9,
-    15
-   ],
-   "frames": 2,
-   "fps": 2,
-   "priority": "P2"
-  },
-  {
-   "name": "vine_hanging_2",
-   "file": "vine_hanging_2.png",
-   "w": 12,
-   "h": 30,
-   "anchor": [
-    6,
-    0
-   ],
-   "frames": 2,
-   "fps": 2,
-   "priority": "P2"
-  },
-  {
-   "name": "lily_pads_2",
-   "file": "lily_pads_2.png",
-   "w": 22,
-   "h": 8,
-   "anchor": [
-    11,
-    7
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P3"
-  },
-  {
-   "name": "reeds_2",
-   "file": "reeds_2.png",
-   "w": 12,
-   "h": 22,
-   "anchor": [
-    6,
-    21
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P3"
-  },
-  {
-   "name": "moss_2",
-   "file": "moss_2.png",
-   "w": 18,
-   "h": 7,
-   "anchor": [
-    9,
-    6
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P2"
-  },
-  {
-   "name": "flowers_2",
-   "file": "flowers_2.png",
+   "name": "hat_flowers",
+   "file": "hat_flowers.png",
    "w": 14,
-   "h": 12,
+   "h": 10,
    "anchor": [
     7,
-    11
+    9
    ],
    "frames": 1,
    "fps": 0,
    "priority": "P2"
   },
   {
-   "name": "grass_tuft_2",
-   "file": "grass_tuft_2.png",
-   "w": 12,
-   "h": 8,
+   "name": "hat_bow",
+   "file": "hat_bow.png",
+   "w": 14,
+   "h": 10,
    "anchor": [
-    6,
-    7
-   ],
-   "frames": 2,
-   "fps": 2,
-   "priority": "P2"
-  },
-  {
-   "name": "bonsai_2",
-   "file": "bonsai_2.png",
-   "w": 28,
-   "h": 28,
-   "anchor": [
-    14,
-    27
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P3"
-  },
-  {
-   "name": "cloud_1",
-   "file": "cloud_1.png",
-   "w": 48,
-   "h": 20,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "cloud_2",
-   "file": "cloud_2.png",
-   "w": 32,
-   "h": 14,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "cloud_3",
-   "file": "cloud_3.png",
-   "w": 64,
-   "h": 24,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 1,
-   "fps": 0,
-   "priority": "P1"
-  },
-  {
-   "name": "pillar_1",
-   "file": "pillar_1.png",
-   "w": 26,
-   "h": 84,
-   "anchor": [
-    0,
-    0
+    7,
+    9
    ],
    "frames": 1,
    "fps": 0,
    "priority": "P2"
   },
   {
-   "name": "pillar_2",
-   "file": "pillar_2.png",
-   "w": 18,
-   "h": 60,
+   "name": "hat_crown",
+   "file": "hat_crown.png",
+   "w": 14,
+   "h": 10,
    "anchor": [
-    0,
-    0
+    7,
+    9
    ],
    "frames": 1,
    "fps": 0,
    "priority": "P2"
   },
   {
-   "name": "firefly",
-   "file": "firefly.png",
-   "w": 5,
-   "h": 5,
+   "name": "hat_beret",
+   "file": "hat_beret.png",
+   "w": 14,
+   "h": 10,
    "anchor": [
-    2,
-    2
-   ],
-   "frames": 2,
-   "fps": 4,
-   "priority": "P2"
-  },
-  {
-   "name": "pollen",
-   "file": "pollen.png",
-   "w": 2,
-   "h": 2,
-   "anchor": [
-    0,
-    0
+    7,
+    9
    ],
    "frames": 1,
    "fps": 0,
-   "priority": "P3"
-  },
-  {
-   "name": "leaf",
-   "file": "leaf.png",
-   "w": 6,
-   "h": 6,
-   "anchor": [
-    3,
-    3
-   ],
-   "frames": 4,
-   "fps": 6,
-   "priority": "P3"
-  },
-  {
-   "name": "star",
-   "file": "star.png",
-   "w": 5,
-   "h": 5,
-   "anchor": [
-    2,
-    2
-   ],
-   "frames": 2,
-   "fps": 1,
    "priority": "P2"
   },
   {
-   "name": "moon",
-   "file": "moon.png",
-   "w": 16,
-   "h": 16,
+   "name": "hat_sprout",
+   "file": "hat_sprout.png",
+   "w": 14,
+   "h": 10,
    "anchor": [
-    8,
-    8
+    7,
+    9
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P2"
+  },
+  {
+   "name": "hat_shroom",
+   "file": "hat_shroom.png",
+   "w": 14,
+   "h": 10,
+   "anchor": [
+    7,
+    9
    ],
    "frames": 1,
    "fps": 0,
@@ -2578,11 +2779,11 @@
   {
    "name": "poof",
    "file": "poof.png",
-   "w": 16,
-   "h": 16,
+   "w": 20,
+   "h": 20,
    "anchor": [
-    8,
-    8
+    10,
+    10
    ],
    "frames": 5,
    "fps": 12,
@@ -2591,27 +2792,326 @@
   {
    "name": "sparkle",
    "file": "sparkle.png",
-   "w": 7,
-   "h": 7,
+   "w": 9,
+   "h": 9,
    "anchor": [
-    3,
-    3
+    4,
+    4
    ],
    "frames": 3,
    "fps": 10,
    "priority": "P2"
   },
   {
+   "name": "heart",
+   "file": "heart.png",
+   "w": 9,
+   "h": 9,
+   "anchor": [
+    4,
+    8
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P2"
+  },
+  {
    "name": "zzz",
    "file": "zzz.png",
-   "w": 9,
-   "h": 10,
+   "w": 11,
+   "h": 12,
    "anchor": [
     0,
-    9
+    11
    ],
    "frames": 3,
    "fps": 2,
+   "priority": "P2"
+  },
+  {
+   "name": "firefly",
+   "file": "firefly.png",
+   "w": 7,
+   "h": 7,
+   "anchor": [
+    3,
+    3
+   ],
+   "frames": 2,
+   "fps": 4,
+   "priority": "P2"
+  },
+  {
+   "name": "mote",
+   "file": "mote.png",
+   "w": 3,
+   "h": 3,
+   "anchor": [
+    1,
+    1
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P3"
+  },
+  {
+   "name": "room_day",
+   "file": "room_day.png",
+   "w": 320,
+   "h": 720,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P1"
+  },
+  {
+   "name": "light_day",
+   "file": "light_day.png",
+   "w": 320,
+   "h": 600,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P3"
+  },
+  {
+   "name": "room_dusk",
+   "file": "room_dusk.png",
+   "w": 320,
+   "h": 720,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P1"
+  },
+  {
+   "name": "light_dusk",
+   "file": "light_dusk.png",
+   "w": 320,
+   "h": 600,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P3"
+  },
+  {
+   "name": "room_night",
+   "file": "room_night.png",
+   "w": 320,
+   "h": 720,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P1"
+  },
+  {
+   "name": "light_night",
+   "file": "light_night.png",
+   "w": 320,
+   "h": 600,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P3"
+  },
+  {
+   "name": "terrain",
+   "file": "terrain.png",
+   "w": 320,
+   "h": 600,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P1"
+  },
+  {
+   "name": "glass_front",
+   "file": "glass_front.png",
+   "w": 320,
+   "h": 600,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 1,
+   "fps": 0,
+   "priority": "P1"
+  },
+  {
+   "name": "pond",
+   "file": "pond.png",
+   "w": 56,
+   "h": 8,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 3,
+   "fps": 4,
+   "priority": "P2"
+  },
+  {
+   "name": "spring",
+   "file": "spring.png",
+   "w": 6,
+   "h": 60,
+   "anchor": [
+    0,
+    0
+   ],
+   "frames": 4,
+   "fps": 8,
+   "priority": "P2"
+  },
+  {
+   "name": "tuft_1",
+   "file": "tuft_1.png",
+   "w": 16,
+   "h": 14,
+   "anchor": [
+    8,
+    13
+   ],
+   "frames": 3,
+   "fps": 3,
+   "priority": "P2"
+  },
+  {
+   "name": "tuft_2",
+   "file": "tuft_2.png",
+   "w": 16,
+   "h": 14,
+   "anchor": [
+    8,
+    13
+   ],
+   "frames": 3,
+   "fps": 3,
+   "priority": "P2"
+  },
+  {
+   "name": "tuft_3",
+   "file": "tuft_3.png",
+   "w": 16,
+   "h": 14,
+   "anchor": [
+    8,
+    13
+   ],
+   "frames": 3,
+   "fps": 3,
+   "priority": "P2"
+  },
+  {
+   "name": "tuft_4",
+   "file": "tuft_4.png",
+   "w": 16,
+   "h": 14,
+   "anchor": [
+    8,
+    13
+   ],
+   "frames": 3,
+   "fps": 3,
+   "priority": "P2"
+  },
+  {
+   "name": "glowcap_1",
+   "file": "glowcap_1.png",
+   "w": 18,
+   "h": 16,
+   "anchor": [
+    9,
+    15
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2"
+  },
+  {
+   "name": "glowcap_2",
+   "file": "glowcap_2.png",
+   "w": 18,
+   "h": 16,
+   "anchor": [
+    9,
+    15
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2"
+  },
+  {
+   "name": "glowcap_3",
+   "file": "glowcap_3.png",
+   "w": 18,
+   "h": 16,
+   "anchor": [
+    9,
+    15
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2"
+  },
+  {
+   "name": "vine_1",
+   "file": "vine_1.png",
+   "w": 12,
+   "h": 70,
+   "anchor": [
+    6,
+    0
+   ],
+   "frames": 2,
+   "fps": 1,
+   "priority": "P2"
+  },
+  {
+   "name": "vine_2",
+   "file": "vine_2.png",
+   "w": 12,
+   "h": 70,
+   "anchor": [
+    6,
+    0
+   ],
+   "frames": 2,
+   "fps": 1,
+   "priority": "P2"
+  },
+  {
+   "name": "vine_3",
+   "file": "vine_3.png",
+   "w": 12,
+   "h": 70,
+   "anchor": [
+    6,
+    0
+   ],
+   "frames": 2,
+   "fps": 1,
    "priority": "P2"
   }
  ]
