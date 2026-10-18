@@ -239,6 +239,7 @@ private fun PetCard(pet: Pet, onBack: () -> Unit, onShoo: (Pet, SnoopVisit) -> U
                 style = MaterialTheme.typography.bodySmall, color = pal.inkMuted,
             )
         }
+        item { ScreenTimeBar(pet) }
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(stringResource(R.string.sheet_snoops_title), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = pal.ink)

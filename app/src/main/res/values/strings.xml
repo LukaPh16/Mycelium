@@ -127,6 +127,67 @@
     </plurals>
     <string name="sheet_next">Next stage at %1$d growth (now %2$d)</string>
     <string name="sheet_grown">Fully grown!</string>
+    <!-- screen time on the creature card, and the day graph -->
+    <string name="st_title">Screen time today</string>
+    <string name="st_loading">Counting screen time…</string>
+    <string name="st_none">No screen time yet today for your watched apps.</string>
+    <string name="st_no_access">Mycelium needs usage access to count screen time.</string>
+    <string name="st_grant">Allow usage access</string>
+    <string name="st_line">%1$s · %2$s</string>
+    <string name="st_share">%1$d%% of watched-app screen time</string>
+    <string name="st_share_small">under 1%% of watched-app screen time</string>
+    <string name="st_bar_cd">Screen time of %1$s today: %2$s, %3$s. Opens the day graph.</string>
+    <string name="st_hm">%1$s %2$s</string>
+    <plurals name="st_hours"><item quantity="one">%d h</item><item quantity="other">%d h</item></plurals>
+    <plurals name="st_minutes"><item quantity="one">%d min</item><item quantity="other">%d min</item></plurals>
+    <plurals name="st_seconds"><item quantity="one">%d s</item><item quantity="other">%d s</item></plurals>
+    <string name="info_screen_t">Screen time</string>
+    <string name="info_screen_b">How long this app was on screen, from Android\'s own usage stats (the same numbers as Digital Wellbeing). The full bar is the screen time of all the apps you watch; the filled part is this app\'s share. Only watched apps count, and it is all worked out on this phone. Android keeps only a few days of usage history, so older days stay empty. Tap the bar to see when the app was used and when it reached out to trackers.</string>
+    <string name="st_day_title">%1$s · a day</string>
+    <string name="st_prev">Previous day</string>
+    <string name="st_next">Next day</string>
+    <string name="st_today">Today</string>
+    <string name="st_total">On screen: %1$s</string>
+    <string name="st_day_empty">Nothing recorded for this day. Android keeps only a few days of usage history.</string>
+    <string name="st_truncated">Very busy day: only the first %1$d signals are shown.</string>
+    <string name="st_lane_bg">Background</string>
+    <string name="st_lane_fg">On screen</string>
+    <string name="st_minutes_axis">Minutes on screen per hour</string>
+    <string name="st_hour_view">%1$s – %2$s</string>
+    <string name="st_back_day">Whole day</string>
+    <string name="st_hour_cd">%1$s: %2$s on screen, %3$d signals. Tap to zoom in.</string>
+    <string name="st_sessions">On screen this hour</string>
+    <string name="st_no_sessions">Not on screen in this hour.</string>
+    <string name="st_session_row">%1$s – %2$s (%3$s)</string>
+    <string name="st_filters">Show</string>
+    <string name="st_colors">Colors are packet types:</string>
+    <string name="st_honest">Each mark is a lookup or connection attempt Mycelium saw at that second, not data being sent. Mycelium cannot see inside encrypted traffic.</string>
+    <string name="st_cluster_title">%1$d signals</string>
+    <string name="st_cluster_cd">%1$d signals around %2$s. Tap for the list.</string>
+    <string name="st_signal_cd">%1$s, %2$s, %3$s, %4$s</string>
+    <string name="st_time">Time</string>
+    <string name="st_company">Company</string>
+    <string name="st_domain">Address</string>
+    <string name="st_category">Kind</string>
+    <string name="st_ptype">Packet type</string>
+    <string name="st_verdict">Result</string>
+    <string name="st_state">App state</string>
+    <string name="st_event_id">Record</string>
+    <string name="st_event_id_v">#%1$d</string>
+    <string name="st_allowed">allowed</string>
+    <string name="st_blocked">blocked</string>
+    <string name="st_fg">on screen</string>
+    <string name="st_bg">background</string>
+    <string name="st_unknown">unknown</string>
+    <string name="sig_ads">Ads</string>
+    <string name="sig_analytics">Analytics</string>
+    <string name="sig_fingerprinting">Fingerprinting</string>
+    <string name="sig_social">Social</string>
+    <string name="sig_blocked">Blocked</string>
+    <string name="sig_tripwire">Tripwire</string>
+    <string name="sig_anomaly">Unusual</string>
+    <string name="sig_tracker">Other tracker</string>
+    <string name="sig_benign">Plain lookups</string>
     <string name="sheet_snoops_title">Snoops today</string>
     <string name="sheet_all">All creatures</string>
     <string name="info_growth_t">Stage and growth</string>

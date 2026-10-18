@@ -369,6 +369,8 @@ object Glyphs {
     val leaf = listOf("......XX", "....XXXX", "..XXXXXX", ".XXXX.XX", ".XXX.XXX", ".XX.XXX.", ".X.XX...", "X.......")
     val target = listOf("...XX...", ".XX..XX.", ".X....X.", "X..XX..X", "X..XX..X", ".X....X.", ".XX..XX.", "...XX...")
     val back = listOf("...X....", "..XX....", ".XXXXXXX", "XXXXXXXX", ".XXXXXXX", "..XX....", "...X....", "........")
+    val chevron = listOf("..X.....", "..XX....", "...XX...", "....XX..", "....XX..", "...XX...", "..XX....", "..X.....")
+    val chevronLeft = chevron.map { it.reversed() }
 }
 
 /** A switch whose whole row (label included) toggles it, with an optional InfoButton. */

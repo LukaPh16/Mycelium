@@ -35,6 +35,9 @@ class FixtureDb {
                 .joinToString(",") { s(it) } + ")")
     }
 
+    fun session(pkg: String, start: Long, end: Long, sim: Int = 0) =
+        exec("INSERT INTO session(package,start_ts,end_ts,sim) VALUES('$pkg',$start,$end,$sim)")
+
     init {
         SchemaSql.split(File(System.getProperty("schemaPath")!!).readText()).forEach(::exec)
         exec("INSERT INTO app(package,label,watched,watched_ts,seed) VALUES('com.a','Alpha',1,0,'a1'),('com.b','Beta',1,0,'b2'),('com.c','Gamma',0,0,'c3')")

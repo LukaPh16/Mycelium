@@ -27,6 +27,7 @@ import app.mycelium.engine.terrarium.Terrarium
 import app.mycelium.engine.terrarium.TerrariumFeed
 import app.mycelium.engine.stats.SqlGuard
 import app.mycelium.engine.stats.Stats
+import app.mycelium.engine.stats.SessionCollector
 import app.mycelium.engine.stats.TrafficCollector
 import app.mycelium.engine.db.Row
 import app.mycelium.engine.db.Writer
@@ -77,6 +78,7 @@ object MyceliumEngine {
     private lateinit var fg: Foreground
     private lateinit var stats: Stats
     private lateinit var traffic: TrafficCollector
+    private lateinit var sessions: SessionCollector
     private lateinit var terrarium: Terrarium
     private lateinit var feed: TerrariumFeed
     private lateinit var chat: ChatBot
@@ -119,9 +121,10 @@ object MyceliumEngine {
         WatchList.presetIds = terrarium.presets.keys.toList().ifEmpty { listOf(terrarium.config.defaultPreset) }
         feed = TerrariumFeed(terrarium, { _events.tryEmit(it) })
         AnomalyJob(db.reader, ::logEvent).start()
-        sim = Simulator(app, ::logEvent, ::ensureSimApps, ::publish)
+        sim = Simulator(app, ::logEvent, ::ensureSimApps, ::publish, ::simSession)
         stats = Stats(::readQuery, simulating = { simPackages })
         traffic = TrafficCollector(app, writer).also { it.start() }
+        sessions = SessionCollector(app, writer).also { it.start() }
         vault = KeyVault(app)
         prefs = app.getSharedPreferences("mycelium_ai", Context.MODE_PRIVATE)
         chat = ChatBot(::readQuery, TemplateWriter.parse(app.assets.open("chat_templates.json").bufferedReader().use { it.readText() }),
@@ -138,7 +141,11 @@ object MyceliumEngine {
                 "events" -> stats.events(
                     args.int("limit") ?: 50, args.str("package"), args.str("kind"), args.long("since_ms"), args.long("before_id"),
                 ).toString()
-                "stats" -> stats.call(args.str("fn") ?: return error("missing_fn"), args, System.currentTimeMillis()).toString()
+                "stats" -> {
+                    val fn = args.str("fn") ?: return error("missing_fn")
+                    if (fn == "screenTime" || fn == "usageDay") sessions.collectIfStale(60_000)
+                    stats.call(fn, args, System.currentTimeMillis()).toString()
+                }
                 "timeline" -> stats.call("timeline", args, System.currentTimeMillis()).toString()
                 "garden" -> stats.garden(System.currentTimeMillis(), viewScope(args)).toString()
                 "simulate" -> simulateCall(args).also { feed.touchAll() }
@@ -329,12 +336,12 @@ object MyceliumEngine {
         return buildJsonObject { put("ok", true); put("path", out.absolutePath); put("bytes", out.length()) }.toString()
     }
 
-    /** Deletes captured data (event, queue, traffic, chat). Keeps app selection, rules and organisms. */
+    /** Deletes captured data (event, queue, traffic, chat, session). Keeps app selection, rules and organisms. */
     private fun wipe(): String {
         writer.runAndWait { d ->
             d.beginTransaction()
             try {
-                for (t in listOf("event", "queue", "traffic", "chat")) d.execSQL("DELETE FROM $t")
+                for (t in listOf("event", "queue", "traffic", "chat", "session")) d.execSQL("DELETE FROM $t")
                 d.execSQL("DELETE FROM sqlite_sequence WHERE name IN ('event','queue','chat')")
                 d.setTransactionSuccessful()
             } finally {
@@ -347,13 +354,13 @@ object MyceliumEngine {
         return ok()
     }
 
-    /** One app's record: its events, Sanctuary catches and byte counts; its creature starts over at stage 1. */
+    /** One app's record: its events, Sanctuary catches, byte counts and screen time; its creature starts over at stage 1. */
     private fun wipeApp(pkg: String): String {
         var deleted = 0
         writer.runAndWait { d ->
             d.beginTransaction()
             try {
-                for (t in listOf("event", "queue", "traffic")) deleted += d.delete(t, "package=?", arrayOf(pkg))
+                for (t in listOf("event", "queue", "traffic", "session")) deleted += d.delete(t, "package=?", arrayOf(pkg))
                 d.execSQL("UPDATE organism SET stage_shown=1 WHERE package=?", arrayOf(pkg))
                 d.setTransactionSuccessful()
             } finally {
@@ -625,6 +632,11 @@ object MyceliumEngine {
         packetWritten(row)
     }
 
+    private fun simSession(pkg: String, start: Long, end: Long) = writer.run { d ->
+        d.insertWithOnConflict("session", null, mapOf("package" to pkg, "start_ts" to start, "end_ts" to end, "sim" to 1).toContentValues(),
+            android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
     internal fun enqueue(row: Row) {
         writer.insert("queue", row.toContentValues()).thenAccept { queued.incrementAndGet(); publish(); packetWritten(row) }
     }
@@ -638,7 +650,7 @@ object MyceliumEngine {
 
     internal fun setVpn(v: String) {
         vpn = v
-        if (v == "running") fg.start() else fg.stop()
+        if (v == "running") fg.start() else { fg.stop(); if (::sessions.isInitialized) sessions.collectSoon() }
         publish()
     }
 

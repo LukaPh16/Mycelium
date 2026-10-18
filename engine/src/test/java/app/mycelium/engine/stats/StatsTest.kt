@@ -188,4 +188,114 @@ class StatsTest {
             assertEquals(null, SqlGuard.check(sql)); query(sql, emptyList())
         }
     }
+
+    // ---- screen time ----
+
+    private fun pairs(r: JsonObject) = r.arr("apps").map { it.s("package") to it.l("ms") }
+
+    @Test fun screenTimeClipsAtRangeEdgesAndSharesAcrossApps() {
+        fx.session("com.a", B - H, B + H)                    // 1 h inside the day
+        fx.session("com.a", B + 10 * H, B + 10 * H + 30 * 60_000)
+        fx.session("com.b", B + 20 * H, B + D + 2 * H)       // 4 h inside
+        fx.session("com.c", B + 12 * H, B + 13 * H)          // unwatched
+        val r = stats.screenTime(B, B + D)
+        assertEquals(listOf("com.b" to 4 * H, "com.a" to H + 30 * 60_000), pairs(r))
+        assertEquals(5 * H + 30 * 60_000, r.l("total_ms"))
+        assertEquals("Beta", r.arr("apps")[0].s("label"))
+        val share = pairs(r).associate { it }.mapValues { it.value.toDouble() / r.l("total_ms") }
+        assertEquals(1.0, share.values.sum(), 1e-9)
+        assertEquals(4.0 / 5.5, share.getValue("com.b"), 1e-9)
+        assertEquals(listOf("com.b" to 4 * H, "com.a" to H + 30 * 60_000, "com.c" to H),
+            pairs(stats.screenTime(B, B + D, Stats.Scope(includeUnwatched = true))))
+    }
+
+    @Test fun screenTimeOnlyAppIsTheWholeBarAndEmptyRangesAreZero() {
+        fx.session("com.a", B + H, B + 2 * H)
+        val r = stats.screenTime(B, B + D)
+        assertEquals(listOf("com.a" to H), pairs(r)); assertEquals(H, r.l("total_ms"))
+        val e = stats.screenTime(B + 5 * H, B + 6 * H)
+        assertTrue(e.arr("apps").isEmpty()); assertEquals(0, e.l("total_ms"))
+    }
+
+    @Test fun overlappingSessionsAreNotCountedTwice() {
+        fx.session("com.a", B + H, B + 3 * H)
+        fx.session("com.a", B + 2 * H, B + 4 * H)
+        assertEquals(3 * H, stats.screenTime(B, B + D).l("total_ms"))
+        assertEquals(listOf(B + H to B + 4 * H), stats.usageDay("com.a", B, B + D, H).arr("sessions").map { it.l("start_ms") to it.l("end_ms") })
+    }
+
+    @Test fun simSessionsOnlyWhileSimulatingOrAsked() {
+        fx.session("com.a", B + H, B + 2 * H)
+        fx.session("com.sim", B + 3 * H, B + 4 * H, sim = 1)
+        assertEquals(H, stats.screenTime(B, B + D).l("total_ms"))
+        assertEquals(H, stats.screenTime(B, B + D, Stats.Scope(includeSim = true)).l("total_ms"))   // unwatched sim app still out
+        val simulating = Stats(fx.query, utc) { setOf("com.sim") }
+        assertEquals(listOf("com.a" to H, "com.sim" to H), pairs(simulating.call("screenTime", buildJsonObject { put("from_ms", B); put("to_ms", B + D) }, 0)))
+    }
+
+    @Test fun sessionSpanningMidnightSplitsBetweenDays() {
+        fx.session("com.a", B + D - 30 * 60_000, B + D + 45 * 60_000)
+        assertEquals(30 * 60_000L, stats.screenTime(B, B + D).l("total_ms"))
+        assertEquals(45 * 60_000L, stats.screenTime(B + D, B + 2 * D).l("total_ms"))
+        val day2 = stats.usageDay("com.a", B + D, B + 2 * D, H)
+        assertEquals(B + D, day2.arr("sessions")[0].l("start_ms"))
+        assertEquals(45 * 60_000L, day2.arr("hours")[0].l("used_ms"))
+    }
+
+    @Test fun usageDayHourBucketsSumToTotal() {
+        fx.session("com.a", B + 9 * H + 50 * 60_000, B + 11 * H + 10 * 60_000 + 7_000)
+        fx.session("com.a", B + 23 * H + 59 * 60_000, B + D + H)
+        val r = stats.usageDay("com.a", B, B + D, H)
+        val hours = r.arr("hours")
+        assertEquals(24, hours.size)
+        assertEquals(10 * 60_000L, hours[9].l("used_ms")); assertEquals(H, hours[10].l("used_ms")); assertEquals(10 * 60_000L + 7_000, hours[11].l("used_ms"))
+        assertEquals(60_000L, hours[23].l("used_ms"))
+        assertEquals(hours.sumOf { it.l("used_ms") }, r.l("total_ms"))
+        assertEquals("Alpha", r.s("label"))
+        assertEquals(B - 2 * D + 12 * H, r.l("first_ms"))           // event 11 is older than any session
+    }
+
+    @Test fun usageDayHandlesDstLengthDays() {
+        val berlin = TimeZone.getTimeZone("Europe/Berlin")
+        val st = Stats(fx.query, berlin)
+        fun day(y: Int, m: Int, d: Int): Pair<Long, Long> {
+            val c = java.util.Calendar.getInstance(berlin).apply { clear(); set(y, m - 1, d, 0, 0, 0) }
+            val from = c.timeInMillis
+            c.add(java.util.Calendar.DAY_OF_MONTH, 1)
+            return from to c.timeInMillis
+        }
+        val (f25, t25) = day(2025, 10, 26)
+        val (f23, t23) = day(2026, 3, 29)
+        fx.session("com.a", t25 - 30 * 60_000, t25 + H)
+        fx.session("com.a", f23, f23 + 3 * H)
+        val long = st.usageDay("com.a", f25, t25, H)
+        assertEquals(25, long.arr("hours").size)
+        assertEquals(30 * 60_000L, long.arr("hours")[24].l("used_ms"))
+        assertEquals(30 * 60_000L, long.l("total_ms"))
+        val short = st.usageDay("com.a", f23, t23, H)
+        assertEquals(23, short.arr("hours").size)
+        assertEquals(3 * H, short.arr("hours").sumOf { it.l("used_ms") })
+    }
+
+    @Test fun usageDaySignalsOrderedByTimeWithoutSimOrVpn() {
+        val r = stats.usageDay("com.a", B, B + D, H)
+        assertEquals(listOf(1L, 2, 7, 3, 9), r.arr("signals").map { it.l("id") })
+        assertEquals("tripwire", r.arr("signals")[2].s("kind"))
+        assertFalse(r.getValue("truncated").jsonPrimitive.content.toBoolean())
+        assertEquals(listOf(1L, 8, 2, 7, 3, 9), stats.usageDay("com.a", B, B + D, H, Stats.Scope(includeSim = true)).arr("signals").map { it.l("id") })
+        val empty = stats.usageDay("com.a", B + 2 * D, B + 3 * D, H)
+        assertTrue(empty.arr("signals").isEmpty()); assertTrue(empty.arr("sessions").isEmpty()); assertEquals(0, empty.l("total_ms"))
+    }
+
+    @Test fun usageDaySignalsAreCappedAndFlagged() {
+        fx.exec("INSERT INTO event(ts,kind,package,domain) WITH RECURSIVE n(i) AS (SELECT 1 UNION ALL SELECT i+1 FROM n WHERE i<${Stats.SIGNAL_CAP + 5}) " +
+            "SELECT ${B + 15 * H}+i, 'dns', 'com.b', 'x.example' FROM n")
+        val r = stats.usageDay("com.b", B, B + D, H)
+        assertEquals(Stats.SIGNAL_CAP, r.arr("signals").size)
+        assertTrue(r.getValue("truncated").jsonPrimitive.content.toBoolean())
+        val ts = r.arr("signals").map { it.l("ts") }
+        assertEquals(ts.sorted(), ts)
+    }
+
+    @Test(expected = IllegalArgumentException::class) fun usageDayRejectsEmptyRange() { stats.usageDay("com.a", B, B, H) }
 }
