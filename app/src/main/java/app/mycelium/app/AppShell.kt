@@ -267,6 +267,10 @@ private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit
 private val TOP_BAR_HEIGHT = 60.dp
 
 private fun navigateTo(nav: NavHostController, route: String) {
+    if (SCREENS.firstOrNull { it.route == route }?.inDrawer == false) {   // sub-page: Back returns to the page that opened it
+        nav.navigate(route) { launchSingleTop = true }
+        return
+    }
     nav.navigate(route) {
         popUpTo(Routes.HOME) { saveState = true }
         launchSingleTop = true

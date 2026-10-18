@@ -195,7 +195,7 @@ private fun EventCard(e: JSONObject, types: Map<String, PacketType>, advanced: B
         Spacer(Modifier.width(8.dp))
         Column(Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (snoop) { PixelSprite(R.drawable.sprite_snoop, artPixelDp = 1.5f); Spacer(Modifier.width(8.dp)) }
+                if (snoop) { app.mycelium.app.garden.SnoopIcon(e.optString("company"), 1.5f); Spacer(Modifier.width(8.dp)) }
                 Text(eventSentence(e), Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge,
                     color = if (e.optString("kind") == "anomaly") pal.berry else pal.ink)
             }
@@ -277,7 +277,7 @@ fun ShooDialog(pkg: String, appLabel: String, company: String, onShooed: () -> U
         }
     }) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            PixelSprite(R.drawable.sprite_snoop, artPixelDp = 3f)
+            app.mycelium.app.garden.SnoopIcon(company, 3f)
             Spacer(Modifier.width(12.dp))
             Text(stringResource(R.string.shoo_body, company, appLabel), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
         }

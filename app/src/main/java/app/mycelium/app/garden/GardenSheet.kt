@@ -261,6 +261,14 @@ private fun SnoopRow(pet: Pet, v: SnoopVisit, onShoo: (Pet, SnoopVisit) -> Unit)
     }
 }
 
+/** A Snoop in the terrarium art (which one depends on the company). */
+@Composable
+fun SnoopIcon(company: String, artPixelDp: Float = 2f) {
+    val atlas = SpriteAtlas.of(LocalContext.current)
+    val s = remember(company) { atlas["snoop_${1 + (crc(company) % 3).toInt()}"] }
+    PixelBitmap(s.image, artPixelDp = artPixelDp, srcSize = IntSize(s.w, s.h))
+}
+
 /** Growth toward the next stage as a chunky pixel bar. */
 @Composable
 private fun GrowthBar(pet: Pet) {
