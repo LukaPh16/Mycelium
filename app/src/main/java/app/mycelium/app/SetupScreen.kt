@@ -117,7 +117,7 @@ private fun Item(title: String, check: Check, body: String, action: String?, inf
     PixelPanel(Modifier.fillMaxWidth(), style = if (check == Check.Bad) PanelStyle.Paper else PanelStyle.Quiet) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Mark(check, when (check) { Check.Good -> pal.leaf; Check.Bad -> pal.berry; Check.Manual -> pal.gold })
-            Spacer(Modifier.width(10.dp))
+            Spacer(Modifier.width(8.dp))
             Text(title, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = pal.ink)
             if (info != null) InfoButton(info)
         }

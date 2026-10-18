@@ -194,4 +194,66 @@ class CloudAiTest {
             assertTrue(out.event!!["note"].toString().endsWith("status=$reason"))
         }
     }
+
+    /** An OpenAI-style chat completion (OpenRouter) whose message content is the structured-output JSON. */
+    private fun chatOk(sentences: List<Pair<String, List<Long>>>, finish: String = "stop", fenced: Boolean = false): HttpReply {
+        val inner = buildJsonObject {
+            put("sentences", JsonArray(sentences.map { (t, c) -> buildJsonObject { put("text", t); put("cites", JsonArray(c.map { JsonPrimitive(it) })) } }))
+        }.toString()
+        val msg = buildJsonObject {
+            put("choices", JsonArray(listOf(buildJsonObject {
+                put("finish_reason", finish)
+                put("message", buildJsonObject { put("role", "assistant"); put("content", if (fenced) "```json\n$inner\n```" else inner) })
+            })))
+        }
+        return HttpReply(200, msg.toString())
+    }
+
+    @Test fun openRouterUsesBearerKeyChatFormatAndIsValidated() {
+        reply = { chatOk(listOf("Alpha mushroom made 3 lookups today." to listOf(1L)), fenced = true) }
+        val c = ai()
+        val id = c.preview("What did Alpha do today?", apps, companies, now, Provider.OPENROUTER.defaultModel, Provider.OPENROUTER)
+            .getValue("preview_id").jsonPrimitive.content
+        val out = c.ask(id, key, online = true, apps, companies, now)
+        assertEquals("cloud", out.result.s("engine"))
+        assertTrue(out.event!!["note"].toString().contains("provider=openrouter"))
+        val (headers, body) = sent.single()
+        assertEquals("Bearer $key", headers["authorization"])
+        assertTrue("x-api-key" !in headers)
+        val req = kotlinx.serialization.json.Json.parseToJsonElement(body).jsonObject
+        assertEquals("openrouter/auto", req.s("model"))
+        assertEquals("system", req.getValue("messages").jsonArray[0].jsonObject.s("role"))
+        assertEquals("json_schema", req.getValue("response_format").jsonObject.s("type"))
+        assertTrue(key !in body)                                      // the key never goes into the body
+    }
+
+    @Test fun openRouterLengthAndBadJsonFallBack() {
+        for ((r, reason) in listOf<Pair<() -> HttpReply, String>>(
+            { chatOk(listOf("x" to listOf(1L)), finish = "length") } to "max_tokens",
+            { HttpReply(200, """{"choices":[{"message":{"content":"nope"}}]}""") } to "invalid_json",
+        )) {
+            reply = r
+            val c = ai()
+            val id = c.preview("What did Alpha do today?", apps, companies, now, "openrouter/auto", Provider.OPENROUTER)
+                .getValue("preview_id").jsonPrimitive.content
+            assertEquals(reason, c.ask(id, key, true, apps, companies, now).result.s("fallback_reason"))
+        }
+    }
+
+    @Test fun tipsAreKeptUncheckedButFactsStillValidated() {
+        val inner = """{"sentences":[
+            {"text":"Alpha mushroom made 3 lookups today.","cites":[1],"kind":"fact"},
+            {"text":"Alpha made 999 lookups at 03:12.","cites":[987654],"kind":"fact"},
+            {"text":"Braze is a marketing service that tracks how you use apps.","cites":[],"kind":"tip"}]}"""
+        reply = { HttpReply(200, buildJsonObject {
+            put("choices", JsonArray(listOf(buildJsonObject { put("finish_reason", "stop"); put("message", buildJsonObject { put("content", inner) }) })))
+        }.toString()) }
+        val c = ai()
+        val id = c.preview("What did Alpha do today?", apps, companies, now, "openrouter/auto", Provider.OPENROUTER).getValue("preview_id").jsonPrimitive.content
+        val out = c.ask(id, key, true, apps, companies, now).result
+        assertEquals("cloud", out.s("engine"))
+        val kinds = out.getValue("sentences").jsonArray.map { it.jsonObject.s("kind") }
+        assertEquals(listOf("fact", "tip"), kinds)                     // the fabricated fact is gone, the tip stays
+        assertEquals(1, out.getValue("dropped").jsonPrimitive.int)
+    }
 }

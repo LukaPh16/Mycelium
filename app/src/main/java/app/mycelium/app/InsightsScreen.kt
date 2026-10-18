@@ -107,7 +107,7 @@ fun InsightsScreen() {
             stringResource(R.string.home_choose), { go(Routes.APPS) }, Modifier.padding(top = 32.dp))
         return
     }
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         ChoiceRow(listOf(false to stringResource(R.string.ins_day), true to stringResource(R.string.ins_week)), week, { week = it })
         val s = data
         when {
@@ -166,7 +166,7 @@ private fun axisLabel(from: Long, week: Boolean): String =
 @Composable
 private fun Key(color: androidx.compose.ui.graphics.Color) {
     Canvas(Modifier.size(12.dp)) { drawRect(color) }
-    Spacer(Modifier.width(6.dp))
+    Spacer(Modifier.width(8.dp))
 }
 
 /** One big friendly fact: a sprite, a small title with an "i", a big answer and one line of plain words. */
@@ -180,7 +180,7 @@ private fun BigCard(@DrawableRes sprite: Int, title: String, info: Info, value: 
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             PixelSprite(sprite, artPixelDp = if (sprite == R.drawable.sprite_snoop) 3f else 1.5f)
-            Spacer(Modifier.width(14.dp))
+            Spacer(Modifier.width(16.dp))
             Column(Modifier.weight(1f)) {
                 Text(value, style = MaterialTheme.typography.titleLarge, color = pal.ink)
                 Text(line, style = MaterialTheme.typography.bodyMedium, color = pal.ink)

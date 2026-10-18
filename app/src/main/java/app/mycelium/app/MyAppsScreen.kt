@@ -2,6 +2,7 @@ package app.mycelium.app
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -82,6 +83,7 @@ fun MyAppsScreen(prefs: UiPrefs, protection: Protection) {
     var reload by remember { mutableIntStateOf(0) }
     var picking by remember { mutableStateOf<AppRow?>(null) }
     var confirmLast by remember { mutableStateOf<AppRow?>(null) }
+    var resetting by remember { mutableStateOf<AppRow?>(null) }
     val busy = remember { mutableStateListOf<String>() }
     val scope = rememberCoroutineScope()
     picking?.let { r -> PresetPicker(r.pkg, r.label, onDone = { picking = null }); return }
@@ -107,7 +109,8 @@ fun MyAppsScreen(prefs: UiPrefs, protection: Protection) {
                 else -> ctx.getString(R.string.apps_stopped_watching, r.label)
             })
             busy -= r.pkg
-            reload++
+            // update this row in place: the list keeps its order, so it never jumps while you scroll
+            if (!res.has("error") && rejected.isEmpty()) rows = rows?.map { if (it.pkg == r.pkg) AppRow(it.label, it.pkg, on, it.contacts, it.system) else it }
         }
     }
 
@@ -132,11 +135,12 @@ fun MyAppsScreen(prefs: UiPrefs, protection: Protection) {
                 items(list, key = { it.pkg }) { r ->
                     AppLine(r, enabled = r.pkg !in busy, onToggle = { on ->
                         if (!on && watching == 1 && protection != Protection.Paused) confirmLast = r else toggle(r, on)
-                    }, onCreature = { picking = r })
+                    }, onCreature = { picking = r }, onReset = { resetting = r })
                 }
             }
         }
     }
+    resetting?.let { r -> ResetRecordDialog(r.pkg, r.label) { done -> resetting = null; if (done) rows = rows?.map { if (it.pkg == r.pkg) AppRow(it.label, it.pkg, it.watched, 0, it.system) else it } } }
     confirmLast?.let { r ->
         PixelDialog(stringResource(R.string.apps_last_q), onDismiss = { confirmLast = null }, actions = {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -148,7 +152,7 @@ fun MyAppsScreen(prefs: UiPrefs, protection: Protection) {
 }
 
 @Composable
-private fun AppLine(r: AppRow, enabled: Boolean, onToggle: (Boolean) -> Unit, onCreature: () -> Unit) {
+private fun AppLine(r: AppRow, enabled: Boolean, onToggle: (Boolean) -> Unit, onCreature: () -> Unit, onReset: () -> Unit) {
     val pal = LocalPal.current
     Row(
         Modifier
@@ -165,11 +169,13 @@ private fun AppLine(r: AppRow, enabled: Boolean, onToggle: (Boolean) -> Unit, on
                 else stringResource(if (r.system) R.string.apps_system_app else R.string.apps_not_watched),
                 style = MaterialTheme.typography.bodySmall, color = pal.inkMuted,
             )
-            if (r.watched) Text(
-                stringResource(R.string.apps_change_creature),
-                Modifier.clickable(role = Role.Button, onClick = onCreature).padding(vertical = 6.dp),
-                style = MaterialTheme.typography.labelLarge, color = if (pal.night) pal.gold else pal.wood,
-            )
+            if (r.watched) Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                for ((label, action) in listOf(R.string.apps_change_creature to onCreature, R.string.reset_record to onReset)) Text(
+                    stringResource(label),
+                    Modifier.defaultMinSize(minHeight = 48.dp).clickable(role = Role.Button, onClick = action).padding(vertical = 14.dp),
+                    style = MaterialTheme.typography.labelLarge, color = if (pal.night) pal.gold else pal.wood,
+                )
+            }
         }
         Spacer(Modifier.width(12.dp))
         Switch(r.watched, null, enabled = enabled, modifier = Modifier.scale(1.25f),
@@ -183,10 +189,15 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
     val pal = LocalPal.current
     var presets by remember { mutableStateOf(emptyList<JSONObject>()) }
     var current by remember { mutableStateOf<String?>(null) }
+    var look by remember { mutableStateOf<String?>(null) }
+    val atlas = app.mycelium.app.garden.SpriteAtlas.of(LocalContext.current)
     val scope = rememberCoroutineScope()
     LaunchedEffect(pkg) {
         presets = Api.io("presets").optJSONArray("presets").objects()
         current = Api.io("terrarium", obj("app_id" to pkg)).optJSONArray("apps").objects().firstOrNull()?.optString("preset_id")
+        val seed = Api.io("garden", obj("include_unwatched" to true)).optJSONArray("apps").objects()
+            .firstOrNull { it.optString("package") == pkg }?.optString("seed").orEmpty().ifEmpty { pkg }
+        look = app.mycelium.app.garden.lookFor(atlas, seed)   // preview in this app's own colors
     }
     Column(Modifier.fillMaxSize().padding(horizontal = 12.dp)) {
         Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -208,8 +219,8 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    PresetThumb(p.getJSONObject("preset"), boxDp = 96, stageNo = Int.MAX_VALUE)   // what it grows into
-                    Spacer(Modifier.width(14.dp))
+                    PresetThumb(p.getJSONObject("preset"), boxDp = 96, look = look)   // what it grows into
+                    Spacer(Modifier.width(16.dp))
                     Text(p.getString("name") + if (id == current) " " + stringResource(R.string.preset_current) else "",
                         style = MaterialTheme.typography.titleSmall, color = pal.ink)
                 }
@@ -218,29 +229,36 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
     }
 }
 
-private val thumbCache = HashMap<String, ImageBitmap?>()
-
-/** First frame of the preset's strip for [stageNo], nearest-neighbor, in a fixed box. */
+/** What a creature type looks like (the terrarium art, adult stage), in an app's own colors when [look] is given. */
 @Composable
-fun PresetThumb(preset: JSONObject, boxDp: Int = 64, stageNo: Int = 1) {
-    val ctx = LocalContext.current
+fun PresetThumb(preset: JSONObject, boxDp: Int = 64, stageNo: Int = 3, look: String? = null) {
+    val atlas = app.mycelium.app.garden.SpriteAtlas.of(LocalContext.current)
     val id = preset.optString("id")
-    val stages = preset.optJSONArray("stages")
-    val stage = stages?.optJSONObject((stageNo - 1).coerceIn(0, maxOf(0, (stages.length()) - 1)))
-    val key = "$id/${stage?.optString("file")}"
-    val img = remember(key) {
-        thumbCache.getOrPut(key) {
-            runCatching {
-                ctx.assets.open("organisms/$id/${stage?.optString("file") ?: "stage1.png"}").use { BitmapFactory.decodeStream(it)?.asImageBitmap() }
-            }.getOrNull()
-        }
+    val s = remember(id, stageNo, look) {
+        atlas.creature("creature_${id}_s${stageNo.coerceIn(1, 3)}", look ?: atlas.looks.firstOrNull().orEmpty(), 0, 0)
     }
     Box(Modifier.size(boxDp.dp), contentAlignment = Alignment.BottomCenter) {
-        if (img != null && stage != null) {
-            val fw = stage.optInt("frame_w", img.width)
-            val fh = stage.optInt("frame_h", img.height)
-            val fit = (boxDp.toFloat() / maxOf(fw, fh)).coerceAtLeast(0.5f)
-            PixelBitmap(img, artPixelDp = fit, srcSize = IntSize(fw, fh))
-        }
+        PixelBitmap(s.image, artPixelDp = boxDp.toFloat() / maxOf(s.w, s.h), srcSize = IntSize(s.w, s.h))
     }
+}
+
+/** "Reset this app's record": deletes what Mycelium noticed about one app; its creature starts over. */
+@Composable
+fun ResetRecordDialog(pkg: String, label: String, onDone: (Boolean) -> Unit) {
+    val pal = LocalPal.current
+    val ctx = LocalContext.current
+    val toast = LocalToast.current
+    val scope = rememberCoroutineScope()
+    PixelDialog(stringResource(R.string.reset_record_q, label), onDismiss = { onDone(false) }, actions = {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            PixelButton(stringResource(R.string.cancel), { onDone(false) }, kind = ButtonKind.Secondary)
+            PixelButton(stringResource(R.string.reset_record_ok), {
+                scope.launch {
+                    val r = Api.io("wipe", obj("confirm" to true, "package" to pkg))
+                    toast(if (r.has("error")) ctx.getString(R.string.reset_record_failed) else ctx.getString(R.string.reset_record_done, label))
+                    onDone(!r.has("error"))
+                }
+            }, kind = ButtonKind.Danger)
+        }
+    }) { Text(stringResource(R.string.reset_record_body, label), style = MaterialTheme.typography.bodyMedium, color = pal.ink) }
 }

@@ -28,8 +28,18 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
+/** Cloud providers for the user's own key. OpenRouter speaks the OpenAI chat format and routes to many models. */
+enum class Provider(val id: String, val url: String, val defaultModel: String) {
+    OPENROUTER("openrouter", "https://openrouter.ai/api/v1/chat/completions", "openrouter/auto"),
+    ANTHROPIC("anthropic", "https://api.anthropic.com/v1/messages", "claude-opus-5-5");
+
+    companion object {
+        fun of(id: String?) = entries.firstOrNull { it.id == id } ?: OPENROUTER
+    }
+}
+
 /**
- * Optional cloud analysis with the user's own Anthropic key. Never automatic: [preview] builds the exact payload on
+ * Optional cloud analysis with the user's own key (OpenRouter or Anthropic). Never automatic: [preview] builds the exact payload on
  * device (question + capped FACTS); only [ask] with that preview's id sends it. The reply goes through the same
  * Validator as the template chatbot; any failure falls back to the template answer.
  */
@@ -44,6 +54,7 @@ class CloudAi(
 ) {
     private class Preview(
         val question: String, val payload: JsonObject, val body: String, val template: JsonObject, val model: String, val created: Long,
+        val provider: Provider,
     )
 
     /** [event] is the kind='ai' row to write when something was sent (null when nothing left the device). */
@@ -53,19 +64,21 @@ class CloudAi(
     private val exec = Executors.newCachedThreadPool { r -> Thread(r, "cloud-ai").apply { isDaemon = true } }
 
     /** Runs router + stats on device and returns exactly what [ask] would send. Nothing leaves the device here. */
-    fun preview(text: String, apps: List<AppRef>, companies: Collection<String>, now: Long, model: String): JsonObject {
+    fun preview(text: String, apps: List<AppRef>, companies: Collection<String>, now: Long, model: String,
+                provider: Provider = Provider.ANTHROPIC): JsonObject {
         val question = text.trim().take(MAX_QUESTION)
         val template = bot.answer(question, apps, companies, now)
         val payload = payload(question, template)
-        val body = requestBody(model, payload)
+        val body = requestBody(model, payload, provider)
         val id = UUID.randomUUID().toString()
         synchronized(previews) {
             previews.entries.removeIf { now - it.value.created > TTL_MS }
             while (previews.size >= MAX_PREVIEWS) previews.remove(previews.keys.first())
-            previews[id] = Preview(question, payload, body, template, model, now)
+            previews[id] = Preview(question, payload, body, template, model, now, provider)
         }
         return buildJsonObject {
             put("preview_id", id)
+            put("provider", provider.id)
             put("model", model)
             put("payload_bytes", payload.toString().toByteArray().size)
             put("request_bytes", body.toByteArray().size)
@@ -88,12 +101,12 @@ class CloudAi(
         var status: String
         var result: JsonObject
         try {
-            val reply = callWithTimeout(key, p.model, p.body)
+            val reply = callWithTimeout(key, p.model, p.body, p.provider)
             if (reply.status != 200) {
                 status = "http_${reply.status}"
                 result = fallback(p, status)
             } else {
-                val parsed = parse(reply.body)
+                val parsed = if (p.provider == Provider.ANTHROPIC) parse(reply.body) else parseChat(reply.body)
                 if (parsed.first == null) {
                     status = parsed.second
                     result = fallback(p, status)
@@ -105,8 +118,8 @@ class CloudAi(
                     } else {
                         status = "ok"
                         result = buildJsonObject {
-                            put("sentences", JsonArray(kept.map { s ->
-                                buildJsonObject { put("text", s.text); put("cites", JsonArray(s.cites.map { JsonPrimitive(it) })) }
+                            put("sentences", JsonArray(kept.map { (s, kind) ->
+                                buildJsonObject { put("text", s.text); put("cites", JsonArray(s.cites.map { JsonPrimitive(it) })); put("kind", kind) }
                             }))
                             put("facts", p.payload)
                             put("intent", p.template.getValue("intent"))
@@ -126,7 +139,7 @@ class CloudAi(
         }
         val latency = (System.nanoTime() - started) / 1_000_000
         val bytes = p.body.toByteArray().size
-        val note = "bytes=$bytes model=${p.model} latency_ms=$latency status=$status"
+        val note = "bytes=$bytes provider=${p.provider.id} model=${p.model} latency_ms=$latency status=$status"
         log("ai send $note")
         return Outcome(
             JsonObject(result + ("latency_ms" to JsonPrimitive(latency))),
@@ -211,7 +224,24 @@ class CloudAi(
 
     // ---- request / reply ----
 
-    fun requestBody(model: String, payload: JsonObject): String = buildJsonObject {
+    fun requestBody(model: String, payload: JsonObject, provider: Provider = Provider.ANTHROPIC): String =
+        if (provider == Provider.ANTHROPIC) anthropicBody(model, payload) else chatBody(model, payload)
+
+    /** OpenAI-style chat completion (OpenRouter): system + user message, strict JSON schema output. */
+    private fun chatBody(model: String, payload: JsonObject): String = buildJsonObject {
+        put("model", model)
+        put("max_tokens", 4096)
+        put("response_format", buildJsonObject {
+            put("type", "json_schema")
+            put("json_schema", buildJsonObject { put("name", "answer"); put("strict", true); put("schema", Json.parseToJsonElement(SCHEMA)) })
+        })
+        put("messages", JsonArray(listOf(
+            buildJsonObject { put("role", "system"); put("content", SYSTEM) },
+            buildJsonObject { put("role", "user"); put("content", "FACTS:\n$payload") },
+        )))
+    }.toString()
+
+    private fun anthropicBody(model: String, payload: JsonObject): String = buildJsonObject {
         put("model", model)
         put("max_tokens", 4096)
         put("system", SYSTEM)
@@ -226,15 +256,20 @@ class CloudAi(
         })))
     }.toString()
 
-    fun headers(key: String, model: String): Map<String, String> = buildMap {
+    fun headers(key: String, model: String, provider: Provider = Provider.ANTHROPIC): Map<String, String> = buildMap {
         put("content-type", "application/json")
+        if (provider != Provider.ANTHROPIC) {
+            put("authorization", "Bearer $key")
+            put("x-title", "Mycelium")
+            return@buildMap
+        }
         put("x-api-key", key)
         put("anthropic-version", "2023-06-01")
         if (model in FALLBACK_MODELS) put("anthropic-beta", "server-side-fallback-2026-07-01")
     }
 
-    private fun callWithTimeout(key: String, model: String, body: String): HttpReply {
-        val f = CompletableFuture.supplyAsync({ transport(URL, headers(key, model), body, timeoutMs.toInt()) }, exec)
+    private fun callWithTimeout(key: String, model: String, body: String, provider: Provider): HttpReply {
+        val f = CompletableFuture.supplyAsync({ transport(provider.url, headers(key, model, provider), body, timeoutMs.toInt()) }, exec)
         return try {
             f.get(timeoutMs, TimeUnit.MILLISECONDS)
         } catch (e: TimeoutException) {
@@ -245,34 +280,67 @@ class CloudAi(
         }
     }
 
-    /** Sentences, or null and a status (refusal, max_tokens, invalid_json). */
-    private fun parse(body: String): Pair<List<Sentence>?, String> = try {
+    /** Sentences with their kind ("fact" | "tip"), or null and a status (refusal, max_tokens, invalid_json). */
+    private fun parse(body: String): Pair<List<Pair<Sentence, String>>?, String> = try {
         val msg = Json.parseToJsonElement(body).jsonObject
         when (msg["stop_reason"]?.jsonPrimitive?.contentOrNull) {
             "refusal" -> null to "refusal"
             "max_tokens" -> null to "max_tokens"
+            else -> sentencesOf(msg.getValue("content").jsonArray.map { it.jsonObject }
+                .filter { it["type"]?.jsonPrimitive?.content == "text" }
+                .joinToString("") { it.getValue("text").jsonPrimitive.content })
+        }
+    } catch (_: Exception) {
+        null to "invalid_json"
+    }
+
+    /** OpenAI-style reply: choices[0].message.content holds the JSON (sometimes fenced); refusal / length map like Anthropic. */
+    private fun parseChat(body: String): Pair<List<Pair<Sentence, String>>?, String> = try {
+        val choice = Json.parseToJsonElement(body).jsonObject.getValue("choices").jsonArray[0].jsonObject
+        val msg = choice.getValue("message").jsonObject
+        when {
+            msg["refusal"]?.jsonPrimitive?.contentOrNull?.isNotBlank() == true -> null to "refusal"
+            choice["finish_reason"]?.jsonPrimitive?.contentOrNull == "length" -> null to "max_tokens"
             else -> {
-                val text = msg.getValue("content").jsonArray.map { it.jsonObject }
-                    .filter { it["type"]?.jsonPrimitive?.content == "text" }
-                    .joinToString("") { it.getValue("text").jsonPrimitive.content }
-                val out = Json.parseToJsonElement(text).jsonObject.getValue("sentences").jsonArray.map { s ->
-                    val o = s.jsonObject
-                    Sentence(o.getValue("text").jsonPrimitive.content.trim(), o.getValue("cites").jsonArray.map { it.jsonPrimitive.content.toLong() })
-                }
-                if (out.isEmpty()) null to "invalid_json" else out to "ok"
+                val raw = msg.getValue("content").jsonPrimitive.content
+                val text = raw.substring(raw.indexOf('{').coerceAtLeast(0), (raw.lastIndexOf('}') + 1).coerceAtLeast(0))
+                sentencesOf(text)
             }
         }
     } catch (_: Exception) {
         null to "invalid_json"
     }
 
-    /** Cites must be ids present in the payload, then the Step 8 Validator applies. Returns kept and dropped count. */
-    private fun check(sentences: List<Sentence>, payload: JsonObject, apps: List<AppRef>, companies: Collection<String>): Pair<List<Sentence>, Int> {
+    private fun sentencesOf(text: String): Pair<List<Pair<Sentence, String>>?, String> {
+        val out = Json.parseToJsonElement(text).jsonObject.getValue("sentences").jsonArray.map { s ->
+            val o = s.jsonObject
+            val kind = if (o["kind"]?.jsonPrimitive?.contentOrNull == "tip") "tip" else "fact"
+            Sentence(o.getValue("text").jsonPrimitive.content.trim(), o["cites"]?.jsonArray?.map { it.jsonPrimitive.content.toLong() }.orEmpty()) to kind
+        }
+        return if (out.isEmpty()) null to "invalid_json" else out to "ok"
+    }
+
+    /**
+     * Facts about this phone: cites must be ids present in the payload, then the Step 8 Validator applies.
+     * Tips (general knowledge, clearly labelled in the app) carry no cites and are not checked against FACTS; at most
+     * [MAX_TIPS], each capped in length. Returns kept sentences in order and the number of dropped facts.
+     */
+    private fun check(sentences: List<Pair<Sentence, String>>, payload: JsonObject, apps: List<AppRef>, companies: Collection<String>): Pair<List<Pair<Sentence, String>>, Int> {
         val allowed = ids(payload)
-        val known = sentences.filter { s -> s.cites.all { it in allowed } }
+        val facts = sentences.filter { it.second == "fact" }.map { it.first }
+        val known = facts.filter { s -> s.cites.all { it in allowed } }
         val v = Validator.validate(known, payload, ::citedRows, apps.associate { it.label.lowercase() to it.pkg }, companies, tz,
             allowSim = simulating() != null)
-        return v.kept to (sentences.size - v.kept.size)
+        val keptFacts = v.kept.toSet()
+        var tips = 0
+        val kept = sentences.mapNotNull { (s, kind) ->
+            when {
+                kind == "fact" -> if (s in keptFacts) s to kind else null
+                tips < MAX_TIPS && s.text.isNotBlank() -> { tips++; Sentence(s.text.take(MAX_TIP_CHARS), emptyList()) to kind }
+                else -> null
+            }
+        }
+        return kept to (facts.size - v.kept.size)
     }
 
     /** Event ids in the payload: "id" fields, "*_id" fields and every element of an "event_ids"/"evidence_ids" array. */
@@ -306,33 +374,41 @@ class CloudAi(
 
     companion object {
         const val URL = "https://api.anthropic.com/v1/messages"
-        const val DEFAULT_MODEL = "claude-opus-5-5"
+        const val DEFAULT_MODEL = "claude-opus-5-5"   // Anthropic default; OpenRouter uses Provider.OPENROUTER.defaultModel
         const val MAX_PAYLOAD_BYTES = 8192
         const val MAX_ROWS = 50
         private const val MAX_STRING = 300
         private const val MAX_QUESTION = 500
         private const val MAX_PREVIEWS = 20
         private const val TTL_MS = 10 * 60_000L
+        private const val MAX_TIPS = 8
+        private const val MAX_TIP_CHARS = 500
 
         /** Models that accept server-side refusal fallbacks ("default" form). */
         private val FALLBACK_MODELS = setOf("claude-opus-5-5", "claude-opus-5", "claude-fable-5-1", "claude-sonnet-5-5")
 
         private val SCHEMA = """
             {"type":"object","properties":{"sentences":{"type":"array","items":{"type":"object",
-            "properties":{"text":{"type":"string"},"cites":{"type":"array","items":{"type":"integer"}}},
-            "required":["text","cites"],"additionalProperties":false}}},"required":["sentences"],"additionalProperties":false}
+            "properties":{"text":{"type":"string"},"cites":{"type":"array","items":{"type":"integer"}},"kind":{"type":"string","enum":["fact","tip"]}},
+            "required":["text","cites","kind"],"additionalProperties":false}}},"required":["sentences"],"additionalProperties":false}
         """.trimIndent()
 
         private val SYSTEM = """
-            You are the field naturalist inside Mycelium, an Android app that records which apps on this phone look up which domains.
-            Answer the question in the user message using only the FACTS JSON that follows it.
-            Rules:
-            - Use only numbers, times, dates, app names, company names and domains that appear in FACTS. Never compute new numbers: no sums, differences or percentages unless they appear in FACTS.
-            - Write times exactly as the HH:mm part of the *_local fields. Write dates as yyyy-MM-dd.
-            - Every sentence must cite, in "cites", the event ids from FACTS that support it (from "id", "evidence_ids" or "event_ids"). Byte totals from traffic may have empty cites.
-            - Refer to an app by its species name when FACTS give one (facts.app.species), otherwise by its label.
-            - 2 to 6 short sentences. Calm, dry and precise. No advice, no speculation about intent.
-            - Mycelium sees DNS lookups, connection attempts and byte totals, never contents. If FACTS do not answer the question, reply with one sentence: "I have no record of that." with empty cites.
+            You are the Gardener, a friendly, plain-spoken guide inside Mycelium, an Android app that shows which websites and
+            services the user's chosen apps contact (DNS lookups), which of them are trackers ("Snoops"), and lets the user
+            block ("shoo away") them. Everything is recorded on the phone. The user message has their question, then FACTS JSON.
+            Reply with sentences of two kinds:
+            - kind "fact": something about THIS phone. Use only numbers, times, dates, app names, company names and domains that
+              appear in FACTS; never compute new numbers. Write times as the HH:mm part of *_local fields. Every fact cites, in
+              "cites", the event ids from FACTS that support it ("id", "evidence_ids", "event_ids"). Byte totals may have empty cites.
+            - kind "tip": general knowledge or advice, with empty "cites". Explain what a company or tracker is and what it usually
+              collects, why an app might contact it, what the user can do (shoo it away from the garden, check Setup Check, limit
+              permissions or ad tracking in Android settings), or explain a Mycelium word. Tips must never state numbers, times or
+              claims about this phone's activity.
+            Answer the question first. Be warm and clear, no jargon (say "contacted" not "DNS lookup", "Snoop" for a tracker).
+            Normally 2 to 5 sentences. If the user asks to explain, asks "why", "what is" or "in depth", give a fuller explanation
+            (up to 10 sentences, mostly tips). If FACTS do not cover the question, say so in one fact-free tip and still help with
+            general guidance. Mycelium never sees contents, only names of websites, and does not stop all tracking.
             Reply only with JSON that matches the schema.
         """.trimIndent()
     }

@@ -1,12 +1,41 @@
 package app.mycelium.app
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.background
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalDensity
+import app.mycelium.app.garden.GardenSheet
+import app.mycelium.app.garden.SheetState
+import app.mycelium.app.garden.SheetStop
+import app.mycelium.app.garden.SnoopVisit
+import kotlinx.coroutines.launch
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import app.mycelium.app.garden.Camera
+import app.mycelium.app.garden.GardenFx
+import app.mycelium.app.garden.MAX_PETS
+import app.mycelium.app.garden.Pet
+import app.mycelium.app.garden.loadPets
+import app.mycelium.app.ui.Glyphs
+import app.mycelium.app.ui.PixelGlyph
+import app.mycelium.engine.MyceliumEngine
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,9 +56,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.mycelium.app.ui.pixel
+import app.mycelium.app.ui.pixelPanel
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.webkit.WebViewAssetLoader
+import app.mycelium.app.garden.GardenView
 import app.mycelium.app.ui.EmptyState
 import app.mycelium.app.ui.LoadingState
 import app.mycelium.app.ui.UiPrefs
@@ -46,124 +79,122 @@ import org.json.JSONObject
 
 /** Home: the terrarium web module, with a friendly banner when protection is paused or offline. */
 @Composable
-fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit) {
+fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topInset: Dp) {
     var watched by remember { mutableStateOf<Int?>(null) }
-    LaunchedEffect(Unit) {
+    var pets by remember { mutableStateOf(emptyList<Pet>()) }
+    var reload by remember { mutableIntStateOf(0) }
+    var selected by remember { mutableStateOf<String?>(null) }
+    val fx = remember { GardenFx() }
+    val camera = remember { Camera() }
+    var focus by remember { mutableStateOf<String?>(null) }
+    var picking by remember { mutableStateOf(false) }
+    var shoo by remember { mutableStateOf<Pair<Pet, SnoopVisit>?>(null) }
+    var resetting by remember { mutableStateOf<Pet?>(null) }
+    val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
+    val sheet = remember { SheetState(with(density) { 104.dp.toPx() }) }
+    LaunchedEffect(reload) {
         while (true) {
             watched = Api.io("watched").optJSONArray("apps")?.length() ?: 0
-            delay(3000)
+            pets = loadPets()
+            delay(15_000)
+        }
+    }
+    LaunchedEffect(Unit) {   // live updates: refresh shortly after the engine reports activity
+        MyceliumEngine.events.collect { ev ->
+            if (ev.contains("\"terrarium_update\"") || ev.contains("\"block\"")) { delay(800); reload++ }
         }
     }
     val go = LocalGo.current
-    Column(Modifier.fillMaxSize()) {
+    val pal = LocalPal.current
+    Box(Modifier.fillMaxSize().background(pal.bg)) {
         when {
-            watched == 0 && protection != Protection.Demo -> {
-                EmptyState(
-                    R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_empty_title), stringResource(R.string.home_empty_body),
-                    action = stringResource(R.string.home_choose), onAction = { go(Routes.APPS) }, modifier = Modifier.padding(top = 48.dp),
+            watched == null -> LoadingState(stringResource(R.string.home_loading), Modifier.padding(top = topInset + 48.dp))
+            watched == 0 && protection != Protection.Demo -> EmptyState(
+                R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_empty_title), stringResource(R.string.home_empty_body),
+                action = stringResource(R.string.home_choose), onAction = { go(Routes.APPS) }, modifier = Modifier.padding(top = topInset + 48.dp),
+            )
+            else -> BoxWithConstraints(Modifier.fillMaxSize()) {
+                val navBar = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                val full = with(density) { (maxHeight - topInset - 8.dp).toPx() }
+                val peek = with(density) { (104.dp + navBar).toPx() }
+                LaunchedEffect(full, peek) {
+                    sheet.stops = floatArrayOf(peek, full * 0.5f, full)
+                    if (sheet.height.value < peek || sheet.stop == SheetStop.PEEK) sheet.height.snapTo(peek)
+                }
+                fun open(pet: Pet) {
+                    selected = pet.pkg; focus = pet.pkg; picking = false
+                    if (sheet.stop == SheetStop.PEEK) scope.launch { sheet.go(SheetStop.HALF) }
+                }
+                val sheetPx = sheet.height.value.toInt()
+                GardenView(
+                    still = prefs.reduceMotion || prefs.batterySaver, pets = pets, selected = selected, fx = fx, camera = camera,
+                    focus = focus, bottomInsetPx = sheetPx, fitBottomPx = peek.toInt(),
+                    // leave room for the status note when protection is paused or offline, so the lid stays in view
+                    topInsetPx = with(density) { (topInset + if (protection == Protection.Paused || protection == Protection.SafeMode) 72.dp else 0.dp).roundToPx() },
+                    onTapPet = { open(it) }, onTapSnoop = { p, _ -> open(p) },
+                    onTapEmpty = { selected = null; focus = null; picking = false },
+                    modifier = Modifier.fillMaxSize(),
                 )
-                return@Column
+                val current = pets.firstOrNull { it.pkg == selected }
+                GardenSheet(
+                    sheet, pets, current, picking && current != null,
+                    onSelect = { p -> if (p == null) { selected = null; focus = null } else open(p) },
+                    onShoo = { p, v -> shoo = p to v },
+                    onChangeCreature = { picking = true; scope.launch { sheet.go(SheetStop.FULL) } },
+                    onReset = { resetting = it },
+                    picker = { current?.let { PresetPicker(it.pkg, it.label, onDone = { picking = false; reload++ }) } },
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                )
+                BackHandler(selected != null || sheet.stop != SheetStop.PEEK) {
+                    when {
+                        picking -> picking = false
+                        selected != null -> { selected = null; focus = null }
+                        else -> scope.launch { sheet.go(SheetStop.PEEK) }
+                    }
+                }
+                Column(Modifier.align(Alignment.BottomEnd).padding(bottom = with(density) { sheet.height.value.toDp() } + 8.dp, end = 16.dp),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (pets.size > MAX_PETS) Text(
+                        stringResource(R.string.garden_more, pets.size - MAX_PETS),
+                        Modifier.pixelPanel(PanelStyle.Paper, pal, pixel()).padding(horizontal = 12.dp, vertical = 8.dp),
+                        style = MaterialTheme.typography.labelLarge, color = pal.ink,
+                    )
+                    val cd = stringResource(R.string.garden_reset)
+                    Box(
+                        Modifier.size(48.dp).pixelPanel(PanelStyle.Paper, pal, pixel()).clickable(role = Role.Button) { camera.reset() }
+                            .semantics { contentDescription = cd },
+                        contentAlignment = Alignment.Center,
+                    ) { PixelGlyph(Glyphs.target, pal.ink, sizeDp = 24) }
+                }
             }
-            protection == Protection.Paused -> Banner(R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_paused_title),
-                stringResource(R.string.home_paused_body), stringResource(R.string.prot_start), start)
-            protection == Protection.SafeMode -> Banner(R.drawable.sprite_mushroom_wow, stringResource(R.string.safe_mode_long),
-                stringResource(R.string.home_safe_body), null, {})
+        }
+        resetting?.let { pet -> ResetRecordDialog(pet.pkg, pet.label) { done -> resetting = null; if (done) reload++ } }
+        shoo?.let { (pet, v) ->
+            ShooDialog(pet.pkg, pet.label, v.company, onShooed = { fx.shooed(pet, v.company); reload++ }) { shoo = null }
+        }
+        if (watched != 0) when (protection) {
+            Protection.Paused -> StatusPill(R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_paused_short), stringResource(R.string.prot_start_short), start, topInset)
+            Protection.SafeMode -> StatusPill(R.drawable.sprite_mushroom_wow, stringResource(R.string.home_safe_short), null, {}, topInset)
             else -> Unit
         }
-        if (watched == null) LoadingState(stringResource(R.string.home_loading)) else TerrariumWeb(prefs, Modifier.fillMaxSize())
     }
 }
 
+/** A slim note floating under the top bar: what is going on, and one button. */
 @Composable
-private fun Banner(sprite: Int, title: String, body: String, action: String?, onAction: () -> Unit) {
+private fun StatusPill(sprite: Int, text: String, action: String?, onAction: () -> Unit, topInset: Dp) {
     val pal = LocalPal.current
-    PixelPanel(Modifier.fillMaxWidth().padding(12.dp), style = PanelStyle.Paper) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            PixelSprite(sprite, artPixelDp = 1.5f)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleMedium, color = pal.ink)
-                Text(body, style = MaterialTheme.typography.bodyMedium, color = pal.inkMuted)
-            }
-        }
-        if (action != null) PixelButton(action, onAction, Modifier.fillMaxWidth())
+    Row(
+        Modifier.fillMaxWidth().padding(top = topInset + 8.dp, start = 16.dp, end = 16.dp)
+            .pixelPanel(PanelStyle.Paper, pal, pixel()).padding(start = 12.dp, end = 8.dp, top = 6.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        PixelSprite(sprite, artPixelDp = 1f)
+        Spacer(Modifier.width(8.dp))
+        Text(text, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+        if (action != null) PixelButton(action, onAction)
     }
 }
 
-private const val HOST = "appassets.androidplatform.net"
-private const val URL = "https://$HOST/assets/terrarium/index.html"
-
-/** Engine methods the terrarium page may call: its own data, plus today's Snoops and the "Shoo away" rule. */
-private val TERRARIUM_METHODS = WebBridge.TERRARIUM + setOf("stats", "rules", "block")
-
-/** Words the terrarium page shows, from strings.xml so they translate. Sentences use %1$s style arguments. */
-private val TERR_STRINGS = mapOf(
-    "terr_sign_none" to R.string.terr_sign_none, "terr_empty" to R.string.terr_empty, "terr_error" to R.string.terr_error,
-    "terr_colors" to R.string.terr_colors, "terr_unseen" to R.string.terr_unseen, "terr_more" to R.string.terr_more,
-    "terr_org_no_snoops" to R.string.terr_org_no_snoops, "terr_org_stage" to R.string.terr_org_stage, "terr_org_grow" to R.string.terr_org_grow,
-    "terr_change" to R.string.terr_change, "terr_close" to R.string.close, "terr_back" to R.string.nav_back,
-    "terr_pick_title" to R.string.terr_pick_title, "terr_snoop_title" to R.string.terr_snoop_title, "terr_snoop_cd" to R.string.terr_snoop_cd,
-    "terr_kind_ads" to R.string.terr_kind_ads, "terr_kind_analytics" to R.string.terr_kind_analytics,
-    "terr_kind_fingerprinting" to R.string.terr_kind_fingerprinting, "terr_kind_social" to R.string.terr_kind_social,
-    "terr_kind_unknown" to R.string.terr_kind_unknown, "terr_snoop_shooed" to R.string.terr_snoop_shooed, "terr_shoo" to R.string.shoo,
-    "terr_shoo_q" to R.string.terr_shoo_q, "terr_shoo_body" to R.string.terr_shoo_body, "terr_not_now" to R.string.not_now,
-    "terr_shoo_done" to R.string.terr_shoo_done, "terr_shoo_failed" to R.string.terr_shoo_failed,
-)
-private val TERR_PLURALS = mapOf(
-    "terr_sign_some" to R.plurals.terr_sign_some, "terr_sign_shooed" to R.plurals.terr_sign_shooed,
-    "terr_org_contacts" to R.plurals.terr_org_contacts, "terr_org_snoops" to R.plurals.terr_org_snoops,
-    "terr_org_shooed" to R.plurals.terr_org_shooed, "terr_snoop_visits" to R.plurals.terr_snoop_visits,
-)
-
-/** window.MyceliumHost: words and motion settings for the page. Holds no engine access. */
-private class TerrariumHost(private val ctx: Context, private val settings: String) {
-    @JavascriptInterface
-    fun strings(): String = JSONObject(TERR_STRINGS.mapValues { ctx.getString(it.value) }).toString()
-
-    @JavascriptInterface
-    fun plural(key: String, n: Int, argsJson: String): String {
-        val id = TERR_PLURALS[key] ?: return key
-        val a = runCatching { JSONArray(argsJson) }.getOrDefault(JSONArray())
-        return ctx.resources.getQuantityString(id, n, *Array(a.length()) { a.get(it) })
-    }
-
-    @JavascriptInterface
-    fun settings(): String = settings
-}
-
-/** Hosts app/src/main/assets/terrarium/ (the replaceable web UI). The Compose app never draws organisms itself. */
-@SuppressLint("SetJavaScriptEnabled")
-@Composable
-fun TerrariumWeb(prefs: UiPrefs, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val day = !LocalPal.current.night
-    val hostSettings = obj("reduce_motion" to prefs.reduceMotion, "battery_saver" to prefs.batterySaver).toString()
-    val web = remember(day, hostSettings, prefs.textSize) {
-        val loader = WebViewAssetLoader.Builder()
-            .setDomain(HOST)
-            .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
-            .build()
-        WebView(context).apply {
-            settings.javaScriptEnabled = true
-            settings.allowFileAccess = false
-            settings.allowContentAccess = false
-            settings.textZoom = (prefs.textSize.scale * 100).toInt()
-            isVerticalScrollBarEnabled = false
-            overScrollMode = WebView.OVER_SCROLL_NEVER
-            addJavascriptInterface(WebBridge(TERRARIUM_METHODS), WebBridge.NAME)
-            addJavascriptInterface(TerrariumHost(context.applicationContext, hostSettings), "MyceliumHost")
-            webViewClient = object : WebViewClient() {
-                override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
-                    loader.shouldInterceptRequest(request.url)
-
-                // The terrarium never navigates away from the bundled assets.
-                override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest) = request.url.host != HOST
-            }
-            loadUrl(URL + if (day) "?theme=day" else "?theme=night")
-            setBackgroundColor(android.graphics.Color.TRANSPARENT)
-        }
-    }
-    LaunchedEffect(web) { WebBridge.attach(web, this) }   // terrarium_update -> window.Feed._push(...)
-    DisposableEffect(web) { onDispose { web.destroy() } }
-    AndroidView(factory = { web }, modifier = modifier)
-}

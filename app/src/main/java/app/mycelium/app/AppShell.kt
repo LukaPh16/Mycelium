@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -219,21 +221,15 @@ private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit
             Scaffold(
                 containerColor = pal.bg,
                 contentWindowInsets = WindowInsets(0, 0, 0, 0),
-                topBar = {
-                    TopBar(
-                        screen = screen,
-                        protection = protection,
-                        onMenu = { scope.launch { drawer.open() } },
-                        onBack = if (screen.inDrawer) null else ({ nav.popBackStack() }),
-                        onChip = { showProtection = true },
-                    )
-                },
             ) { pad ->
+                val overScene = screen.route == Routes.HOME
+                val top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + TOP_BAR_HEIGHT
                 Box(Modifier.fillMaxSize().padding(pad)) {
-                Column(Modifier.fillMaxSize()) {
+                // Home draws its scene under a see-through top bar; other screens start below it.
+                Column(Modifier.fillMaxSize().padding(top = if (overScene) 0.dp else top)) {
                     if (protection == Protection.Demo) DemoBanner()
                     NavHost(nav, startDestination = Routes.HOME, modifier = Modifier.fillMaxSize().navigationBarsPadding()) {
-                        composable(Routes.HOME) { HomeScreen(prefs, protection, start) }
+                        composable(Routes.HOME) { HomeScreen(prefs, protection, start, top) }
                         composable(Routes.APPS) { MyAppsScreen(prefs, protection) }
                         composable(Routes.ACTIVITY) { ActivityScreen(feed, prefs.advanced) }
                         composable(Routes.INSIGHTS) { InsightsScreen() }
@@ -247,8 +243,16 @@ private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit
                         composable(Routes.LICENSES) { LicensesScreen() }
                     }
                 }
+                TopBar(
+                    screen = screen,
+                    protection = protection,
+                    translucent = overScene,
+                    onMenu = { scope.launch { drawer.open() } },
+                    onBack = if (screen.inDrawer) null else ({ nav.popBackStack() }),
+                    onChip = { showProtection = true },
+                )
                 // Toasts drop in under the top bar, so they never cover a screen's own bottom controls.
-                SnackbarHost(snack, Modifier.align(Alignment.TopCenter)) { data ->
+                SnackbarHost(snack, Modifier.align(Alignment.TopCenter).padding(top = top)) { data ->
                     Box(Modifier.padding(12.dp).pixelPanel(PanelStyle.Wood, pal, pixel()).padding(horizontal = 18.dp, vertical = 14.dp)) {
                         Text(data.visuals.message, color = if (pal.night) pal.ink else pal.onAccent, style = MaterialTheme.typography.bodyMedium)
                     }
@@ -260,6 +264,8 @@ private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit
     }
 }
 
+private val TOP_BAR_HEIGHT = 60.dp
+
 private fun navigateTo(nav: NavHostController, route: String) {
     nav.navigate(route) {
         popUpTo(Routes.HOME) { saveState = true }
@@ -269,11 +275,12 @@ private fun navigateTo(nav: NavHostController, route: String) {
 }
 
 @Composable
-private fun TopBar(screen: Screen, protection: Protection, onMenu: () -> Unit, onBack: (() -> Unit)?, onChip: () -> Unit) {
+private fun TopBar(screen: Screen, protection: Protection, translucent: Boolean, onMenu: () -> Unit, onBack: (() -> Unit)?, onChip: () -> Unit) {
     val pal = LocalPal.current
-    val ink = if (pal.night) pal.ink else pal.onAccent
+    val ink = pal.onAccent
     Row(
-        Modifier.fillMaxWidth().background(pal.topBar).statusBarsPadding().height(60.dp).padding(horizontal = 4.dp),
+        Modifier.fillMaxWidth().background(if (translucent) pal.topBar.copy(alpha = 0.55f) else pal.topBar)
+            .statusBarsPadding().height(TOP_BAR_HEIGHT).padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val label = stringResource(if (onBack == null) R.string.nav_open else R.string.nav_back)
@@ -281,7 +288,7 @@ private fun TopBar(screen: Screen, protection: Protection, onMenu: () -> Unit, o
             Modifier.size(48.dp).clickable(role = Role.Button, onClick = onBack ?: onMenu).semantics { contentDescription = label },
             contentAlignment = Alignment.Center,
         ) {
-            PixelGlyph(if (onBack == null) Glyphs.menu else Glyphs.back, ink, sizeDp = 22)
+            PixelGlyph(if (onBack == null) Glyphs.menu else Glyphs.back, ink, sizeDp = 24)
         }
         val title = stringResource(screen.topTitle)
         Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
@@ -324,7 +331,7 @@ private fun DrawerContent(current: String, advanced: Boolean, go: (String) -> Un
                         .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    PixelGlyph(s.glyph, if (selected) pal.leaf else pal.inkMuted, sizeDp = 20)
+                    PixelGlyph(s.glyph, if (selected) pal.leaf else pal.inkMuted, sizeDp = 24)
                     Spacer(Modifier.width(16.dp))
                     Text(stringResource(s.title), style = MaterialTheme.typography.titleSmall, color = pal.ink)
                 }
@@ -400,7 +407,7 @@ private fun rememberEventFeed(): List<JSONObject> {
             val o = JSONObject(it)
             when (o.optString("type")) {
                 "event" -> { feed.add(0, o.getJSONObject("row")); while (feed.size > 400) feed.removeAt(feed.lastIndex) }
-                "wiped" -> feed.clear()
+                "wiped" -> o.optString("package").let { p -> if (p.isEmpty()) feed.clear() else feed.removeAll { it.optString("package") == p } }
             }
         }
     }

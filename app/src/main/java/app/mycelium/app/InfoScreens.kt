@@ -43,7 +43,7 @@ fun HelpScreen() {
     val answers = stringArrayResource(R.array.help_a)
     val terms = stringArrayResource(R.array.help_terms)
     val defs = stringArrayResource(R.array.help_defs)
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             PixelSprite(R.drawable.sprite_gardener, artPixelDp = 2f)
             Spacer(Modifier.width(12.dp))
@@ -73,7 +73,7 @@ fun LimitsScreen() {
     val pal = LocalPal.current
     val titles = stringArrayResource(R.array.limits_t)
     val bodies = stringArrayResource(R.array.limits_b)
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             PixelSprite(R.drawable.sprite_mushroom_wow, artPixelDp = 2f)
             Spacer(Modifier.width(12.dp))
@@ -104,7 +104,7 @@ fun AboutScreen() {
     }
     val perms = stringArrayResource(R.array.perm_t)
     val why = stringArrayResource(R.array.perm_b)
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp),
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         PixelSprite(R.drawable.sprite_mushroom_happy, artPixelDp = 4f)
         Text(stringResource(R.string.about_tagline), style = MaterialTheme.typography.titleMedium, color = pal.ink, textAlign = TextAlign.Center)
@@ -140,7 +140,7 @@ fun LicensesScreen() {
     val names = stringArrayResource(R.array.lic_names)
     val kinds = stringArrayResource(R.array.lic_kinds)
     val files = listOf("licenses/OFL-PixelifySans.txt", "licenses/Apache-2.0.txt", "licenses/Apache-2.0.txt", "licenses/Apache-2.0.txt")
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(stringResource(R.string.lic_intro), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
         for (i in names.indices) {
             PixelPanel(Modifier.fillMaxWidth()) {
