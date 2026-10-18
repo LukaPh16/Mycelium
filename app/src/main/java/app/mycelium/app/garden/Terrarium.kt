@@ -25,7 +25,10 @@ fun clockMs(): Long = SystemClock.uptimeMillis()
 
 /** Where things go in the scene, from assets/sprites/terrarium_layout.json (written by scripts/gen_sprites.py). */
 class Layout(val worldW: Int, val worldH: Int, val slots: List<Spot>, val decor: List<Triple<String, Int, Int>>,
-             val mouthX: Int, val mouthY: Int, val flies: IntArray) {
+             val mouthX: Int, val mouthY: Int, val flies: IntArray, val surfaces: List<Spot> = slots) {
+    /** The walkable point nearest to (x, y): a dropped creature lands there, never in mid-air. */
+    fun nearestSurface(x: Float, y: Float): Spot = surfaces.minByOrNull { (it.x - x) * (it.x - x) + (it.y - y) * (it.y - y) } ?: Spot(x.toInt(), y.toInt())
+
     companion object {
         fun load(context: Context): Layout = runCatching {
             val o = JSONObject(context.assets.open("sprites/terrarium_layout.json").bufferedReader().use { it.readText() })
@@ -34,7 +37,10 @@ class Layout(val worldW: Int, val worldH: Int, val slots: List<Spot>, val decor:
             val decor = o.getJSONArray("decor").let { a -> (0 until a.length()).map { val d = a.getJSONObject(it); Triple(d.getString("sprite"), d.getInt("x"), d.getInt("y")) } }
             val mouth = o.getJSONArray("mouth")
             val f = o.getJSONArray("fireflies")
-            Layout(world.getInt(0), world.getInt(1), slots, decor, mouth.getInt(0), mouth.getInt(1), IntArray(4) { f.getInt(it) })
+            val surfaces = o.optJSONArray("surfaces")?.let { lines ->
+                (0 until lines.length()).flatMap { i -> lines.getJSONArray(i).let { l -> (0 until l.length()).map { l.getJSONArray(it).let { p -> Spot(p.getInt(0), p.getInt(1)) } } } }
+            }.orEmpty().ifEmpty { slots }
+            Layout(world.getInt(0), world.getInt(1), slots, decor, mouth.getInt(0), mouth.getInt(1), IntArray(4) { f.getInt(it) }, surfaces)
         }.getOrElse {
             Layout(320, 600, (0 until 12).map { Spot(40 + it * 22, 440) }, emptyList(), 160, 80, intArrayOf(40, 140, 280, 440))
         }
@@ -71,7 +77,8 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
     }
 
     /** Renders the region starting at world art pixel ([cx], [cy]); returns the creatures as placed. */
-    fun render(cx: Int, cy: Int, ms: Long, phase: SkyPhase, pets: List<Pet>, spots: Map<String, Spot>, selected: String?, fx: GardenFx): List<Placed> {
+    fun render(cx: Int, cy: Int, ms: Long, phase: SkyPhase, pets: List<Pet>, spots: Map<String, Spot>, selected: String?, fx: GardenFx,
+               lifted: String? = null): List<Placed> {
         val t = ms / 1000f
         val night = phase == SkyPhase.NIGHT
         canvas.drawColor(0xFF2A1E2E.toInt())
@@ -95,7 +102,7 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
         val now = System.currentTimeMillis()
         for (pet in pets.sortedBy { spots[it.pkg]?.y ?: 0 }) {
             val spot = spots[pet.pkg] ?: continue
-            placed += drawPet(pet, spot, cx, cy, ms, now, pet.pkg == selected, fx)
+            placed += drawPet(pet, spot, cx, cy, ms, now, pet.pkg == selected || pet.pkg == lifted, fx, lift = if (pet.pkg == lifted) 6 else 0)
         }
         threads(placed, cx, cy, ms)
         blit(atlas["glass_front"], 0, 0, 0, cx, cy, anchored = false)
@@ -119,11 +126,11 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
         return placed
     }
 
-    private fun drawPet(pet: Pet, spot: Spot, cx: Int, cy: Int, ms: Long, now: Long, selected: Boolean, fx: GardenFx): Placed {
+    private fun drawPet(pet: Pet, spot: Spot, cx: Int, cy: Int, ms: Long, now: Long, selected: Boolean, fx: GardenFx, lift: Int = 0): Placed {
         val hopStart = fx.hops[pet.pkg]
         val asleep = pet.sleeping(now) && hopStart == null
         val s = atlas.creature(creatureSprite(pet, asleep), pet.look(atlas), pet.infection, crc(pet.pkg))
-        val hop = if (hopStart != null && ms != 0L) intArrayOf(0, -3, -6, -4, -1, 0, -2, 0).getOrElse(((clockMs() - hopStart).coerceAtLeast(0) / 70).toInt()) { 0 } else 0
+        val hop = -lift + if (hopStart != null && ms != 0L) intArrayOf(0, -3, -6, -4, -1, 0, -2, 0).getOrElse(((clockMs() - hopStart).coerceAtLeast(0) / 70).toInt()) { 0 } else 0
         if (selected) ring(spot, s.w, cx, cy)
         val f = if (ms == 0L) 0 else s.frameAt(ms + crc(pet.pkg) % 1000)
         blit(s, f, spot.x, spot.y + hop, cx, cy)

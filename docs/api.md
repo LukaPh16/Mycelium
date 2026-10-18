@@ -224,7 +224,10 @@ call("ai_ask", {"preview_id":"5f0c..."})
 - Payload: question, intent, time zone, the Step 8 FACTS, and the evidence rows (id, time, kind, app, domain, company,
   verdict); max 50 event rows, max 8 KB; `*_local` time strings sit next to timestamps. No raw DB, no full logs.
 - Preview ids are single use and expire after 10 min. `ai_ask` without one: `{"error":"preview_required"}`.
-- The model must return `{"sentences":[{"text","cites"}]}` citing ids from the payload. The Step 8 validator runs on the
+- The model returns `{"sentences":[{"text","cites","kind"}]}`. `kind:"fact"` sentences (about this phone) must cite ids
+  from the payload and pass the validator; `kind:"tip"` sentences are general knowledge or advice with empty cites,
+  kept unchecked (max 8, 500 chars each) and labelled as tips in the app. Results carry `kind` per sentence.
+- Older form: the model must return `{"sentences":[{"text","cites"}]}` citing ids from the payload. The Step 8 validator runs on the
   reply; more than one dropped sentence -> template answer.
 - Each send writes one `kind='ai'` event: `note` = `bytes=<n> model=<m> latency_ms=<ms> status=<s>`. The payload is never stored.
 - The key lives only in the Keystore-encrypted file (no-backup dir): never in the DB, events, logs or `export_db`.

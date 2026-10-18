@@ -81,21 +81,12 @@ private val Type = Typography(
 @Composable
 fun pixel(): Float = max(1f, (LocalDensity.current.density * 2f).roundToInt().toFloat())
 
-/** Auto follows the phone clock: night from 20:00 to 06:00. Re-checked every minute. */
-@Composable
-fun nightByClock(): Boolean {
-    val hour by produceState(java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)) {
-        while (true) { delay(60_000); value = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY) }
-    }
-    return hour >= 20 || hour < 6
-}
-
 @Composable
 fun MyceliumTheme(mode: ThemeMode, textSize: TextSize = TextSize.NORMAL, reduceMotion: Boolean = false, content: @Composable () -> Unit) {
     val night = when (mode) {
         ThemeMode.DAY -> false
         ThemeMode.NIGHT -> true
-        ThemeMode.AUTO -> nightByClock()
+        ThemeMode.AUTO -> androidx.compose.foundation.isSystemInDarkTheme()
     }
     val p = if (night) NightPal else DayPal
     val scheme = if (night) {

@@ -36,9 +36,12 @@ class Pet(
         }
 
     /** Its own colors and hat, picked from the app's seed: the same app always looks the same. */
-    fun look(atlas: SpriteAtlas): String = atlas.looks.getOrElse((crc(seed) % maxOf(1, atlas.looks.size)).toInt()) { "" }
+    fun look(atlas: SpriteAtlas): String = lookFor(atlas, seed)
     fun hat(atlas: SpriteAtlas): String? = (crc(seed + "hat") % (atlas.hats.size + 2)).toInt().let { atlas.hats.getOrNull(it) }
 }
+
+/** An app's own colors, from its seed (the same app always looks the same). */
+fun lookFor(atlas: SpriteAtlas, seed: String): String = atlas.looks.getOrElse((crc(seed) % maxOf(1, atlas.looks.size)).toInt()) { "" }
 
 private val SNOOP_KINDS = setOf("ads", "analytics", "fingerprinting", "social")
 
@@ -69,18 +72,21 @@ suspend fun loadPets(): List<Pet> {
 
 fun crc(s: String): Long = CRC32().apply { update(s.toByteArray()) }.value
 
-const val MAX_PETS = 12
+const val MAX_PETS = 16
 
 /**
  * Deterministic places from each app's seed among the scene's slots (the layout lists the nicest spots first);
  * the seed picks a preferred slot, collisions move to the next free one. The same apps always get the same places.
  */
-fun placePets(layout: Layout, pets: List<Pet>): Map<String, Spot> {
+fun placePets(layout: Layout, pets: List<Pet>, moved: Map<String, Spot> = emptyMap()): Map<String, Spot> {
     val slots = layout.slots
     if (slots.isEmpty()) return emptyMap()
-    val taken = BooleanArray(slots.size)
+    val shown = pets.sortedBy { it.pkg }.take(MAX_PETS)
     val out = LinkedHashMap<String, Spot>()
-    for (p in pets.sortedBy { it.pkg }.take(MAX_PETS)) {
+    for (p in shown) moved[p.pkg]?.let { out[p.pkg] = it }   // spots the user dragged creatures to win
+    val taken = BooleanArray(slots.size) { i -> out.values.any { s -> kotlin.math.abs(s.x - slots[i].x) < 18 && kotlin.math.abs(s.y - slots[i].y) < 12 } }
+    for (p in shown) {
+        if (p.pkg in out) continue
         var k = (crc(p.seed) % minOf(slots.size, pets.size + 1)).toInt()
         var tries = 0
         while (taken[k] && tries < slots.size) { k = (k + 1) % slots.size; tries++ }

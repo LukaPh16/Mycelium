@@ -47,6 +47,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -87,7 +88,7 @@ private const val MAX_ZOOM = 3f
 @Composable
 fun GardenView(
     still: Boolean, pets: List<Pet>, selected: String?, fx: GardenFx, camera: Camera, focus: String?,
-    topInsetPx: Int, bottomInsetPx: Int,
+    topInsetPx: Int, bottomInsetPx: Int, fitBottomPx: Int,
     onTapPet: (Pet) -> Unit, onTapSnoop: (Pet, SnoopVisit) -> Unit, onTapEmpty: () -> Unit, modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -101,18 +102,31 @@ fun GardenView(
         val viewH = with(density) { maxHeight.roundToPx() }
         if (viewW <= 0 || viewH <= 0) return@BoxWithConstraints
         // fit the jar (lid to shelf, full width) between the top bar and the sheet at 1x
-        val fit = min(viewW / layout.worldW.toFloat(), (viewH - topInsetPx - bottomInsetPx).toFloat() / 528f).coerceAtLeast(1f)
+        // (sized for the sheet at its smallest, so dragging the sheet never rescales the scene)
+        val fit = min(viewW / layout.worldW.toFloat(), (viewH - topInsetPx - fitBottomPx).toFloat() / 528f).coerceAtLeast(1f)
         val renderer = remember(viewW, viewH) {
             TerrariumRenderer(atlas, layout, ceil(viewW / fit).toInt() + 2, ceil(viewH / fit).toInt() + 2)
         }
         val frameImage = remember(renderer) { renderer.frame.asImageBitmap() }
-        val spots = remember(layout, pets.map { it.pkg + it.seed }) { placePets(layout, pets) }
+        // where the user dragged creatures to, kept on this phone (pkg -> "x,y")
+        val store = remember { context.getSharedPreferences("mycelium_garden", android.content.Context.MODE_PRIVATE) }
+        val moved = remember {
+            mutableStateMapOf<String, Spot>().apply {
+                for ((k, v) in store.all) if (k.startsWith("spot_")) (v as? String)?.split(',')?.let { if (it.size == 2) put(k.removePrefix("spot_"), Spot(it[0].toInt(), it[1].toInt())) }
+            }
+        }
+        var lifted by remember { mutableStateOf<String?>(null) }
+        var dragAt by remember { mutableStateOf<Spot?>(null) }
+        val baseSpots = remember(layout, pets.map { it.pkg + it.seed }, moved.toMap()) { placePets(layout, pets, moved) }
+        val spots = lifted?.let { l -> dragAt?.let { baseSpots + (l to it) } } ?: baseSpots
         fun scale() = fit * camera.zoom
         fun clamp() {
             val vw = viewW / scale()
             val vh = viewH / scale()
             camera.x = if (vw >= layout.worldW) (layout.worldW - vw) / 2 else camera.x.coerceIn(0f, layout.worldW - vw)
-            camera.y = camera.y.coerceIn(-topInsetPx / scale() - 8, 720f - vh)
+            val minY = -topInsetPx / scale() - 8
+            val maxY = 720f - vh
+            camera.y = if (maxY <= minY) (minY + maxY) / 2 else camera.y.coerceIn(minY, maxY)
         }
         LaunchedEffect(renderer, camera.resetRequest) {
             camera.zoom = 1f
@@ -191,8 +205,39 @@ fun GardenView(
             }
             .pointerInput(renderer) {
                 awaitEachGesture {
-                    awaitFirstDown(requireUnconsumed = false)
+                    val down = awaitFirstDown(requireUnconsumed = false)
                     camera.fling?.cancel()
+                    // hold a creature for a moment to pick it up; drag it; let go and it lands on the nearest surface
+                    val grab = hit(down.position)?.takeIf { it.second == null }?.first
+                    if (grab != null) {
+                        val stillHeld = withTimeoutOrNull(380) {
+                            while (true) {
+                                val e = awaitPointerEvent()
+                                val c = e.changes.first()
+                                if (!c.pressed || (c.position - down.position).getDistance() > viewConfiguration.touchSlop) return@withTimeoutOrNull false
+                            }
+                            @Suppress("UNREACHABLE_CODE") true
+                        } == null
+                        if (stillHeld) {
+                            lifted = grab.pkg
+                            fx.hops[grab.pkg] = clockMs()
+                            var last = down.position
+                            do {
+                                val e = awaitPointerEvent()
+                                val c = e.changes.first()
+                                last = c.position
+                                dragAt = Spot((camera.x + last.x / scale()).roundToInt(), (camera.y + last.y / scale()).roundToInt() + 6)
+                                e.changes.forEach { it.consume() }
+                            } while (e.changes.any { it.pressed })
+                            val land = layout.nearestSurface(camera.x + last.x / scale(), camera.y + last.y / scale() + 6)
+                            moved[grab.pkg] = land
+                            store.edit().putString("spot_${grab.pkg}", "${land.x},${land.y}").apply()
+                            fx.hops[grab.pkg] = clockMs()
+                            lifted = null
+                            dragAt = null
+                            return@awaitEachGesture
+                        }
+                    }
                     val tracker = VelocityTracker()
                     do {
                         val ev = awaitPointerEvent()
@@ -228,7 +273,7 @@ fun GardenView(
             val s = scale()
             val cx = floor(camera.x).toInt()
             val cy = floor(camera.y).toInt()
-            placed[0] = renderer.render(cx, cy, ms, phase, pets, spots, selected, fx)
+            placed[0] = renderer.render(cx, cy, ms, phase, pets, spots, selected, fx, lifted)
             val rw = min(renderer.frame.width, ceil(viewW / s).toInt() + 2)
             val rh = min(renderer.frame.height, ceil(viewH / s).toInt() + 2)
             drawImage(frameImage, srcOffset = IntOffset.Zero, srcSize = IntSize(rw, rh),

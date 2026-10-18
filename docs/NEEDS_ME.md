@@ -7,3 +7,4 @@
 - Font 200% check could not run: this phone refuses `settings put system font_scale` from adb (WRITE_SETTINGS). Checked with the app's XL text size instead. Please try Android font size max by hand.
 - Pixel size: you asked for ~2 device px per art px; on this 1280 px phone that made creatures ~20 dp, so base is width/320 (4 px). Say if you want it smaller.
 - Art is generated placeholders; drop hand-drawn PNGs into app/src/main/assets/sprites/ with the same names and frame sizes (docs/SPRITES.md).
+- Try on the Terrarium: hold a creature ~0.4 s, drag it, let go (it lands on the nearest moss, ledge, branch or island and stays there).

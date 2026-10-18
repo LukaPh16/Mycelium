@@ -189,10 +189,15 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
     val pal = LocalPal.current
     var presets by remember { mutableStateOf(emptyList<JSONObject>()) }
     var current by remember { mutableStateOf<String?>(null) }
+    var look by remember { mutableStateOf<String?>(null) }
+    val atlas = app.mycelium.app.garden.SpriteAtlas.of(LocalContext.current)
     val scope = rememberCoroutineScope()
     LaunchedEffect(pkg) {
         presets = Api.io("presets").optJSONArray("presets").objects()
         current = Api.io("terrarium", obj("app_id" to pkg)).optJSONArray("apps").objects().firstOrNull()?.optString("preset_id")
+        val seed = Api.io("garden", obj("include_unwatched" to true)).optJSONArray("apps").objects()
+            .firstOrNull { it.optString("package") == pkg }?.optString("seed").orEmpty().ifEmpty { pkg }
+        look = app.mycelium.app.garden.lookFor(atlas, seed)   // preview in this app's own colors
     }
     Column(Modifier.fillMaxSize().padding(horizontal = 12.dp)) {
         Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -214,7 +219,7 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    PresetThumb(p.getJSONObject("preset"), boxDp = 96, stageNo = Int.MAX_VALUE)   // what it grows into
+                    PresetThumb(p.getJSONObject("preset"), boxDp = 96, look = look)   // what it grows into
                     Spacer(Modifier.width(16.dp))
                     Text(p.getString("name") + if (id == current) " " + stringResource(R.string.preset_current) else "",
                         style = MaterialTheme.typography.titleSmall, color = pal.ink)
@@ -224,30 +229,16 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
     }
 }
 
-private val thumbCache = HashMap<String, ImageBitmap?>()
-
-/** First frame of the preset's strip for [stageNo], nearest-neighbor, in a fixed box. */
+/** What a creature type looks like (the terrarium art, adult stage), in an app's own colors when [look] is given. */
 @Composable
-fun PresetThumb(preset: JSONObject, boxDp: Int = 64, stageNo: Int = 1) {
-    val ctx = LocalContext.current
+fun PresetThumb(preset: JSONObject, boxDp: Int = 64, stageNo: Int = 3, look: String? = null) {
+    val atlas = app.mycelium.app.garden.SpriteAtlas.of(LocalContext.current)
     val id = preset.optString("id")
-    val stages = preset.optJSONArray("stages")
-    val stage = stages?.optJSONObject((stageNo - 1).coerceIn(0, maxOf(0, (stages.length()) - 1)))
-    val key = "$id/${stage?.optString("file")}"
-    val img = remember(key) {
-        thumbCache.getOrPut(key) {
-            runCatching {
-                ctx.assets.open("organisms/$id/${stage?.optString("file") ?: "stage1.png"}").use { BitmapFactory.decodeStream(it)?.asImageBitmap() }
-            }.getOrNull()
-        }
+    val s = remember(id, stageNo, look) {
+        atlas.creature("creature_${id}_s${stageNo.coerceIn(1, 3)}", look ?: atlas.looks.firstOrNull().orEmpty(), 0, 0)
     }
     Box(Modifier.size(boxDp.dp), contentAlignment = Alignment.BottomCenter) {
-        if (img != null && stage != null) {
-            val fw = stage.optInt("frame_w", img.width)
-            val fh = stage.optInt("frame_h", img.height)
-            val fit = (boxDp.toFloat() / maxOf(fw, fh)).coerceAtLeast(0.5f)
-            PixelBitmap(img, artPixelDp = fit, srcSize = IntSize(fw, fh))
-        }
+        PixelBitmap(s.image, artPixelDp = boxDp.toFloat() / maxOf(s.w, s.h), srcSize = IntSize(s.w, s.h))
     }
 }
 

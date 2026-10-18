@@ -77,6 +77,7 @@ private class Msg(
     val fallback: String? = null,
     val action: Action? = null,
     val fresh: Boolean = false,
+    val tips: Set<Int> = emptySet(),   // indexes of general-knowledge sentences (not facts about this phone)
 ) {
     var actionNote by mutableStateOf<String?>(null)
 }
@@ -88,12 +89,15 @@ private fun cites(a: JSONArray?) = if (a == null) emptyList() else (0 until a.le
 
 private fun sentencesOf(a: JSONArray?) = a.objects().map { it.getString("text") to cites(it.optJSONArray("cites")) }
 
+private fun tipsOf(a: JSONArray?) = a.objects().withIndex().filter { it.value.optString("kind") == "tip" }.map { it.index }.toSet()
+
 private fun fromHistory(t: JSONObject): Msg {
     if (t.optString("role") != "bot") return Msg(true, listOf(t.optString("text") to emptyList()))
     val stored = t.optString("sentences")
     val s = if (stored.isNotEmpty()) sentencesOf(JSONArray(stored))
         else listOf(t.optString("text") to t.optString("cites").split(',').mapNotNull { it.trim().toLongOrNull() })
-    return Msg(false, s, t.optString("engine").ifEmpty { null }, if (t.has("latency_ms")) t.getLong("latency_ms") else null)
+    return Msg(false, s, t.optString("engine").ifEmpty { null }, if (t.has("latency_ms")) t.getLong("latency_ms") else null,
+        tips = if (stored.isNotEmpty()) tipsOf(JSONArray(stored)) else emptySet())
 }
 
 private fun fromResult(r: JSONObject): Msg {
@@ -109,7 +113,8 @@ private fun fromResult(r: JSONObject): Msg {
         else -> null
     }
     return Msg(false, sentencesOf(r.optJSONArray("sentences")), r.optString("engine").ifEmpty { null },
-        if (r.has("latency_ms")) r.getLong("latency_ms") else null, r.optString("fallback_reason").ifEmpty { null }, action, fresh = true)
+        if (r.has("latency_ms")) r.getLong("latency_ms") else null, r.optString("fallback_reason").ifEmpty { null }, action, fresh = true,
+        tips = tipsOf(r.optJSONArray("sentences")))
 }
 
 @Composable
@@ -255,11 +260,15 @@ private fun BotBubble(m: Msg, onCite: (Long) -> Unit, onAction: (Action) -> Unit
         PixelSprite(R.drawable.sprite_gardener, artPixelDp = 1.5f, modifier = Modifier.padding(top = 22.dp))
         Spacer(Modifier.width(8.dp))
         Box(Modifier.weight(1f)) {
-            DialogBox(stringResource(R.string.chat_gardener), scroll = false) {
+            DialogBox(stringResource(if (m.engine == "cloud") R.string.chat_gardener_ai else R.string.chat_gardener), scroll = false) {
                 var left = shown
-                for ((text, _) in m.sentences) {
+                for ((i, pair) in m.sentences.withIndex()) {
+                    val text = pair.first
                     if (left <= 0) break
-                    Text(text.take(left), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+                    if (i in m.tips) Column(Modifier.fillMaxWidth().pixelPanel(PanelStyle.Quiet, pal, pixel()).padding(8.dp)) {
+                        Text(stringResource(R.string.chat_tip), style = MaterialTheme.typography.labelLarge, color = if (pal.night) pal.gold else pal.wood)
+                        Text(text.take(left), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+                    } else Text(text.take(left), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
                     left -= text.length
                 }
                 if (shown < total) return@DialogBox

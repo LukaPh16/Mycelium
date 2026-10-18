@@ -124,7 +124,7 @@ fun SettingsScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit) {
                 Modifier.fillMaxWidth().clickable(role = Role.Button) { prefs.chooseNewCreature(id); pickCreature = false }.padding(vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                PresetThumb(p.getJSONObject("preset"), boxDp = 56, stageNo = Int.MAX_VALUE)
+                PresetThumb(p.getJSONObject("preset"), boxDp = 56)
                 Spacer(Modifier.width(12.dp))
                 Text(p.optString("name") + if (id == prefs.newCreature) " ✓" else "", style = MaterialTheme.typography.titleSmall, color = pal.ink)
             }

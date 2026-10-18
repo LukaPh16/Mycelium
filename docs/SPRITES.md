@@ -185,7 +185,6 @@ Priority: P1 = seen first / most important.
 | terrain | terrain.png | 320 x 600 | 1 | 0 | 0,0 | P1 |
 | glass_front | glass_front.png | 320 x 600 | 1 | 0 | 0,0 | P1 |
 | pond | pond.png | 56 x 8 | 3 | 4 | 0,0 | P2 |
-| spring | spring.png | 6 x 60 | 4 | 8 | 0,0 | P2 |
 | tuft_1 | tuft_1.png | 16 x 14 | 3 | 3 | 8,13 | P2 |
 | tuft_2 | tuft_2.png | 16 x 14 | 3 | 3 | 8,13 | P2 |
 | tuft_3 | tuft_3.png | 16 x 14 | 3 | 3 | 8,13 | P2 |

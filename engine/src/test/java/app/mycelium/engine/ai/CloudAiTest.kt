@@ -239,4 +239,21 @@ class CloudAiTest {
             assertEquals(reason, c.ask(id, key, true, apps, companies, now).result.s("fallback_reason"))
         }
     }
+
+    @Test fun tipsAreKeptUncheckedButFactsStillValidated() {
+        val inner = """{"sentences":[
+            {"text":"Alpha mushroom made 3 lookups today.","cites":[1],"kind":"fact"},
+            {"text":"Alpha made 999 lookups at 03:12.","cites":[987654],"kind":"fact"},
+            {"text":"Braze is a marketing service that tracks how you use apps.","cites":[],"kind":"tip"}]}"""
+        reply = { HttpReply(200, buildJsonObject {
+            put("choices", JsonArray(listOf(buildJsonObject { put("finish_reason", "stop"); put("message", buildJsonObject { put("content", inner) }) })))
+        }.toString()) }
+        val c = ai()
+        val id = c.preview("What did Alpha do today?", apps, companies, now, "openrouter/auto", Provider.OPENROUTER).getValue("preview_id").jsonPrimitive.content
+        val out = c.ask(id, key, true, apps, companies, now).result
+        assertEquals("cloud", out.s("engine"))
+        val kinds = out.getValue("sentences").jsonArray.map { it.jsonObject.s("kind") }
+        assertEquals(listOf("fact", "tip"), kinds)                     // the fabricated fact is gone, the tip stays
+        assertEquals(1, out.getValue("dropped").jsonPrimitive.int)
+    }
 }

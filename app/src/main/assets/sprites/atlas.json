@@ -2972,19 +2972,6 @@
    "priority": "P2"
   },
   {
-   "name": "spring",
-   "file": "spring.png",
-   "w": 6,
-   "h": 60,
-   "anchor": [
-    0,
-    0
-   ],
-   "frames": 4,
-   "fps": 8,
-   "priority": "P2"
-  },
-  {
    "name": "tuft_1",
    "file": "tuft_1.png",
    "w": 16,

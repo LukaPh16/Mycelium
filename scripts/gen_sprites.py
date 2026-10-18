@@ -689,7 +689,7 @@ def room(phase):
             "dusk": [EXTRA["dusk0"], EXTRA["dusk1"], EXTRA["dusk1"], EXTRA["dusk2"], EXTRA["dusk3"]],
             "night": [EXTRA["night1"], EXTRA["night2"], EXTRA["night2"], EXTRA["night3"], EXTRA["night4"]]}[phase]
     top_c = {"day": [RAMPS["moss"][3], RAMPS["moss"][4]], "dusk": [EXTRA["dusk2"], EXTRA["dusk3"]], "night": [EXTRA["night3"], EXTRA["night4"]]}[phase]
-    for (ix, iy, iw) in ((70, 168, 22), (262, 338, 22), (166, 226, 14)):   # far islands (Owlboy nod), hazy with depth
+    for (ix, iy, iw) in ((178, 150, 16), (262, 338, 22), (150, 236, 12)):   # far islands (Owlboy nod), hazy with depth
         irng = random.Random(ix)
         pts = [(ix - iw, iy), (ix + iw, iy)]
         for k in range(1, 8):
@@ -828,25 +828,13 @@ def terrain():
     for _ in range(14):   # fallen petals
         x = rng.randrange(40, 230)
         cv.put(x, ground_y(x), RAMPS["blossom"][3])
-    isl_top = 232   # floating mini island (Owlboy nod): rounded rock with strata, a moss cap that drips, roots
-    pts = [(202, isl_top + 1), (278, isl_top + 1)]
-    for k in range(1, 12):
-        t = k / 12
-        pts.append((278 - t * 76, isl_top + 2 + math.sin(t * math.pi) ** 0.6 * 30 + (6 if k == 6 else (3 if k % 3 == 0 else 0))))
-    isl = poly(pts)
-    shade(cv, isl, "rock", ao=0.4)
-    for (x, y) in isl:   # strata lines
-        if (y - isl_top) % 7 == 3 and (x * 13 + y) % 9 != 0 and cv.get(x, y) in RAMPS["rock"][2:4]:
-            cv.put(x, y, RAMPS["rock"][1])
-    for x in range(202, 279):
-        cv.put(x, isl_top - 1, RAMPS["moss"][4]); cv.put(x, isl_top, RAMPS["moss"][3])
-        cv.put(x, isl_top + 1, RAMPS["moss"][2]); cv.put(x, isl_top + 2, RAMPS["moss"][1])
-        if x % 5 == 0:
-            for k in range(1 + (x % 3)):
-                cv.put(x, isl_top + 3 + k, RAMPS["moss"][2])
-    for rx in (214, 230, 246, 262):
-        for k in range(rng.randrange(10, 22)):
-            cv.put(rx + math.sin(k * 0.5 + rx) * 1.4, isl_top + 22 + k, RAMPS["earth"][3 if k % 3 else 2])
+    floating_island(cv, rng, 202, 278, 232, 30)
+    floating_island(cv, rng, 40, 116, ISLAND2_TOP, 24)
+    leaf_cluster(cv, rng, 58, ISLAND2_TOP - 2, 7, 3, 9, "moss", leaf=(2, 2))
+    for i, (dx, hh) in enumerate(((100, 5), (104, 7))):   # two little red caps on the new island
+        for k in range(hh):
+            cv.put(dx, ISLAND2_TOP - 1 - k, RECOLOR["cream"][3])
+        shade(cv, {p for p in ellipse(dx + 0.5, ISLAND2_TOP - hh, 2.4, 1.8) if p[1] <= ISLAND2_TOP - hh}, "flyred", inner=False)
     rock_set = rock
     for (x, y) in rock_set:   # cracks and moss patches on the outcrop
         if (x * 7 + y * 11) % 53 == 0:
@@ -904,6 +892,32 @@ def terrain():
     for x in (190, 278):   # little crystals
         shade(cv, poly([(x - 3, ground_y(x)), (x, ground_y(x) - 9), (x + 3, ground_y(x))]), "glow")
     return cv
+
+
+ISLAND2_TOP = 190
+
+
+def floating_island(cv, rng, x0, x1, top, depth):
+    """A floating mini island (Owlboy nod): rounded rock with strata, a moss cap that drips, hanging roots."""
+    w = x1 - x0
+    pts = [(x0, top + 1), (x1, top + 1)]
+    for k in range(1, 12):
+        t = k / 12
+        pts.append((x1 - t * w, top + 2 + math.sin(t * math.pi) ** 0.6 * depth + (6 if k == 6 else (3 if k % 3 == 0 else 0))))
+    isl = poly(pts)
+    shade(cv, isl, "rock", ao=0.4)
+    for (x, y) in isl:   # strata lines
+        if (y - top) % 7 == 3 and (x * 13 + y) % 9 != 0 and cv.get(x, y) in RAMPS["rock"][2:4]:
+            cv.put(x, y, RAMPS["rock"][1])
+    for x in range(x0, x1 + 1):
+        cv.put(x, top - 1, RAMPS["moss"][4]); cv.put(x, top, RAMPS["moss"][3])
+        cv.put(x, top + 1, RAMPS["moss"][2]); cv.put(x, top + 2, RAMPS["moss"][1])
+        if x % 5 == 0:
+            for k in range(1 + (x % 3)):
+                cv.put(x, top + 3 + k, RAMPS["moss"][2])
+    for rx in range(x0 + 12, x1 - 6, 16):
+        for k in range(rng.randrange(10, 22)):
+            cv.put(rx + math.sin(k * 0.5 + rx) * 1.4, top + depth * 0.7 + k, RAMPS["earth"][3 if k % 3 else 2])
 
 
 def glass_front():
@@ -986,14 +1000,6 @@ def animated():
                     cv.put(x, y, RAMPS["water"][k])
         frames.append(cv)
     out.append(("pond", frames, 4, [0, 0], (146, 451)))
-    frames = []
-    for f in range(4):   # spring trickling off the rock into the pond
-        cv = Canvas(6, 60)
-        for y in range(54):
-            for x in range(3):
-                cv.put(1 + x + (1 if y > 46 else 0), y, RAMPS["water"][3 if (y + f * 3 + x) % 6 else 4], 230)
-        frames.append(cv)
-    out.append(("spring", frames, 8, [0, 0], (214, 400)))
     for i, x in enumerate((60, 118, 226, 270)):   # swaying grass tufts
         frames = []
         for f in range(3):
@@ -1085,13 +1091,21 @@ def main():
     path = tree_path()
     bx, by = path[70]
     slots = [   # where creatures stand (feet); the order is the order new apps fill them
-        (124, ground_y(124)), (226, ground_y(226)), (240, 386), (58, ground_y(58)), (int(bx + 30), int(by - 6)),
-        (232, 232), (100, ground_y(100) + 1), (262, ground_y(262)), (256, 232), (int(bx + 52), int(by - 9)),
-        (36, ground_y(36)), (264, 386),
+        (124, ground_y(124)), (226, ground_y(226)), (244, 386), (58, ground_y(58)), (int(bx + 30), int(by - 6)),
+        (232, 232), (70, ISLAND2_TOP), (100, ground_y(100) + 1), (262, ground_y(262)), (256, 232), (int(bx + 52), int(by - 9)),
+        (92, ISLAND2_TOP), (36, ground_y(36)), (264, 386), (140, ground_y(140)), (206, ground_y(206)),
+    ]
+    surfaces = [   # walkable lines: a dropped creature lands on the nearest point
+        [[x, ground_y(x)] for x in range(JAR["x0"] + 10, JAR["x1"] - 9, 2) if not (146 <= x <= 200) and not (216 <= x <= 284)],
+        [[x, 386] for x in range(234, 272, 2)],
+        [[int(bx + k), int(by - 4 - k * 10 / 64)] for k in range(8, 62, 2)],
+        [[x, 232] for x in range(206, 276, 2)],
+        [[x, ISLAND2_TOP] for x in range(44, 114, 2)],
     ]
     layout = {
         "world": [W, H], "jar": JAR, "mouth": [(JAR["neck0"] + JAR["neck1"]) // 2, JAR["lid_top"]],
         "slots": [{"x": sx, "y": sy} for sx, sy in slots],
+        "surfaces": surfaces,
         "decor": decor,
         "fireflies": [JAR["x0"] + 10, JAR["top"] + 20, JAR["x1"] - 10, 440],
         "glows": [{"x": d["x"], "y": d["y"]} for d in decor if d["sprite"].startswith("glowcap")],
