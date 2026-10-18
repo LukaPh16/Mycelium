@@ -16,8 +16,12 @@ enum class Mood { HAPPY, CONTENT, GRUMPY, SICK, SLEEPY }
 class Pet(
     val pkg: String, val label: String, val preset: String, val stage: Int, val stageCount: Int,
     val growth: Double, val next: Double?, val seed: String, val contactsToday: Int, val blockedToday: Int,
-    val lastSeen: Long, val snoops: List<SnoopVisit>, val stageShown: Int = stage,
+    val lastSeen: Long, val snoops: List<SnoopVisit>, val stageShown: Int = stage, val kind: String = "plant",
 ) {
+    /** Its "hello" sound: one per creature kind, pitched lower as it grows. */
+    val voice: String get() = "creature_" + when (kind) { "anemone" -> "coral"; "mushroom", "coral", "vine", "cactus", "slime", "jelly", "crystal", "fern", "moss", "tree" -> kind; else -> "plant" }
+    val voicePitch: Float get() = 1.25f - (stage - 1) * 0.07f
+
     val visiting get() = snoops.filter { !it.shooed }
     /** Neglected: no contact for 3 hours -> the creature naps. */
     fun sleeping(now: Long) = lastSeen <= 0 || now - lastSeen > 3 * 3600_000L
@@ -63,7 +67,11 @@ fun lookForPreset(atlas: SpriteAtlas, presetId: String): String {
 
 private val SNOOP_KINDS = setOf("ads", "analytics", "fingerprinting", "social")
 
+private var kingdoms: Map<String, String> = emptyMap()
+
 suspend fun loadPets(): List<Pet> {
+    if (kingdoms.isEmpty()) kingdoms = Api.io("presets").optJSONArray("presets").objects()
+        .associate { it.optString("id") to (it.optJSONObject("preset")?.optString("kingdom") ?: "plant") }
     val organisms = Api.io("terrarium").optJSONArray("apps").objects()
     val garden = Api.io("garden").optJSONArray("apps").objects().associateBy { it.getString("package") }
     val rules = Api.io("rules").optJSONArray("rules").objects().filter { it.optString("scope") == "company" }
@@ -85,6 +93,7 @@ suspend fun loadPets(): List<Pet> {
             o.optDouble("growth", 0.0), if (o.isNull("next_threshold")) null else o.optDouble("next_threshold"),
             g?.optString("seed").orEmpty().ifEmpty { pkg }, today.optInt("lookups"), today.optInt("blocked"),
             g?.optLong("last_seen") ?: 0L, snoops, o.optInt("stage_shown", o.optInt("stage", 1)),
+            kingdoms[o.optString("preset_id")] ?: "plant",
         )
     }
 }

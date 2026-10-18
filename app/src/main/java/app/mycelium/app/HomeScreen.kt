@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalDensity
 import app.mycelium.app.garden.EvolutionMoment
 import app.mycelium.app.garden.GardenSheet
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.DisposableEffect
 import app.mycelium.app.garden.SheetState
 import app.mycelium.app.garden.SheetStop
 import app.mycelium.app.garden.SnoopVisit
@@ -93,6 +94,18 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
     var shoo by remember { mutableStateOf<Pair<Pet, SnoopVisit>?>(null) }
     var resetting by remember { mutableStateOf<Pet?>(null) }
     val acked = remember { mutableStateMapOf<String, Int>() }   // stages already celebrated this session
+    val sounds = app.mycelium.app.ui.LocalSounds.current
+    val seenSnoops = remember { arrayOfNulls<Set<String>>(1) }
+    LaunchedEffect(pets) {   // a Snoop that was not there before: an ominous little buzz
+        val now = pets.flatMap { p -> p.visiting.map { p.pkg + "|" + it.company } }.toSet()
+        val before = seenSnoops[0]
+        if (before != null && (now - before).isNotEmpty()) sounds?.play("snoop_arrive", volume = 0.8f)
+        seenSnoops[0] = now
+    }
+    DisposableEffect(Unit) {   // jar ambience only while the Terrarium is on screen; the window sky follows the clock
+        sounds?.ambience(if (app.mycelium.app.garden.skyPhaseNow() == app.mycelium.app.garden.SkyPhase.NIGHT) "amb_night" else "amb_day")
+        onDispose { sounds?.ambience(null) }
+    }
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
     val sheet = remember { SheetState(with(density) { 88.dp.toPx() }) }
@@ -190,7 +203,16 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
         }
         resetting?.let { pet -> ResetRecordDialog(pet.pkg, pet.label) { done -> resetting = null; if (done) reload++ } }
         shoo?.let { (pet, v) ->
-            ShooDialog(pet.pkg, pet.label, v.company, onShooed = { fx.shooed(pet, v.company); reload++ }) { shoo = null }
+            ShooDialog(pet.pkg, pet.label, v.company, onShooed = {
+                fx.shooed(pet, v.company)
+                reload++
+                scope.launch {   // whoosh, poof, healing sparkle, a little heart: timed with the animation
+                    sounds?.play("shoo"); delay(140)
+                    sounds?.play("poof"); delay(260)
+                    sounds?.play("heal"); delay(320)
+                    sounds?.play("heart", volume = 0.8f)
+                }
+            }) { shoo = null }
         }
         if (watched != 0) when (protection) {
             Protection.Paused -> StatusPill(R.drawable.sprite_mushroom_sleepy, stringResource(R.string.home_paused_short), stringResource(R.string.prot_start_short), start, topInset)

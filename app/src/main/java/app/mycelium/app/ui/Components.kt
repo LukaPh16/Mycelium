@@ -144,11 +144,12 @@ fun PixelButton(
     }
     val down = if (pressed && enabled) p else 0f
     val px = with(LocalDensity.current) { p.toDp() }
+    val sounds = LocalSounds.current
     Box(
         modifier
             .defaultMinSize(minHeight = 48.dp, minWidth = 64.dp)
             .alpha(if (enabled) 1f else 0.45f)
-            .clickable(source, null, enabled = enabled, role = Role.Button, onClick = onClick)
+            .clickable(source, null, enabled = enabled, role = Role.Button) { sounds?.play("ui_tap"); onClick() }
             .drawBehind {
                 val w = size.width.roundToInt().toFloat()
                 val h = size.height.roundToInt().toFloat()
@@ -176,10 +177,11 @@ fun InfoButton(info: Info, modifier: Modifier = Modifier, tint: Color? = null) {
     val pal = LocalPal.current
     val ringColor = tint ?: if (pal.night) pal.gold else pal.wood
     val label = stringResource(R.string.info_about, stringResource(info.title))
+    val sounds = LocalSounds.current
     Box(
         modifier
             .size(48.dp)
-            .clickable(role = Role.Button) { open = true }
+            .clickable(role = Role.Button) { sounds?.play("ui_info"); open = true }
             .semantics { contentDescription = label },
         contentAlignment = Alignment.Center,
     ) {
@@ -371,10 +373,11 @@ object Glyphs {
 @Composable
 fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, info: Info? = null) {
     val pal = LocalPal.current
+    val sounds = LocalSounds.current
     Row(
         modifier
             .defaultMinSize(minHeight = 48.dp)
-            .toggleable(checked, enabled = enabled, role = Role.Switch, onValueChange = onChange),
+            .toggleable(checked, enabled = enabled, role = Role.Switch) { sounds?.play(if (it) "ui_toggle_on" else "ui_toggle_off"); onChange(it) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Switch(checked, null, enabled = enabled, colors = SwitchDefaults.colors(checkedTrackColor = pal.leaf))

@@ -60,11 +60,22 @@ fun EvolutionMoment(pet: Pet, from: Int, to: Int, onDone: () -> Unit) {
     val newS = remember(pet.pkg, to) { atlas.creature(creatureSprite(pet, false, atlas), look, 0, 0) }
     val sparkle = remember { atlas["sparkle"] }
     var t by remember { mutableLongStateOf(if (still) FLICKER_MS + FLASH_MS else 0L) }
+    val sounds = app.mycelium.app.ui.LocalSounds.current
+    val heard = remember { intArrayOf(-1, 0, 0) }   // last flicker swap ticked, burst played, fanfare played
     LaunchedEffect(Unit) {
         val start = withFrameMillis { it } - t
         while (true) withFrameMillis { t = it - start }
     }
     val revealed = t >= FLICKER_MS + FLASH_MS
+    run {   // one tick per flicker swap (rising as it speeds up), then the burst, then the fanfare
+        var acc = 0L
+        var swaps = 0
+        var period = 300L
+        while (acc + period <= t && acc < FLICKER_MS) { acc += period; swaps++; period = (period * 0.82f).toLong().coerceAtLeast(50L) }
+        if (t < FLICKER_MS && swaps > heard[0]) { heard[0] = swaps; sounds?.play("evo_tick", 0.8f + swaps * 0.05f, 0.7f) }
+        if (t >= FLICKER_MS - 250 && heard[1] == 0 && !still) { heard[1] = 1; sounds?.play("evo_burst") }
+        if (revealed && heard[2] == 0) { heard[2] = 1; sounds?.play("evo_fanfare") }
+    }
     val cd = stringResource(R.string.evo_cd, pet.label)
     Box(
         Modifier.fillMaxSize().background(Color(0xE61B1A33))

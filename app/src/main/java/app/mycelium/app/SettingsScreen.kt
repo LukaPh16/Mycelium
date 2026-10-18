@@ -79,6 +79,7 @@ fun SettingsScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit) {
             ToggleRow(stringResource(R.string.set_reduce_motion), prefs.reduceMotion, prefs::chooseReduceMotion, Info(R.string.info_reduce_motion_t, R.string.info_reduce_motion_b))
             ToggleRow(stringResource(R.string.set_saver), prefs.batterySaver, prefs::chooseBatterySaver, Info(R.string.info_saver_t, R.string.info_saver_b))
         }
+        SoundPanel(prefs)
         PixelPanel(Modifier.fillMaxWidth()) {
             SectionHeader(stringResource(R.string.set_protection))
             SettingRow(stringResource(R.string.set_protection_now), Info(R.string.info_protection_t, R.string.info_protection_b), hint = protectionLabel(protection))
@@ -156,13 +157,58 @@ fun protectionLabel(p: Protection): String = stringResource(when (p) {
 @Composable
 private fun ToggleRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit, info: Info) {
     val pal = LocalPal.current
+    val sounds = app.mycelium.app.ui.LocalSounds.current
     Row(
-        Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp).toggleable(checked, role = Role.Switch, onValueChange = onChange),
+        Modifier.fillMaxWidth().defaultMinSize(minHeight = 48.dp)
+            .toggleable(checked, role = Role.Switch) { sounds?.play(if (it) "ui_toggle_on" else "ui_toggle_off"); onChange(it) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge, color = pal.ink)
         InfoButton(info)
         Switch(checked, null, colors = SwitchDefaults.colors(checkedTrackColor = pal.leaf, checkedThumbColor = pal.paper, uncheckedTrackColor = pal.paperEdge))
+    }
+}
+
+/** Sound: mute everything, a master volume, and effects / jar ambience each with a switch and a level. */
+@Composable
+private fun SoundPanel(prefs: UiPrefs) {
+    val pal = LocalPal.current
+    val sounds = app.mycelium.app.ui.LocalSounds.current
+    PixelPanel(Modifier.fillMaxWidth()) {
+        SectionHeader(stringResource(R.string.set_sound))
+        ToggleRow(stringResource(R.string.set_mute), prefs.muted, prefs::chooseMuted, Info(R.string.info_mute_t, R.string.info_mute_b))
+        VolumeRow(stringResource(R.string.set_master), prefs.masterVolume, !prefs.muted, Info(R.string.info_master_t, R.string.info_master_b),
+            onChange = prefs::chooseMasterVolume) { sounds?.play("creature_mushroom") }
+        ToggleRow(stringResource(R.string.set_effects), prefs.effectsOn, prefs::chooseEffectsOn, Info(R.string.info_effects_t, R.string.info_effects_b))
+        VolumeRow(stringResource(R.string.set_effects_volume), prefs.effectsVolume, !prefs.muted && prefs.effectsOn, null,
+            onChange = prefs::chooseEffectsVolume) { sounds?.play("heal") }
+        ToggleRow(stringResource(R.string.set_ambience), prefs.ambienceOn, prefs::chooseAmbienceOn, Info(R.string.info_ambience_t, R.string.info_ambience_b))
+        VolumeRow(stringResource(R.string.set_ambience_volume), prefs.ambienceVolume, !prefs.muted && prefs.ambienceOn, null,
+            onChange = prefs::chooseAmbienceVolume) {}
+        Text(stringResource(R.string.set_sound_note), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+    }
+}
+
+/** A pixel-themed volume slider 0..100 with its value; [preview] plays when the thumb is let go. */
+@Composable
+private fun VolumeRow(label: String, value: Int, enabled: Boolean, info: Info?, onChange: (Int) -> Unit, preview: () -> Unit) {
+    val pal = LocalPal.current
+    var v by remember(value) { mutableStateOf(value.toFloat()) }
+    Column(Modifier.fillMaxWidth()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge, color = if (enabled) pal.ink else pal.inkMuted)
+            Text(stringResource(R.string.set_volume_value, v.toInt()), style = MaterialTheme.typography.labelLarge, color = pal.inkMuted)
+            if (info != null) InfoButton(info) else Spacer(Modifier.width(8.dp))
+        }
+        androidx.compose.material3.Slider(
+            value = v, onValueChange = { v = it }, valueRange = 0f..100f, steps = 9, enabled = enabled,
+            onValueChangeFinished = { onChange(v.toInt()); preview() },
+            colors = androidx.compose.material3.SliderDefaults.colors(
+                thumbColor = pal.leaf, activeTrackColor = pal.leaf, inactiveTrackColor = pal.paperEdge,
+                activeTickColor = pal.moss, inactiveTickColor = pal.woodLight, disabledThumbColor = pal.inkMuted,
+                disabledActiveTrackColor = pal.inkMuted, disabledInactiveTrackColor = pal.paperEdge,
+            ),
+        )
     }
 }
 
@@ -209,7 +255,11 @@ private fun AiKeyPanel() {
     var model by remember { mutableStateOf("") }
     var status by remember { mutableStateOf(JSONObject()) }
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) { status = Api.io("ai_status"); model = status.optString("model") }
+    LaunchedEffect(Unit) {
+        status = Api.io("ai_status")
+        if (status.optString("provider") != "openrouter") { Api.io("ai_settings", obj("provider" to "openrouter")); status = Api.io("ai_status") }   // OpenRouter only
+        model = status.optString("model")
+    }
     val state = when (status.optString("state")) {
         "ready" -> stringResource(R.string.ai_state_ready)
         "offline" -> stringResource(R.string.ai_state_offline)
@@ -219,11 +269,6 @@ private fun AiKeyPanel() {
         SectionHeader(stringResource(R.string.set_ai), Info(R.string.info_ai_t, R.string.info_ai_b))
         Text(stringResource(R.string.set_ai_intro), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
         Text(stringResource(R.string.set_ai_state, state), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
-        val provider = status.optString("provider", "openrouter")
-        SettingRow(stringResource(R.string.set_ai_provider), Info(R.string.info_ai_provider_t, R.string.info_ai_provider_b))
-        ChoiceRow(listOf("openrouter" to stringResource(R.string.set_ai_openrouter), "anthropic" to stringResource(R.string.set_ai_anthropic)), provider, { id ->
-            scope.launch { Api.io("ai_settings", obj("provider" to id)); status = Api.io("ai_status"); model = status.optString("model") }
-        })
         OutlinedTextField(model, { model = it }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.set_ai_model_hint)) }, singleLine = true)
         if (model.trim() != status.optString("model") && model.isNotBlank()) PixelButton(stringResource(R.string.set_ai_use_model), {
             scope.launch {
@@ -232,7 +277,7 @@ private fun AiKeyPanel() {
             }
         }, Modifier.fillMaxWidth(), kind = ButtonKind.Secondary)
         OutlinedTextField(key, { key = it }, Modifier.fillMaxWidth(),
-            label = { Text(stringResource(if (provider == "anthropic") R.string.set_ai_key_hint_anthropic else R.string.set_ai_key_hint)) },
+            label = { Text(stringResource(R.string.set_ai_key_hint)) },
             singleLine = true, visualTransformation = PasswordVisualTransformation())
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             PixelButton(stringResource(R.string.set_ai_save), {
