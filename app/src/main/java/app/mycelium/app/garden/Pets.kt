@@ -35,13 +35,16 @@ class Pet(
             }
         }
 
-    /** Its own colors and hat, picked from the app's seed: the same app always looks the same. */
-    fun look(atlas: SpriteAtlas): String = lookFor(atlas, seed)
+    /** Colors come with the creature type (what you see in the picker is what you get); the hat comes from the app's seed. */
+    fun look(atlas: SpriteAtlas): String = lookForPreset(atlas, preset)
     fun hat(atlas: SpriteAtlas): String? = (crc(seed + "hat") % (atlas.hats.size + 2)).toInt().let { atlas.hats.getOrNull(it) }
 }
 
-/** An app's own colors, from its seed (the same app always looks the same). */
-fun lookFor(atlas: SpriteAtlas, seed: String): String = atlas.looks.getOrElse((crc(seed) % maxOf(1, atlas.looks.size)).toInt()) { "" }
+/** Each creature type has its own colors, so types are easy to tell apart (preset01 -> look 1, preset02 -> look 2, ...). */
+fun lookForPreset(atlas: SpriteAtlas, presetId: String): String {
+    val n = presetId.filter { it.isDigit() }.toIntOrNull() ?: crc(presetId).toInt()
+    return atlas.looks.getOrElse(Math.floorMod(n * 3, maxOf(1, atlas.looks.size))) { "" }
+}
 
 private val SNOOP_KINDS = setOf("ads", "analytics", "fingerprinting", "social")
 

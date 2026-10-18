@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -92,7 +94,9 @@ fun GardenSheet(
         modifier
             .fillMaxWidth()
             .height(with(androidx.compose.ui.platform.LocalDensity.current) { state.height.value.toDp() })
-            .pixelPanel(PanelStyle.Paper, pal, pixel()),
+            .pixelPanel(PanelStyle.Paper, pal, pixel())
+            .clipToBounds()
+            .navigationBarsPadding(),
     ) {
         Column(
             Modifier.fillMaxWidth()
@@ -105,7 +109,10 @@ fun GardenSheet(
             Spacer(Modifier.height(6.dp))
             Peek(pets)
         }
+        // collapsed: only the summary shows; the list appears as soon as the sheet is pulled up
+        val open = state.height.value > state.stops[0] + 24f
         when {
+            !open -> Unit
             pickingCreature -> Box(Modifier.weight(1f)) { picker() }
             selected != null -> PetCard(selected, onBack = { onSelect(null) }, onShoo = onShoo, onChangeCreature = onChangeCreature,
                 onReset = onReset, modifier = Modifier.weight(1f))

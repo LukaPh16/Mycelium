@@ -356,7 +356,7 @@
     <string name="chat_ask_ai">Ask my AI helper</string>
     <string name="chat_ask_ai_offline">AI helper (needs internet)</string>
     <string name="info_ask_ai_t">Your AI helper</string>
-    <string name="info_ask_ai_b">Optional. Your AI helper can explain things in depth and give tips (shown in a Tip box: general knowledge, not from your phone). With your own key and internet, a cloud AI can phrase the answer. Before anything is sent you see exactly what would go out, and nothing leaves until you tap Send. Without it, the Gardener answers right here on your phone.</string>
+    <string name="info_ask_ai_b">Optional. With your own key and internet, your AI helper answers and can explain things in depth and give tips (shown in a Tip box: general knowledge, not from your phone). Only a short summary of the facts behind your question is sent, never your full records; open Details on an answer to see exactly what was sent. With this switch off, the Gardener answers right here on your phone.</string>
     <string name="chat_ai_needs">Want an AI to phrase answers? Add your own key in Settings › Optional AI.</string>
     <string-array name="chat_suggestions">
         <item>What just happened?</item>
@@ -378,6 +378,7 @@
     <string name="chat_preview_title">Send this to your AI helper?</string>
     <string name="chat_preview_body">Model %1$s · %2$d bytes. Only these facts leave your phone, and only when you tap Send. Your key goes in a header, never in the text.</string>
     <string name="chat_preview_exact">Exactly what will be sent:</string>
+    <string name="chat_sent_title">Exactly what was sent to your AI helper:</string>
     <string name="chat_start_watching">Start watching %1$s</string>
     <string name="chat_stop_watching">Stop watching %1$s</string>
     <string name="chat_now_watching">Now watching %1$s.</string>
@@ -567,7 +568,6 @@
         <item>Safe Mode (offline)</item>
         <item>Odd behavior</item>
         <item>Stage</item>
-        <item>Demo</item>
     </string-array>
     <string-array name="help_defs">
         <item>Your watched apps, each shown as a little creature in a garden.</item>
@@ -581,7 +581,6 @@
         <item>No internet right now. Mycelium answers apps on the phone, sends nothing, and sorts what it caught later.</item>
         <item>Something unusual, like many new websites at once or a busy night. (Technically: an anomaly.)</item>
         <item>How grown a creature is. Every contact helps it grow.</item>
-        <item>A practice garden with pretend apps, so you can try Mycelium without waiting for real activity. Start it in Settings › Advanced; while it runs, a red DEMO strip shows at the top and none of it is your real data.</item>
     </string-array>
 
     <!-- what Mycelium can't see -->
@@ -611,7 +610,7 @@
     <string name="about_stays_t">What stays on your phone</string>
     <string name="about_stays_b">Every contact, Snoop visit, number, alert and Gardener answer is noticed, worked out and kept on this phone. There is no account, no analytics and no server of ours.</string>
     <string name="about_leaves_t">What can leave your phone</string>
-    <string name="about_leaves_b">Only when you add your own AI key, switch on the AI helper and tap Send: the facts shown in the preview go to that AI provider. Nothing else, ever.</string>
+    <string name="about_leaves_b">Only when you add your own AI key, switch on the AI helper and send a question: a short summary of the facts behind that question goes to that AI provider (you can see it under Details on each answer). Nothing else, ever.</string>
     <string name="about_perms">Permissions, and why</string>
     <string name="info_perms_t">Permissions</string>
     <string name="info_perms_b">What Android lets Mycelium do, in plain words. You can review or remove any of them in Android\'s app settings.</string>

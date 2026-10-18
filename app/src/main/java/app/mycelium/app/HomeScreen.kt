@@ -92,7 +92,7 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
     var resetting by remember { mutableStateOf<Pet?>(null) }
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
-    val sheet = remember { SheetState(with(density) { 104.dp.toPx() }) }
+    val sheet = remember { SheetState(with(density) { 88.dp.toPx() }) }
     LaunchedEffect(reload) {
         while (true) {
             watched = Api.io("watched").optJSONArray("apps")?.length() ?: 0
@@ -117,7 +117,7 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
             else -> BoxWithConstraints(Modifier.fillMaxSize()) {
                 val navBar = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
                 val full = with(density) { (maxHeight - topInset - 8.dp).toPx() }
-                val peek = with(density) { (104.dp + navBar).toPx() }
+                val peek = with(density) { (88.dp + navBar).toPx() }
                 LaunchedEffect(full, peek) {
                     sheet.stops = floatArrayOf(peek, full * 0.5f, full)
                     if (sheet.height.value < peek || sheet.stop == SheetStop.PEEK) sheet.height.snapTo(peek)

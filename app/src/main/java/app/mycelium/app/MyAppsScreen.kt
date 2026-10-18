@@ -189,15 +189,10 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
     val pal = LocalPal.current
     var presets by remember { mutableStateOf(emptyList<JSONObject>()) }
     var current by remember { mutableStateOf<String?>(null) }
-    var look by remember { mutableStateOf<String?>(null) }
-    val atlas = app.mycelium.app.garden.SpriteAtlas.of(LocalContext.current)
     val scope = rememberCoroutineScope()
     LaunchedEffect(pkg) {
         presets = Api.io("presets").optJSONArray("presets").objects()
         current = Api.io("terrarium", obj("app_id" to pkg)).optJSONArray("apps").objects().firstOrNull()?.optString("preset_id")
-        val seed = Api.io("garden", obj("include_unwatched" to true)).optJSONArray("apps").objects()
-            .firstOrNull { it.optString("package") == pkg }?.optString("seed").orEmpty().ifEmpty { pkg }
-        look = app.mycelium.app.garden.lookFor(atlas, seed)   // preview in this app's own colors
     }
     Column(Modifier.fillMaxSize().padding(horizontal = 12.dp)) {
         Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -219,7 +214,7 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    PresetThumb(p.getJSONObject("preset"), boxDp = 96, look = look)   // what it grows into
+                    PresetThumb(p.getJSONObject("preset"), boxDp = 96)   // what it grows into
                     Spacer(Modifier.width(16.dp))
                     Text(p.getString("name") + if (id == current) " " + stringResource(R.string.preset_current) else "",
                         style = MaterialTheme.typography.titleSmall, color = pal.ink)
@@ -231,11 +226,11 @@ fun PresetPicker(pkg: String, label: String, onDone: () -> Unit) {
 
 /** What a creature type looks like (the terrarium art, adult stage), in an app's own colors when [look] is given. */
 @Composable
-fun PresetThumb(preset: JSONObject, boxDp: Int = 64, stageNo: Int = 3, look: String? = null) {
+fun PresetThumb(preset: JSONObject, boxDp: Int = 64, stageNo: Int = 3) {
     val atlas = app.mycelium.app.garden.SpriteAtlas.of(LocalContext.current)
     val id = preset.optString("id")
-    val s = remember(id, stageNo, look) {
-        atlas.creature("creature_${id}_s${stageNo.coerceIn(1, 3)}", look ?: atlas.looks.firstOrNull().orEmpty(), 0, 0)
+    val s = remember(id, stageNo) {
+        atlas.creature("creature_${id}_s${stageNo.coerceIn(1, 3)}", app.mycelium.app.garden.lookForPreset(atlas, id), 0, 0)
     }
     Box(Modifier.size(boxDp.dp), contentAlignment = Alignment.BottomCenter) {
         PixelBitmap(s.image, artPixelDp = boxDp.toFloat() / maxOf(s.w, s.h), srcSize = IntSize(s.w, s.h))
