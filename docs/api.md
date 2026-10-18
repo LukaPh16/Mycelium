@@ -92,12 +92,15 @@ the event rows it is based on; empty for byte stats, which come from the traffic
 {"fn":"compare","package":"com.android.chrome","period1":{"from_ms":..,"to_ms":..},"period2":{"from_ms":..,"to_ms":..}}
   -> period1, period2, delta:{lookups,...,rx_bytes,tx_bytes}, new_companies, gone_companies
 {"fn":"screenTime","from_ms":1760392800000,"to_ms":1760446800000}
-  -> apps:[{package,label,ms}], total_ms      // watched apps, sessions clipped to the range; share = ms / total_ms, no cap
+  -> apps:[{package,label,ms}], total_ms, device_total_ms   // watched apps clipped to the range; device_total_ms = whole phone
+                                                         // (any app on screen, home screen not counted); no cap
 {"fn":"usageDay","package":"com.zhiliaoapp.musically","from_ms":1760392800000,"to_ms":1760479200000,"bucket_ms":3600000}
   -> label, sessions:[{start_ms,end_ms}], hours:[{start_ms,used_ms}], total_ms,
      signals:[{id,ts,kind,ptype,company,category,domain,verdict,fg,how}], truncated, first_ms (oldest data, null = none)
 ```
-Screen time is foreground time from Android usage stats (`session` table, watched apps only, on device). The engine
+Screen time is foreground time from Android usage stats (`session` table, on device): per-app rows for watched apps
+only, plus one anonymous whole-phone row set (`package='*'`, never names other apps) for the Digital-Wellbeing-style
+share `ms / device_total_ms`. The engine
 collects it every 15 min, at start, when the VPN stops, and right before `screenTime`/`usageDay` if the last run is older
 than 60 s. Android keeps only a few days of usage events, so older days are empty. Pass local-day bounds for
 `usageDay` (the engine never assumes UTC days): a DST day has 23 or 25 hour buckets. `signals` are the app's
@@ -199,8 +202,13 @@ call("chat_history", {"limit":50}) -> {"turns":[{"id":1,"ts":...,"role":"user","
     {"id":2,"role":"bot","text":"...","cites":"930,929","engine":"template","latency_ms":12,"sentences":"[{\"text\":\"...\",\"cites\":[930]}]"}]}
 call("chat_clear") -> {"ok":true}
 ```
+Screen time (intent `screen_time`, "how long was I on Spotify today?", "my screen time this week"): any app, watched or
+not. Watched and demo apps come from the `session` table; other apps are read from Android usage stats at that
+moment and not stored (only the chat turn is). Answers give the app's time and its share of the whole phone, or the
+phone total plus the top 3 apps. These sentences cite no event rows (like byte totals); the shown hours, minutes and
+percents are in `facts.derived` for the validator, and a cloud AI only gets them through the previewed facts.
 - Intents: app_summary, top_apps, top_companies, when_contacted, what_happened_recently, night_report, blocked_report,
-  bytes_report, compare, anomaly_report, help, limits, watch_app, unwatch_app, out_of_scope.
+  bytes_report, compare, anomaly_report, screen_time, help, limits, watch_app, unwatch_app, out_of_scope.
 - Time words: today, yesterday, last night, last hour, this week, hh:mm (default: the past day).
 - Species name: "<label> <kingdom>", kingdom = fern|mushroom|coral|vine from the low two bits of the seed's first byte.
 - Not-watched app: says so, gives traffic byte totals if any, and returns `"suggest_watch":"<package>"`.
@@ -253,8 +261,12 @@ Unknown ids render in `neutral` (#9AA0A6).
 ```
 call("packet_types") -> {"version":2,"neutral":"#9AA0A6","doh_hosts":[...],
   "types":[{"id":"dns","label":"DNS query","color":"#4FC3F7","rule":"UDP/TCP 53 to our resolver","observed":true,
-            "match":{"proto":["udp","tcp"],"ports":["53"]}}, ...16 types]}
+            "match":{"proto":["udp","tcp"],"ports":["53"]}}, ...16 types],
+  "signal_kinds":[{"id":"ads","label":"Ads","color":"#FF5252"}, ...analytics, fingerprinting, social, tracker, blocked,
+                  tripwire, anomaly, benign]}
 ```
+`signal_kinds` colors what a caught signal is (day graph icons and filter chips): tripwire / anomaly / blocked first,
+then the tracker category, else `benign`. Same file, so no UI hardcodes these colors either.
 
 ## terrarium (data only; the UI draws)
 `assets/config/terrarium.json`: `stage_thresholds` (one entry per stage), `weights` (`default`, per type),

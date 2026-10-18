@@ -7,6 +7,7 @@
 - Done: T6 polish (8dp grid, 24dp icons, 48dp targets, i pinned right), docs/ui-plan.md, docs/REPORT.md.
 - Done: OpenRouter AI, per-app Reset record, stable My Apps list, glass terrarium v2 (Owlboy-style art, unique creatures, infection, smooth zoom).
 - Done: screen time. Engine: `session` table (DB v3, additive), stats/SessionCollector.kt (UsageStatsManager events -> sessions, 5 s merge, cursor + upsert so re-runs never double count, watched apps only, with or without VPN), call("stats",{fn:"screenTime"|"usageDay"}), demo script writes sim=1 sessions, wipe/reset clear sessions, nothing goes to the cloud AI. UI: garden/ScreenTime.kt, a share bar on the creature card (full width = all watched apps today) that opens a day graph: hourly usage bars, background/on-screen signal lanes with clustered pixel icons, hour zoom with to-the-second sessions, filter chips, detail cards.
+- Done: screen time share is of the whole phone (anonymous '*' timeline, home screen not counted); chat answers screen time of any app (intent screen_time, live from Android for unwatched apps, nothing stored); day graph is a full-screen page with per-kind colors (signal_kinds in packet_types.json), swipe for day/hour, inline details, Back steps out one level.
 - Next: user feedback on the art; hand-test gestures and the sheet (docs/NEEDS_ME.md).
 - Then: T3 native scene, T4 creatures + camera, T5 quick-info sheet, T6 polish + docs/REPORT.md.
 - Blockers: see docs/NEEDS_ME.md.

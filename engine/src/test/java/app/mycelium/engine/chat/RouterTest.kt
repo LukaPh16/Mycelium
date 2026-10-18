@@ -45,6 +45,8 @@ class RouterTest {
             "What did I block?" to "blocked_report",
         )
         for ((q, intent) in cases) assertEquals(q, intent, route(q).intent)
+        for (q in listOf("How long did I use Chrome?", "screen time today", "which app did I use the most", "time spent on chrome yesterday"))
+            assertEquals(q, "screen_time", route(q).intent)
     }
 
     @Test fun slots() {

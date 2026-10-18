@@ -105,4 +105,32 @@ class ChatBotTest {
         assertEquals(listOf("I have no record of that. I only speak about what this phone has seen."), ask("What did Beta do in the last hour?").texts())
         grounded("What is the capital of France?", "out_of_scope")
     }
+
+    @Test fun screenTimeOfWatchedAppFromSessions() {
+        fx.session("com.a", B + 9 * H, B + 10 * H + 12 * 60_000)
+        fx.session("*", B + 8 * H, B + 12 * H)
+        val r = grounded("How much screen time did Alpha get today?", "screen_time")
+        val t = r.texts().single()
+        for (part in listOf("Alpha", "1 h 12 min", "30%", "4 h")) assertTrue(t, t.contains(part))
+    }
+
+    @Test fun screenTimeOfAnyAppAndTopAppsFromAndroid() {
+        val live = mapOf("*" to 2 * H, "com.c" to 30 * 60_000L, "com.x" to H)
+        val bot = ChatBot(fx.query, TemplateWriter.parse(File(System.getProperty("chatTemplatesPath")!!).readText()), TimeZone.getTimeZone("UTC"),
+            liveUsage = { _, _ -> live })
+        val apps2 = apps + AppRef("com.x", "Xylo", false)
+        val one = bot.answer("how long was I on Gamma today", apps2, companies, now)
+        assertEquals("screen_time", one.getValue("intent").jsonPrimitive.content)       // unwatched app: answered, not "not watched"
+        assertEquals(0, one.dropped())
+        val t = one.texts().single()
+        for (part in listOf("Gamma", "30 min", "25%", "2 h")) assertTrue(t, t.contains(part))
+        val top = bot.answer("what's my screen time today", apps2, companies, now)
+        assertEquals(0, top.dropped())
+        assertEquals(listOf("Xylo: 1 h (50%).", "Gamma: 30 min (25%)."), top.texts().drop(1))
+    }
+
+    @Test fun screenTimeWithoutAccessSaysSo() {
+        val r = grounded("screen time of Gamma", "screen_time")
+        assertTrue(r.texts().single().contains("usage access"))
+    }
 }

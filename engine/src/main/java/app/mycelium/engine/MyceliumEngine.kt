@@ -128,7 +128,7 @@ object MyceliumEngine {
         vault = KeyVault(app)
         prefs = app.getSharedPreferences("mycelium_ai", Context.MODE_PRIVATE)
         chat = ChatBot(::readQuery, TemplateWriter.parse(app.assets.open("chat_templates.json").bufferedReader().use { it.readText() }),
-            simulating = { simPackages })
+            simulating = { simPackages }, liveUsage = { from, to -> sessions.live(from, to) })
         publish()
         net = NetGate(app, ::onNetwork).also { it.start() }
     }
