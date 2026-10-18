@@ -24,6 +24,13 @@ class UiPrefs(context: Context) {
         private set
     var advanced by mutableStateOf(sp.getBoolean("advanced", false))
         private set
+    /** Weather on the window: "AUTO" (live when switched on, else clear) or a Sky name; season: "AUTO" or a Season name. */
+    var weatherMode by mutableStateOf(sp.getString("weather_mode", "AUTO") ?: "AUTO")
+        private set
+    var seasonMode by mutableStateOf(sp.getString("season_mode", "AUTO") ?: "AUTO")
+        private set
+    var liveWeather by mutableStateOf(sp.getBoolean("live_weather", false))
+        private set
     var muted by mutableStateOf(sp.getBoolean("muted", false))
         private set
     var masterVolume by mutableStateOf(sp.getInt("master_volume", 80))
@@ -42,6 +49,9 @@ class UiPrefs(context: Context) {
     fun chooseReduceMotion(on: Boolean) { reduceMotion = on; sp.edit().putBoolean("reduce_motion", on).apply() }
     fun chooseBatterySaver(on: Boolean) { batterySaver = on; sp.edit().putBoolean("battery_saver", on).apply() }
     fun chooseNewCreature(presetId: String) { newCreature = presetId; sp.edit().putString("new_creature", presetId).apply() }
+    fun chooseWeather(mode: String) { weatherMode = mode; sp.edit().putString("weather_mode", mode).apply() }
+    fun chooseSeason(mode: String) { seasonMode = mode; sp.edit().putString("season_mode", mode).apply() }
+    fun chooseLiveWeather(on: Boolean) { liveWeather = on; sp.edit().putBoolean("live_weather", on).apply() }
     fun chooseMuted(on: Boolean) { muted = on; sp.edit().putBoolean("muted", on).apply() }
     fun chooseMasterVolume(v: Int) { masterVolume = v; sp.edit().putInt("master_volume", v).apply() }
     fun chooseEffectsOn(on: Boolean) { effectsOn = on; sp.edit().putBoolean("effects_on", on).apply() }

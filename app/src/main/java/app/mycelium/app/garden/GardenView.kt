@@ -88,7 +88,7 @@ private const val MAX_ZOOM = 3f
 @Composable
 fun GardenView(
     still: Boolean, pets: List<Pet>, selected: String?, fx: GardenFx, camera: Camera, focus: String?,
-    topInsetPx: Int, bottomInsetPx: Int, fitBottomPx: Int,
+    topInsetPx: Int, bottomInsetPx: Int, fitBottomPx: Int, sky: Sky = Sky.CLEAR, season: Season = Season.SPRING,
     onTapPet: (Pet) -> Unit, onTapSnoop: (Pet, SnoopVisit) -> Unit, onTapEmpty: () -> Unit, modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -284,7 +284,11 @@ fun GardenView(
             val s = scale()
             val cx = floor(camera.x).toInt()
             val cy = floor(camera.y).toInt()
-            placed[0] = renderer.render(cx, cy, ms, phase, pets, spots, selected, fx, lifted)
+            placed[0] = renderer.render(cx, cy, ms, phase, pets, spots, selected, fx, lifted, sky, season)
+            for (near in renderer.thunders) scope.launch {   // light travels faster than sound: the crack follows the flash
+                delay(if (near) 350L else 1400L)
+                sounds?.play(if (near) "thunder_near" else "thunder_far", volume = if (near) 0.9f else 0.7f)
+            }
             // a mood sound when a bubble pops up: only creatures on screen, at most one every 4 s
             renderer.moodStarts.firstOrNull { (p, m) ->
                 m != Mood.CONTENT && spots[p.pkg]?.let { sp -> (sp.x - camera.x) * s in 0f..size.width && (sp.y - camera.y) * s in 0f..size.height } == true

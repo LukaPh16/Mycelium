@@ -468,6 +468,33 @@
     <string name="set_saver">Battery-saver garden</string>
     <string name="info_saver_t">Battery-saver garden</string>
     <string name="info_saver_b">Draws the terrarium fewer times per second. Protection works exactly the same; only the animation is calmer.</string>
+    <string name="set_weather">Weather</string>
+    <string name="set_weather_sky">Outside the window</string>
+    <string name="set_weather_season">Season in the jar</string>
+    <string name="set_weather_live">Use my local weather</string>
+    <string name="weather_auto">Auto</string>
+    <string name="weather_clear">Clear</string>
+    <string name="weather_cloudy">Cloudy</string>
+    <string name="weather_rain">Rain</string>
+    <string name="weather_storm">Storm</string>
+    <string name="weather_snow">Snow</string>
+    <string name="weather_fog">Fog</string>
+    <string name="season_spring">Spring</string>
+    <string name="season_summer">Summer</string>
+    <string name="season_autumn">Autumn</string>
+    <string name="season_winter">Winter</string>
+    <string name="weather_live_off">Local weather is off: Auto shows a clear sky, and nothing about where you are is used.</string>
+    <string name="weather_looking">Looking up the weather…</string>
+    <string name="weather_unavailable">Couldn\'t get the weather right now (no location or no internet). It will try again later.</string>
+    <string name="weather_live_now">Local weather: %1$s, %2$d°C · %3$s</string>
+    <string name="weather_manual_wins">Your choice above wins; pick Auto to follow the local weather.</string>
+    <string name="weather_denied">Without location access, Mycelium can\'t look up your local weather. You can still pick the weather yourself.</string>
+    <string name="info_weather_t">Weather</string>
+    <string name="info_weather_b">Pick what you see through the window behind the jar: clear, cloudy, rain, a thunderstorm, snow or fog, each with its own cozy sounds. Auto follows your local weather when that is switched on, otherwise a clear sky.</string>
+    <string name="info_season_t">Season in the jar</string>
+    <string name="info_season_b">Spring brings pink blossom and drifting petals, summer turns the tree green with extra fireflies, autumn turns it amber with falling leaves, and winter frosts it with a snow-globe flurry. Auto follows the date.</string>
+    <string name="info_weather_live_t">Use my local weather</string>
+    <string name="info_weather_live_b">Off by default. When on, Mycelium uses your approximate location (rounded to about 11 km) to ask the free Open-Meteo weather service for the current weather, at most once an hour and only while you look at the Terrarium. Only the rounded coordinates are sent; no account, no app data. Switch it off any time to stop and forget the last reading.</string>
     <string name="set_sound">Sound</string>
     <string name="set_mute">Mute all sounds</string>
     <string name="set_master">Volume</string>
@@ -647,7 +674,7 @@
     <string name="about_stays_t">What stays on your phone</string>
     <string name="about_stays_b">Every contact, Snoop visit, number, alert and Gardener answer is noticed, worked out and kept on this phone. There is no account, no analytics and no server of ours.</string>
     <string name="about_leaves_t">What can leave your phone</string>
-    <string name="about_leaves_b">Only when you add your own AI key, switch on the AI helper and send a question: a short summary of the facts behind that question goes to that AI provider (you can see it under Details on each answer). Nothing else, ever.</string>
+    <string name="about_leaves_b">Only when you add your own AI key, switch on the AI helper and send a question: a short summary of the facts behind that question goes to that AI provider (you can see it under Details on each answer). Nothing else, ever. And only if you switch on local weather: your rounded, approximate location goes to the Open-Meteo weather service, at most once an hour.</string>
     <string name="about_perms">Permissions, and why</string>
     <string name="info_perms_t">Permissions</string>
     <string name="info_perms_b">What Android lets Mycelium do, in plain words. You can review or remove any of them in Android\'s app settings.</string>
@@ -657,6 +684,7 @@
         <item>Run in the background</item>
         <item>Notifications</item>
         <item>Usage access</item>
+        <item>Approximate location</item>
     </string-array>
     <string-array name="perm_b">
         <item>Lets Mycelium notice which websites your chosen apps contact. It runs only on your phone; nothing goes to a VPN server.</item>
@@ -664,6 +692,7 @@
         <item>Keeps protection running while you use other apps.</item>
         <item>Shows the small \"Your garden is protected\" note, with a Pause button.</item>
         <item>Optional. Tells Mycelium which app is on screen and how much data apps used, counted by Android.</item>
+        <item>Optional, off until you switch on local weather: lets Mycelium find your approximate area (about 11 km) to show your weather in the terrarium window.</item>
     </string-array>
     <string name="about_credits_t">Credits</string>
     <string name="about_credits_b">Pixel art: original, made for Mycelium. Font: Pixelify Sans by the Pixelify Sans Project Authors (SIL Open Font License 1.1).</string>

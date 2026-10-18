@@ -1187,6 +1187,7 @@ def main():
         "surfaces": surfaces,
         "decor": decor,
         "fireflies": [JAR["x0"] + 10, JAR["top"] + 20, JAR["x1"] - 10, 440],
+        "window": {"x0": 18, "x1": 302, "y0": 18, "y1": 470, "arch_cy": 158, "arch_r": 142},   # the sky pane (weather is clipped to it)
         "glows": [{"x": d["x"], "y": d["y"]} for d in decor if d["sprite"].startswith("glowcap")],
     }
     (OUT / "terrarium_layout.json").write_text(json.dumps(layout, indent=1))
