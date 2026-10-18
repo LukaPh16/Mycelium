@@ -100,6 +100,8 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
         val night = phase == SkyPhase.NIGHT
         canvas.drawColor(0xFF2A1E2E.toInt())
         val p = when (phase) { SkyPhase.DAY -> "day"; SkyPhase.DUSK -> "dusk"; SkyPhase.NIGHT -> "night" }
+        if (atlas.has("sky_$p")) blit(atlas["sky_$p"], 0, 0, 0, cx, cy, anchored = false)
+        celestial(cx, cy, ms, sky)
         blit(atlas["room_$p"], 0, 0, 0, cx, cy, anchored = false)
         thunders.clear()
         val flash = weather(cx, cy, ms, sky, season, night)
@@ -224,6 +226,23 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
             Sky.CLEAR -> Unit
         }
         var flash = 0f
+        if (sky != Sky.CLEAR && sky != Sky.FOG) {   // drifting cloud cover: puffy, two-tone, slower ones further back
+            for (i in 0 until if (sky == Sky.CLOUDY) 6 else 8) {
+                val speed = 3f + (i % 3) * 2f
+                val x = ((i * 97 + t * speed) % (w + 140)) + wx0 - 70
+                val y = wy0 + 30 + (i * 53 % 230).toFloat()
+                val scale = 0.8f + (i % 3) * 0.25f
+                val (light, shade) = when {
+                    night -> 0x90505870.toInt() to 0x90404860.toInt()
+                    sky == Sky.CLOUDY -> 0xE6E8EEF4.toInt() to 0xE6C2CAD6.toInt()
+                    else -> 0xE0A8B2C2.toInt() to 0xE0848EA0.toInt()
+                }
+                dot.color = shade
+                for ((dx, dy, rw, rh) in CLOUD_PUFFS) canvas.drawOval(x + dx * scale, y + dy * scale + 3, x + (dx + rw) * scale, y + (dy + rh) * scale + 3, dot)
+                dot.color = light
+                for ((dx, dy, rw, rh) in CLOUD_PUFFS) canvas.drawOval(x + dx * scale, y + dy * scale, x + (dx + rw) * scale, y + (dy + rh) * scale, dot)
+            }
+        }
         if (sky == Sky.RAIN || sky == Sky.STORM) {   // falling rain, slanted, faster in a storm
             val count = if (sky == Sky.STORM) 170 else 110
             val speed = if (sky == Sky.STORM) 420f else 300f
@@ -290,6 +309,36 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
         }
         canvas.restore()
         return flash
+    }
+
+    /**
+     * The sun crosses the window from left to right between 06:00 and 20:00 (low, warm and red at dusk); the moon
+     * crosses it between 18:00 and 07:00 in tonight's real phase. Both hide behind rain, snow and fog, and dim behind clouds.
+     */
+    private fun celestial(cx: Int, cy: Int, ms: Long, sky: Sky) {
+        if (sky == Sky.RAIN || sky == Sky.STORM || sky == Sky.SNOW || sky == Sky.FOG) return
+        val now = Calendar.getInstance()
+        val hour = now.get(Calendar.HOUR_OF_DAY) + now.get(Calendar.MINUTE) / 60f
+        val win = layout.window
+        val left = win[0] + 16f
+        val right = win[1] - 16f
+        fun arcY(f: Float) = win[2] + 300f - sin(PI.toFloat() * f) * 250f
+        canvas.save()
+        canvas.translate(-cx.toFloat(), -cy.toFloat())
+        canvas.clipPath(windowPath)
+        val alpha = if (sky == Sky.CLOUDY) 150 else 255
+        if (hour in 6f..20f) {
+            val f = (hour - 6f) / 14f
+            val dusk = hour < 7.5f || hour > 17.5f
+            val s = atlas[if (dusk) "sun_dusk" else "sun"]
+            blit(s, if (ms == 0L) 0 else s.frameAt(ms), (left + (right - left) * f).toInt() + cx, arcY(f).toInt() + cy, cx, cy, alpha)
+        }
+        if (hour >= 18f || hour <= 7f) {
+            val f = ((hour - 18f + 24f) % 24f) / 13f
+            val m = atlas["moon"]
+            blit(m, moonPhase(now.timeInMillis, m.frames), (left + (right - left) * f).toInt() + cx, arcY(f).toInt() + cy, cx, cy, alpha)
+        }
+        canvas.restore()
     }
 
     /** Petals in spring, leaves in autumn, a snow-globe flurry in winter, drifting gently inside the jar. */
@@ -368,6 +417,18 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
 }
 
 /** The sprite for a creature's stage (1..8); art made for fewer stages falls back to its highest one. */
+/** Tonight's moon phase as a frame index (0 new .. frames/2 full): days since a known new moon over the synodic month. */
+fun moonPhase(now: Long, frames: Int): Int {
+    val knownNewMoon = 947_182_440_000L   // 2000-01-06 18:14 UTC
+    val age = ((now - knownNewMoon) / 86_400_000.0) % 29.530588853
+    return ((age / 29.530588853 * frames).roundToIntSafe()) % frames
+}
+
+private fun Double.roundToIntSafe() = Math.round(this).toInt()
+
+/** One puffy cloud as overlapping ovals (x, y, width, height) in art pixels. */
+private val CLOUD_PUFFS = listOf(listOf(0f, 8f, 22f, 12f), listOf(12f, 2f, 22f, 16f), listOf(28f, 6f, 20f, 13f), listOf(42f, 10f, 14f, 10f))
+
 private fun ramp(vararg hex: String) = hex.map { android.graphics.Color.parseColor(it) }
 private val BLOSSOM = ramp("#5A1F3D", "#B0446E", "#E7679A", "#F59BB8", "#FFE1EA")
 private val GRASS = ramp("#2F6B33", "#46A83A", "#7FD04A", "#C6EC6A")

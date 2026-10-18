@@ -420,6 +420,9 @@ Priority: P1 = seen first / most important.
 | hat_beret | hat_beret.png | 14 x 10 | 1 | 0 | 7,9 | P2 |
 | hat_sprout | hat_sprout.png | 14 x 10 | 1 | 0 | 7,9 | P2 |
 | hat_shroom | hat_shroom.png | 14 x 10 | 1 | 0 | 7,9 | P2 |
+| sun | sun.png | 28 x 28 | 2 | 1 | 14,14 | P1 |
+| sun_dusk | sun_dusk.png | 28 x 28 | 2 | 1 | 14,14 | P1 |
+| moon | moon.png | 22 x 22 | 8 | 0 | 11,11 | P1 |
 | poof | poof.png | 20 x 20 | 5 | 12 | 10,10 | P1 |
 | sparkle | sparkle.png | 9 x 9 | 3 | 10 | 4,4 | P2 |
 | heart | heart.png | 9 x 9 | 1 | 0 | 4,8 | P2 |
@@ -430,10 +433,13 @@ Priority: P1 = seen first / most important.
 | firefly | firefly.png | 7 x 7 | 2 | 4 | 3,3 | P2 |
 | mote | mote.png | 3 x 3 | 1 | 0 | 1,1 | P3 |
 | room_day | room_day.png | 320 x 720 | 1 | 0 | 0,0 | P1 |
+| sky_day | sky_day.png | 320 x 720 | 1 | 0 | 0,0 | P1 |
 | light_day | light_day.png | 320 x 600 | 1 | 0 | 0,0 | P3 |
 | room_dusk | room_dusk.png | 320 x 720 | 1 | 0 | 0,0 | P1 |
+| sky_dusk | sky_dusk.png | 320 x 720 | 1 | 0 | 0,0 | P1 |
 | light_dusk | light_dusk.png | 320 x 600 | 1 | 0 | 0,0 | P3 |
 | room_night | room_night.png | 320 x 720 | 1 | 0 | 0,0 | P1 |
+| sky_night | sky_night.png | 320 x 720 | 1 | 0 | 0,0 | P1 |
 | light_night | light_night.png | 320 x 600 | 1 | 0 | 0,0 | P3 |
 | terrain | terrain.png | 320 x 600 | 1 | 0 | 0,0 | P1 |
 | glass_front | glass_front.png | 320 x 600 | 1 | 0 | 0,0 | P1 |

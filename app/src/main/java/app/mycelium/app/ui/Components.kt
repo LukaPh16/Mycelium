@@ -131,6 +131,7 @@ fun PixelButton(
     modifier: Modifier = Modifier,
     kind: ButtonKind = ButtonKind.Primary,
     enabled: Boolean = true,
+    compact: Boolean = false,   // tighter side padding and one line, for rows of four
 ) {
     val pal = LocalPal.current
     val p = pixel()
@@ -160,11 +161,12 @@ fun PixelButton(
                 notched(fill, p, top + p, w - 2 * p, faceH, p)
                 if (kind != ButtonKind.Quiet) drawRect(Color.White.copy(alpha = 0.28f), Offset(2 * p, top + p), Size(w - 4 * p, p))
             }
-            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .padding(horizontal = if (compact) 4.dp else 16.dp, vertical = 10.dp)
             .offset(y = if (down > 0) px else 0.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text, color = fg, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
+        Text(text, color = fg, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center,
+            maxLines = if (compact) 1 else Int.MAX_VALUE, softWrap = !compact, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
     }
 }
 
@@ -428,7 +430,7 @@ fun Details(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -
 fun <T> ChoiceRow(options: List<Pair<T, String>>, selected: T, onSelect: (T) -> Unit, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         for ((value, label) in options) PixelButton(label, { onSelect(value) }, Modifier.weight(1f),
-            kind = if (value == selected) ButtonKind.Primary else ButtonKind.Secondary)
+            kind = if (value == selected) ButtonKind.Primary else ButtonKind.Secondary, compact = options.size >= 4)
     }
 }
 
