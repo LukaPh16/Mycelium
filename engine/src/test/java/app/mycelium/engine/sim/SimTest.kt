@@ -147,4 +147,18 @@ class SimTest {
             fx.close()
         }
     }
+
+    @Test fun demoForegroundLinesBecomeScreenTimeSessions() {
+        val track = SimScript.FgTrack()
+        val rows = HashMap<Pair<String, Long>, Long>()   // upsert by (package, start)
+        var t = 0L
+        for (line in script.events) { t += line.dtMs; track.feed(line, t).forEach { (p, a, b) -> rows[p to a] = b } }
+        track.end(t + 1000).forEach { (p, a, b) -> rows[p to a] = b }
+        val sessions = rows.entries.map { Triple(it.key.first, it.key.second, it.value) }.sortedBy { it.second }
+        assertEquals("com.zhiliaoapp.musically", sessions.first().first)
+        assertEquals(400L, sessions.first().second)
+        assertTrue(sessions.none { it.first == "com.whatsapp" || it.first == "com.weather.Weather" })   // background-only apps
+        sessions.zipWithNext().forEach { (x, y) -> assertEquals(x.third, y.second) }                    // one app on screen at a time
+        assertEquals(t + 1000, sessions.last().third)
+    }
 }

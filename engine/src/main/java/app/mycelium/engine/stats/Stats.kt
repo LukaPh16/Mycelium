@@ -59,6 +59,8 @@ class Stats(
             "lastEvents" -> lastEvents(a.str("package"), a.str("domain"), a.int("limit") ?: 20, s)
             "nightReport" -> nightReport(a.req("date"), s)
             "compare" -> compare(a.req("package"), period(a, "period1"), period(a, "period2"), s)
+            "screenTime" -> screenTime(from, to, s)
+            "usageDay" -> usageDay(a.req("package"), from, to, a.long("bucket_ms") ?: HOUR, s)
             else -> throw IllegalArgumentException("unknown_fn")
         }
     }
@@ -247,6 +249,67 @@ class Stats(
         }
     }
 
+    /** Foreground time per watched app in [from, to), sessions clipped to the range. No cap: share = ms / total_ms. */
+    fun screenTime(from: Long, to: Long, s: Scope = Scope()): JsonObject {
+        require(to > from) { "bad_range" }
+        val byPkg = sessions(null, from, to, s).groupBy { it.first }
+        val labels = q("SELECT package, label FROM app", emptyList()).associate { it["package"] as String to it["label"] as String? }
+        val apps = byPkg.map { (p, xs) -> p to used(xs.map { it.second to it.third }) }.sortedWith(compareBy({ -it.second }, { it.first }))
+        return buildJsonObject {
+            put("fn", "screenTime"); put("from_ms", from); put("to_ms", to)
+            put("apps", JsonArray(apps.map { (p, ms) -> buildJsonObject { put("package", p); put("label", labels[p] ?: p); put("ms", ms) } }))
+            put("total_ms", apps.sumOf { it.second })
+            put("event_ids", JsonArray(emptyList()))
+        }
+    }
+
+    /**
+     * One app over one caller-defined (local) day: its sessions, foreground ms per bucket from [from] (a 23 or 25 h
+     * DST day simply has 23 or 25 buckets), and its signal events ordered by time (max [SIGNAL_CAP], then truncated).
+     */
+    fun usageDay(pkg: String, from: Long, to: Long, bucketMs: Long, s: Scope = Scope()): JsonObject {
+        require(to > from) { "bad_range" }
+        require(bucketMs >= 60_000) { "bad_bucket" }
+        val n = ((to - from + bucketMs - 1) / bucketMs).toInt()
+        require(n <= 1000) { "too_many_buckets" }
+        val spans = union(sessions(pkg, from, to, s).map { it.second to it.third })
+        val label = q("SELECT label FROM app WHERE package=?", listOf(pkg)).firstOrNull()?.get("label") as String?
+        val sig = q(
+            "SELECT id, ts, kind, ptype, company, category, domain, verdict, fg, how FROM event WHERE package=? AND ts>=$from AND ts<$to " +
+                "AND kind IN ('dns','tripwire','block','anomaly')${s.sim} ORDER BY ts, id LIMIT ${SIGNAL_CAP + 1}",
+            listOf(pkg),
+        )
+        val shown = sig.take(SIGNAL_CAP)
+        val first = q(
+            "SELECT MIN(t) t FROM (SELECT MIN(start_ts) t FROM session WHERE package=?${s.sim} " +
+                "UNION ALL SELECT MIN(ts) FROM event WHERE package=? AND kind IN ('dns','tripwire','block','anomaly')${s.sim})",
+            listOf(pkg, pkg),
+        ).firstOrNull()?.get("t") as Number?
+        return buildJsonObject {
+            put("fn", "usageDay"); put("package", pkg); put("label", label ?: pkg)
+            put("from_ms", from); put("to_ms", to); put("bucket_ms", bucketMs)
+            put("sessions", JsonArray(spans.map { (a, b) -> buildJsonObject { put("start_ms", a); put("end_ms", b) } }))
+            put("hours", JsonArray((0 until n).map { i ->
+                val b0 = from + i * bucketMs
+                val b1 = minOf(to, b0 + bucketMs)
+                buildJsonObject { put("start_ms", b0); put("used_ms", spans.sumOf { (a, b) -> maxOf(0L, minOf(b, b1) - maxOf(a, b0)) }) }
+            }))
+            put("total_ms", spans.sumOf { it.second - it.first })
+            put("signals", rows(shown))
+            put("truncated", sig.size > SIGNAL_CAP)
+            put("first_ms", first?.toLong())   // oldest data of this app (null = none): the day picker stops there
+            put("event_ids", JsonArray(shown.takeLast(50).map { JsonPrimitive(it.long("id")) }))
+        }
+    }
+
+    /** (package, start, end) clipped to [from, to); one package, or watched apps by scope. */
+    private fun sessions(pkg: String?, from: Long, to: Long, s: Scope): List<Triple<String, Long, Long>> =
+        q(
+            "SELECT package, MAX(start_ts, $from) a, MIN(end_ts, $to) b FROM session WHERE start_ts<$to AND end_ts>$from${s.sim}" +
+                if (pkg != null) " AND package=?" else s.watched(),
+            listOfNotNull(pkg),
+        ).map { Triple(it["package"] as String, it.long("a"), it.long("b")) }.filter { it.third > it.second }
+
     // ---- other read calls ----
 
     /** One entry per watched app (plus apps with data if include_unwatched), last 24 h. */
@@ -357,6 +420,20 @@ class Stats(
     companion object {
         const val HOUR = 3600_000L
         const val DAY = 24 * HOUR
+        const val SIGNAL_CAP = 3000
+
+        /** Overlapping or touching intervals joined, sorted by start. */
+        fun union(xs: List<Pair<Long, Long>>): List<Pair<Long, Long>> {
+            val out = ArrayList<Pair<Long, Long>>()
+            for (x in xs.sortedBy { it.first }) {
+                val last = out.lastOrNull()
+                if (last != null && x.first <= last.second) out[out.size - 1] = last.first to maxOf(last.second, x.second) else out += x
+            }
+            return out
+        }
+
+        fun used(xs: List<Pair<Long, Long>>) = union(xs).sumOf { it.second - it.first }
+
         private val DELTA_KEYS = listOf(
             "lookups", "unique_domains", "tracker_hits", "companies", "blocked", "bg", "tripwire_hits", "rx_bytes", "tx_bytes",
         )

@@ -10,6 +10,7 @@ import kotlin.concurrent.thread
 
 /**
  * Replays a demo script through the real classifier and DB path (rows marked sim=1) while mode=simulate.
+ * Foreground lines also become sim=1 screen-time sessions.
  * [packages] is non-null for as long as simulate mode lasts (including after the script ends) until [stop].
  */
 class Simulator(
@@ -17,6 +18,8 @@ class Simulator(
     private val write: (Row) -> Unit,
     private val ensureApps: (List<Pair<String, String>>) -> Unit,
     private val onChange: () -> Unit,
+    /** Upserts a sim=1 session row (package, start, end). */
+    private val writeSession: (String, Long, Long) -> Unit = { _, _, _ -> },
 ) {
     @Volatile var packages: Set<String>? = null
         private set
@@ -58,14 +61,19 @@ class Simulator(
     private fun replay(s: SimScript, speed: Double) {
         val simRules = ArrayList<RuleSet.Rule>()
         val tz = TimeZone.getDefault()
+        val fg = SimScript.FgTrack()
         write(mapOf("ts" to System.currentTimeMillis(), "kind" to "vpn", "note" to "simulation ${s.name} started, speed $speed", "sim" to 1))
         try {
             for (line in s.events) {
                 Thread.sleep((line.dtMs / speed).toLong())
-                write(SimScript.row(line, System.currentTimeMillis(), tz, Classifier::classify, Classifier.typer, simRules))
+                val now = System.currentTimeMillis()
+                write(SimScript.row(line, now, tz, Classifier::classify, Classifier.typer, simRules))
+                fg.feed(line, now).forEach { (p, a, b) -> writeSession(p, a, b) }
             }
+            fg.end(System.currentTimeMillis()).forEach { (p, a, b) -> writeSession(p, a, b) }
             write(mapOf("ts" to System.currentTimeMillis(), "kind" to "vpn", "note" to "simulation ${s.name} finished", "sim" to 1))
         } catch (_: InterruptedException) {
+            fg.end(System.currentTimeMillis()).forEach { (p, a, b) -> writeSession(p, a, b) }
             Log.i("MyceliumSim", "replay stopped")
         }
     }

@@ -26,6 +26,24 @@ class SimScript(val name: String, val apps: List<Pair<String, String>>, val even
 
     val packages: Set<String> get() = apps.map { it.first }.toSet()
 
+    /** Demo screen time: an app is on screen from its first fg=1 line until another app's fg=1 line (at_local lines skipped). */
+    class FgTrack {
+        private var pkg: String? = null
+        private var start = 0L
+
+        /** Session rows (package, start, end) to upsert after [line] ran at [ts]. */
+        fun feed(line: Line, ts: Long): List<Triple<String, Long, Long>> {
+            val p = line.pkg
+            if (line.fg != 1 || p == null || line.atLocal != null) return emptyList()
+            if (p == pkg) return listOf(Triple(p, start, ts))
+            val out = end(ts)
+            pkg = p; start = ts
+            return out + Triple(p, ts, ts)
+        }
+
+        fun end(ts: Long): List<Triple<String, Long, Long>> = pkg?.let { listOf(Triple(it, start, ts)) } ?: emptyList()
+    }
+
     companion object {
         const val TRIPWIRE_IP = "10.111.222.9"
 

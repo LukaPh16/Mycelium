@@ -26,6 +26,11 @@ class Db(private val context: Context) : SQLiteOpenHelper(context, NAME, null, V
             db.execSQL("ALTER TABLE chat ADD COLUMN latency_ms INTEGER")
             db.execSQL("ALTER TABLE chat ADD COLUMN sentences TEXT")
         }
+        if (oldVersion < 3) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS session (package TEXT NOT NULL, start_ts INTEGER NOT NULL, end_ts INTEGER NOT NULL, " +
+                "sim INTEGER DEFAULT 0, PRIMARY KEY (package, start_ts))")
+            db.execSQL("CREATE INDEX IF NOT EXISTS ix_session_ts ON session(start_ts)")
+        }
     }
 
     val reader: SQLiteDatabase by lazy {
@@ -38,6 +43,6 @@ class Db(private val context: Context) : SQLiteOpenHelper(context, NAME, null, V
 
     companion object {
         const val NAME = "mycelium.db"
-        const val VERSION = 2
+        const val VERSION = 3
     }
 }

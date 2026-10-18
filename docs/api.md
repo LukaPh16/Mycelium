@@ -91,7 +91,19 @@ the event rows it is based on; empty for byte stats, which come from the traffic
 {"fn":"nightReport","date":"2026-10-17"}        -> 00:00-06:00 local: lookups, background_lookups, apps:[...], top_domains:[...]
 {"fn":"compare","package":"com.android.chrome","period1":{"from_ms":..,"to_ms":..},"period2":{"from_ms":..,"to_ms":..}}
   -> period1, period2, delta:{lookups,...,rx_bytes,tx_bytes}, new_companies, gone_companies
+{"fn":"screenTime","from_ms":1760392800000,"to_ms":1760446800000}
+  -> apps:[{package,label,ms}], total_ms      // watched apps, sessions clipped to the range; share = ms / total_ms, no cap
+{"fn":"usageDay","package":"com.zhiliaoapp.musically","from_ms":1760392800000,"to_ms":1760479200000,"bucket_ms":3600000}
+  -> label, sessions:[{start_ms,end_ms}], hours:[{start_ms,used_ms}], total_ms,
+     signals:[{id,ts,kind,ptype,company,category,domain,verdict,fg,how}], truncated, first_ms (oldest data, null = none)
 ```
+Screen time is foreground time from Android usage stats (`session` table, watched apps only, on device). The engine
+collects it every 15 min, at start, when the VPN stops, and right before `screenTime`/`usageDay` if the last run is older
+than 60 s. Android keeps only a few days of usage events, so older days are empty. Pass local-day bounds for
+`usageDay` (the engine never assumes UTC days): a DST day has 23 or 25 hour buckets. `signals` are the app's
+`dns|tripwire|block|anomaly` rows ordered by time (benign lookups included; the UI filters), max 3000, then
+`truncated:true`. A signal means a lookup or connection attempt happened at that second, not "data sent".
+Screen time is never part of cloud AI payloads.
 Domains match subdomains. Errors: `unknown_fn`, `missing_<arg>`, `bad_by`, `bad_date`, `bad_range`, `bad_bucket`, `too_many_buckets`.
 
 ## timeline

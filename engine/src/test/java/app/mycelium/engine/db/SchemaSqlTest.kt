@@ -13,7 +13,7 @@ class SchemaSqlTest {
         val names = stmts.map { Regex("""^CREATE\s+(TABLE|INDEX|VIEW)\s+(\w+)""").find(it)!!.groupValues[2] }
         assertEquals(
             listOf("app", "event", "ix_event_ts", "ix_event_pkg", "rule", "traffic", "chat", "queue",
-                "organism", "v_recent", "v_parasites", "v_night"),
+                "organism", "session", "ix_session_ts", "v_recent", "v_parasites", "v_night"),
             names,
         )
         stmts.forEach { assertTrue(it, !it.contains("--") && !it.endsWith(";")) }

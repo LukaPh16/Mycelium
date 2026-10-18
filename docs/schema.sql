@@ -44,6 +44,11 @@ CREATE TABLE organism (      -- one living organism per watched app
   preset_id TEXT NOT NULL,   -- folder name under assets/organisms/
   chosen_ts INTEGER NOT NULL,
   stage_shown INTEGER DEFAULT 1);  -- last stage the UI played; prevents replaying upgrades
+CREATE TABLE session (        -- foreground sessions per watched app, from UsageStatsManager events (DB version 3)
+  package TEXT NOT NULL, start_ts INTEGER NOT NULL,
+  end_ts INTEGER NOT NULL,     -- still-open sessions: time of the last collection, finalized on the next run
+  sim INTEGER DEFAULT 0, PRIMARY KEY (package, start_ts));
+CREATE INDEX ix_session_ts ON session(start_ts);
 CREATE VIEW v_recent AS SELECT * FROM event ORDER BY id DESC LIMIT 200;
 CREATE VIEW v_parasites AS SELECT package, company, category, COUNT(*) hits, MAX(ts) last_ts
   FROM event WHERE kind='dns' AND company IS NOT NULL AND sim=0 GROUP BY package, company;
