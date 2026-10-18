@@ -638,6 +638,33 @@ def zzz(frame):
     return cv
 
 
+def mood(kind, frame):
+    """A little parchment speech bubble with the creature's mood: a heart, a storm cloud, or a sick swirl."""
+    cv = Canvas(15, 15)
+    bub = ellipse(7, 6, 6.5, 5.5)
+    shade(cv, bub, RECOLOR["cream"], rim=False, ao=0.1, inner=False)
+    for (x, y) in ((4, 11), (3, 12), (4, 12), (2, 13)):   # tail
+        cv.put(x, y, RECOLOR["cream"][3])
+    cv.put(2, 14, RECOLOR["cream"][0]); cv.put(1, 13, RECOLOR["cream"][0]); cv.put(5, 12, RECOLOR["cream"][0])
+    pulse = frame == 1
+    if kind == "happy":
+        m = ellipse(5.5, 5, 1.8, 1.8) | ellipse(8.5, 5, 1.8, 1.8) | poly([(3.6, 5.6), (10.4, 5.6), (7, 9.4 + (0.6 if pulse else 0))])
+        shade(cv, m, "blossom", rim=True, inner=False, outline=False)
+        if pulse:
+            cv.put(11, 2, RAMPS["sun"][4]); cv.put(12, 3, RAMPS["sun"][3])
+    elif kind == "grumpy":
+        shade(cv, ellipse(5, 5, 2.4, 1.8) | ellipse(8.5, 4.5, 2.8, 2.2) | ellipse(10, 6, 1.8, 1.4), "ink", rim=False, inner=False, outline=False)
+        for (x, y) in ((8, 7), (7, 8), (8, 8), (7, 9), (6, 10)):
+            cv.put(x + (1 if pulse else 0), y, RAMPS["sun"][3 if pulse else 2])
+    else:   # sick
+        r = RAMPS["moss"]
+        for i in range(14):
+            a = i * 0.75 + (0.6 if pulse else 0)
+            rr = 0.6 + i * 0.28
+            cv.put(7 + math.cos(a) * rr, 6 + math.sin(a) * rr * 0.9, r[2] if i % 2 else EXTRA["pus"])
+    return cv
+
+
 def heart():
     cv = Canvas(9, 9)
     shade(cv, ellipse(3, 3, 2, 2) | ellipse(6, 3, 2, 2) | poly([(1, 4), (8, 4), (4.5, 8)]), "blossom", inner=False)
@@ -1126,6 +1153,8 @@ def main():
     add("poof", [poof(f) for f in range(5)], 12, anchor=[10, 10], priority="P1")
     add("sparkle", [sparkle(f) for f in range(3)], 10, anchor=[4, 4], priority="P2")
     add("heart", [heart()], anchor=[4, 8], priority="P2")
+    for kind in ("happy", "grumpy", "sick"):
+        add(f"mood_{kind}", [mood(kind, f) for f in range(2)], 3, anchor=[2, 14], priority="P2")
     add("zzz", [zzz(f) for f in range(3)], 2, anchor=[0, 11], priority="P2")
     add("firefly", [firefly(f) for f in range(2)], 4, anchor=[3, 3], priority="P2")
     add("mote", [mote()], anchor=[1, 1], priority="P3")

@@ -179,9 +179,8 @@ private fun PetList(pets: List<Pet>, onSelect: (Pet) -> Unit, modifier: Modifier
                     Text(p.label, style = MaterialTheme.typography.bodyLarge, color = pal.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(stringResource(R.string.terr_org_stage, p.stage, p.stageCount), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
                 }
-                if (p.visiting.isNotEmpty()) Chip(pluralStringResource(R.plurals.sheet_snoop_chip, p.visiting.size, p.visiting.size), pal.berry)
-                else if (p.sleeping(now)) Chip(stringResource(R.string.sheet_napping), pal.sky)
-                else Chip(stringResource(R.string.sheet_awake), pal.leaf)
+                val mood = p.mood(now)
+                Chip(moodName(mood), moodColor(mood))
             }
         }
     }
@@ -210,6 +209,15 @@ private fun PetCard(pet: Pet, onBack: () -> Unit, onShoo: (Pet, SnoopVisit) -> U
                     Text(pluralStringResource(R.plurals.terr_org_contacts, pet.contactsToday, pet.contactsToday, pet.label),
                         style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
                 }
+            }
+        }
+        item {
+            val mood = pet.mood(System.currentTimeMillis())
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Chip(moodName(mood), moodColor(mood))
+                Spacer(Modifier.width(8.dp))
+                Text(moodReason(mood), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+                InfoButton(Info(R.string.info_mood_t, R.string.info_mood_b))
             }
         }
         item {
@@ -260,6 +268,24 @@ private fun SnoopRow(pet: Pet, v: SnoopVisit, onShoo: (Pet, SnoopVisit) -> Unit)
         }
         if (!v.shooed) PixelButton(stringResource(R.string.shoo), { onShoo(pet, v) }, kind = ButtonKind.Danger)
     }
+}
+
+@Composable
+fun moodName(m: Mood): String = stringResource(when (m) {
+    Mood.HAPPY -> R.string.mood_happy; Mood.CONTENT -> R.string.mood_content; Mood.GRUMPY -> R.string.mood_grumpy
+    Mood.SICK -> R.string.mood_sick; Mood.SLEEPY -> R.string.mood_sleepy
+})
+
+@Composable
+private fun moodReason(m: Mood): String = stringResource(when (m) {
+    Mood.HAPPY -> R.string.mood_happy_b; Mood.CONTENT -> R.string.mood_content_b; Mood.GRUMPY -> R.string.mood_grumpy_b
+    Mood.SICK -> R.string.mood_sick_b; Mood.SLEEPY -> R.string.mood_sleepy_b
+})
+
+@Composable
+fun moodColor(m: Mood): Color {
+    val pal = LocalPal.current
+    return when (m) { Mood.HAPPY -> pal.leaf; Mood.CONTENT -> pal.gold; Mood.GRUMPY -> pal.berry; Mood.SICK -> pal.berry; Mood.SLEEPY -> pal.sky }
 }
 
 /** A friendly name for each of the 8 stages. */

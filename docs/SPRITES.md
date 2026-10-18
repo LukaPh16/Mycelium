@@ -423,6 +423,9 @@ Priority: P1 = seen first / most important.
 | poof | poof.png | 20 x 20 | 5 | 12 | 10,10 | P1 |
 | sparkle | sparkle.png | 9 x 9 | 3 | 10 | 4,4 | P2 |
 | heart | heart.png | 9 x 9 | 1 | 0 | 4,8 | P2 |
+| mood_happy | mood_happy.png | 15 x 15 | 2 | 3 | 2,14 | P2 |
+| mood_grumpy | mood_grumpy.png | 15 x 15 | 2 | 3 | 2,14 | P2 |
+| mood_sick | mood_sick.png | 15 x 15 | 2 | 3 | 2,14 | P2 |
 | zzz | zzz.png | 11 x 12 | 3 | 2 | 0,11 | P2 |
 | firefly | firefly.png | 7 x 7 | 2 | 4 | 3,3 | P2 |
 | mote | mote.png | 3 x 3 | 1 | 0 | 1,1 | P3 |

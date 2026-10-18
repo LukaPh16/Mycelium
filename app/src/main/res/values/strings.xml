@@ -131,6 +131,22 @@
     <string name="sheet_all">All creatures</string>
     <string name="info_growth_t">Stage and growth</string>
     <string name="info_growth_b">Every contact the app makes adds a little growth; Snoop visits count double. There are 8 stages: the first comes quickly, later ones take days or weeks, and each one shows (tufts, flowers, little mushroom friends, glowing spores, and a halo at Legend). It naps when its app has been quiet for 3 hours.</string>
+    <string name="mood_happy">Happy</string>
+    <string name="mood_content">Content</string>
+    <string name="mood_grumpy">Grumpy</string>
+    <string name="mood_sick">Feeling sick</string>
+    <string name="mood_sleepy">Napping</string>
+    <string name="mood_happy_b">No Snoop is bothering it.</string>
+    <string name="mood_content_b">A Snoop is hanging around, but it\'s coping.</string>
+    <string name="mood_grumpy_b">A Snoop just showed up.</string>
+    <string name="mood_sick_b">Snoops are feeding on it. Shoo them away to help it heal.</string>
+    <string name="mood_sleepy_b">Its app has been quiet for a while.</string>
+    <string name="info_mood_t">Moods</string>
+    <string name="info_mood_b">Creatures react to what their app does. Happy: no Snoops. Content: a Snoop or two, nothing serious. Grumpy: a Snoop arrived in the last 30 minutes. Feeling sick: Snoops make up a big part of the app\'s contacts. Napping: the app has been quiet for 3 hours. Shooing Snoops away cheers it up.</string>
+    <string name="evo_title">Evolution!</string>
+    <string name="evo_body">%1$s\'s creature grew to stage %2$d: %3$s.</string>
+    <string name="evo_ok">Lovely!</string>
+    <string name="evo_cd">%1$s\'s creature is evolving</string>
     <string-array name="stage_names">
         <item>Seedling</item>
         <item>Sprout</item>

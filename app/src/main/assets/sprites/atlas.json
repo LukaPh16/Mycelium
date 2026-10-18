@@ -7066,6 +7066,45 @@
    "priority": "P2"
   },
   {
+   "name": "mood_happy",
+   "file": "mood_happy.png",
+   "w": 15,
+   "h": 15,
+   "anchor": [
+    2,
+    14
+   ],
+   "frames": 2,
+   "fps": 3,
+   "priority": "P2"
+  },
+  {
+   "name": "mood_grumpy",
+   "file": "mood_grumpy.png",
+   "w": 15,
+   "h": 15,
+   "anchor": [
+    2,
+    14
+   ],
+   "frames": 2,
+   "fps": 3,
+   "priority": "P2"
+  },
+  {
+   "name": "mood_sick",
+   "file": "mood_sick.png",
+   "w": 15,
+   "h": 15,
+   "anchor": [
+    2,
+    14
+   ],
+   "frames": 2,
+   "fps": 3,
+   "priority": "P2"
+  },
+  {
    "name": "zzz",
    "file": "zzz.png",
    "w": 11,
