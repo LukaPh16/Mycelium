@@ -130,19 +130,19 @@
     <!-- screen time on the creature card, and the day graph -->
     <string name="st_title">Screen time today</string>
     <string name="st_loading">Counting screen time…</string>
-    <string name="st_none">No screen time yet today for your watched apps.</string>
+    <string name="st_none">No screen time yet today.</string>
     <string name="st_no_access">Mycelium needs usage access to count screen time.</string>
     <string name="st_grant">Allow usage access</string>
     <string name="st_line">%1$s · %2$s</string>
-    <string name="st_share">%1$d%% of watched-app screen time</string>
-    <string name="st_share_small">under 1%% of watched-app screen time</string>
+    <string name="st_share">%1$d%% of today\'s %2$s screen time</string>
+    <string name="st_share_small">under 1%% of today\'s %1$s screen time</string>
     <string name="st_bar_cd">Screen time of %1$s today: %2$s, %3$s. Opens the day graph.</string>
     <string name="st_hm">%1$s %2$s</string>
     <plurals name="st_hours"><item quantity="one">%d h</item><item quantity="other">%d h</item></plurals>
     <plurals name="st_minutes"><item quantity="one">%d min</item><item quantity="other">%d min</item></plurals>
     <plurals name="st_seconds"><item quantity="one">%d s</item><item quantity="other">%d s</item></plurals>
     <string name="info_screen_t">Screen time</string>
-    <string name="info_screen_b">How long this app was on screen, from Android\'s own usage stats (the same numbers as Digital Wellbeing). The full bar is the screen time of all the apps you watch; the filled part is this app\'s share. Only watched apps count, and it is all worked out on this phone. Android keeps only a few days of usage history, so older days stay empty. Tap the bar to see when the app was used and when it reached out to trackers.</string>
+    <string name="info_screen_b">How long this app was on screen today, from Android\'s own usage stats (the same source Digital Wellbeing uses). The full bar is the whole phone\'s screen time today (any app on screen, not counting the home screen); the filled part is this app\'s share. Mycelium keeps per-app times only for apps you watch; for everything else it keeps just one combined total, never which apps. It is all worked out on this phone. Numbers can differ a little from Digital Wellbeing. Android keeps only a few days of usage history, so older days stay empty. Tap the bar to see when the app was used and when it reached out to trackers.</string>
     <string name="st_day_title">%1$s · a day</string>
     <string name="st_prev">Previous day</string>
     <string name="st_next">Next day</string>
@@ -159,8 +159,18 @@
     <string name="st_sessions">On screen this hour</string>
     <string name="st_no_sessions">Not on screen in this hour.</string>
     <string name="st_session_row">%1$s – %2$s (%3$s)</string>
-    <string name="st_filters">Show</string>
-    <string name="st_colors">Colors are packet types:</string>
+    <string name="st_filters">Show (tap to hide or show)</string>
+    <string name="st_yesterday">Yesterday</string>
+    <string name="st_hint_day">Tap an hour bar to zoom in. Tap an icon to see what it was. Swipe sideways to change the day.</string>
+    <string name="st_hint_hour">Tap an icon to see what it was. Swipe sideways for the next or previous hour.</string>
+    <string name="st_prev_hour">Previous hour</string>
+    <string name="st_next_hour">Next hour</string>
+    <plurals name="st_sum_signals"><item quantity="one">%d signal</item><item quantity="other">%d signals</item></plurals>
+    <plurals name="st_sum_bg"><item quantity="one">%d in background</item><item quantity="other">%d in background</item></plurals>
+    <string name="st_legend_usage">Minutes on screen</string>
+    <string name="st_more">%1$d more not listed</string>
+    <string name="st_back_list">All %1$d signals</string>
+    <string name="st_close_sel">Close details</string>
     <string name="st_honest">Each mark is a lookup or connection attempt Mycelium saw at that second, not data being sent. Mycelium cannot see inside encrypted traffic.</string>
     <string name="st_cluster_title">%1$d signals</string>
     <string name="st_cluster_cd">%1$d signals around %2$s. Tap for the list.</string>

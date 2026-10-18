@@ -29,13 +29,15 @@ class ChatBot(
     private val tz: TimeZone = TimeZone.getDefault(),
     /** Non-null while mode=simulate (the scripted packages). Otherwise sim=1 rows are invisible and uncitable. */
     private val simulating: () -> Set<String>? = { null },
+    /** Screen time of any app straight from Android (package -> ms, "*" = whole phone); null without usage access. */
+    private val liveUsage: (from: Long, to: Long) -> Map<String, Long>? = { _, _ -> null },
 ) {
     private val stats = Stats(q, tz)
 
     fun answer(text: String, apps: List<AppRef>, companies: Collection<String>, now: Long): JsonObject {
         val simPkgs = simulating()
         val p = Router.route(text, apps, companies, now, tz)
-        val ex = Exec(p, now, Stats.Scope(simPackages = simPkgs))
+        val ex = Exec(p, now, Stats.Scope(simPackages = simPkgs), apps)
         val lines = ex.run()
         val sentences = TemplateWriter.render(lines, templates, text.trim().lowercase().hashCode())
         val labels = apps.associate { it.label.lowercase() to it.pkg }
@@ -59,7 +61,7 @@ class ChatBot(
         if (ids.isEmpty()) emptyMap()
         else q("SELECT id, ts, package, company, sim FROM event WHERE id IN (${ids.joinToString(",")})", emptyList()).associateBy { it.l("id") }
 
-    private inner class Exec(val p: Parsed, val now: Long, private val scope: Stats.Scope) {
+    private inner class Exec(val p: Parsed, val now: Long, private val scope: Stats.Scope, private val apps: List<AppRef>) {
         var suggestWatch: String? = null
         var confirm: JsonObject? = null
         private val parts = LinkedHashMap<String, JsonElement>()
@@ -83,6 +85,7 @@ class ChatBot(
                 "watch_app" -> watch(app, true)
                 "unwatch_app" -> watch(app, false)
                 "app_summary" -> appSummary(app!!)
+                "screen_time" -> screenTime(app)
                 "top_apps" -> topApps(p.by)
                 "top_companies" -> topCompanies(app)
                 "when_contacted" -> whenContacted(app)
@@ -291,6 +294,62 @@ class ChatBot(
                 "species" to species(app.pkg), "total_amount" to ta, "total_unit" to tu, "rx_amount" to ra, "rx_unit" to ru,
                 "tx_amount" to xa, "tx_unit" to xu, "period" to s.label,
             )))
+        }
+
+        /**
+         * Foreground time of one app (any app, watched or not) or the top apps, with the share of the whole phone.
+         * Watched apps and demo apps come from the session table; others are asked of Android live, never stored.
+         */
+        private fun screenTime(app: AppRef?): List<Line> {
+            val s = slot(TimeSlot(Router.startOfDay(now, tz), now, "today", "today"))
+            val db = stats.screenTime(s.from, s.to, scope)
+            val dbMs = db.getValue("apps").jsonArray.associate { it.jsonObject.str("package") to it.jsonObject.l("ms") }
+            val live = liveUsage(s.from, s.to)
+            fun ms(pkg: String) = if (scope.simPackages?.contains(pkg) == true || live == null) dbMs[pkg] ?: 0L else live[pkg] ?: dbMs[pkg] ?: 0L
+            val total = maxOf(live?.get("*") ?: 0L, db.l("device_total_ms"), db.l("total_ms"))
+            parts["data"] = buildJsonObject {
+                put("source", if (live != null) "android_usage_stats" else "watched_apps_only")
+                put("phone_total_ms", total)
+                app?.let { put("package", it.pkg); put("ms", ms(it.pkg)) }
+            }
+            if (app != null) {
+                val m = ms(app.pkg)
+                if (m == 0L) return listOf(Line(if (live == null && !app.watched) "screen_no_access" else "screen_app_none", mapOf("label" to app.label, "period" to s.label)))
+                if (total == 0L) return listOf(Line("screen_app_nototal", mapOf("label" to app.label, "duration" to dur(m, "app"), "period" to s.label)))
+                return listOf(Line("screen_app", mapOf("label" to app.label, "duration" to dur(m, "app"), "period" to s.label,
+                    "pct" to pct(m, total, "app"), "total" to dur(total, "total"))))
+            }
+            if (total == 0L) return listOf(Line(if (live == null) "screen_no_access" else "screen_none", mapOf("label" to "your phone", "period" to s.label)))
+            val labels = apps.associate { it.pkg to it.label }
+            val all = (if (live != null) live.keys - "*" else emptySet()) + dbMs.keys
+            val top = all.map { it to ms(it) }.filter { it.second > 0 }.sortedByDescending { it.second }.take(3)
+            parts["data"] = (parts["data"] as JsonObject).let { d ->
+                JsonObject(d + ("top" to JsonArray(top.map { (p, m) -> buildJsonObject { put("package", p); put("label", labels[p] ?: p); put("ms", m) } })))
+            }
+            return listOf(Line("screen_total", mapOf("duration" to dur(total, "total"), "period" to s.label))) +
+                top.mapIndexed { i, (pkg, m) ->
+                    Line("screen_top", mapOf("label" to (labels[pkg] ?: pkg.substringAfterLast('.')), "duration" to dur(m, "top$i"), "pct" to pct(m, total, "top$i")))
+                }
+        }
+
+        /** "1 h 12 min" / "18 min" / "under a minute"; the shown numbers go into FACTS.derived for the validator. */
+        private fun dur(ms: Long, key: String): String {
+            val h = ms / Stats.HOUR
+            val m = (ms % Stats.HOUR) / 60_000
+            derived["${key}_hours"] = JsonPrimitive(h)
+            derived["${key}_minutes"] = JsonPrimitive(m)
+            return when {
+                h > 0 && m > 0 -> "$h h $m min"
+                h > 0 -> "$h h"
+                m > 0 -> "$m min"
+                else -> "under a minute"
+            }
+        }
+
+        private fun pct(part: Long, total: Long, key: String): String {
+            val v = part * 100 / total
+            derived["${key}_pct"] = JsonPrimitive(maxOf(v, 1))
+            return if (v < 1) "under 1%" else "$v%"
         }
 
         private fun compare(app: AppRef?): List<Line> {

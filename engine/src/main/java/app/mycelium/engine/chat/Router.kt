@@ -56,6 +56,8 @@ object Router {
             unwatch != null -> "unwatch_app"
             watch != null -> "watch_app"
             has(" help ", "what can you", "what do you know", "how do you work", "what are you", "how does this work") -> "help"
+            has("screen time", "screentime", "screen-time", "how long", "how much time", "on screen", "on my screen", "spent on", "spend on",
+                "spent in", "usage time", "most used", "used the most", "use the most", "used most", "time on ", "time in ") -> "screen_time"
             has("compare", " vs ", " versus ") -> "compare"
             has("night", "overnight", "while i slept", "while i was asleep", " sleep") -> "night_report"
             has("anomal", "unusual", "strange", "weird", "suspicious", " odd ", "alert") -> "anomaly_report"

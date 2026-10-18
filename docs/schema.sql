@@ -44,7 +44,8 @@ CREATE TABLE organism (      -- one living organism per watched app
   preset_id TEXT NOT NULL,   -- folder name under assets/organisms/
   chosen_ts INTEGER NOT NULL,
   stage_shown INTEGER DEFAULT 1);  -- last stage the UI played; prevents replaying upgrades
-CREATE TABLE session (        -- foreground sessions per watched app, from UsageStatsManager events (DB version 3)
+CREATE TABLE session (        -- foreground sessions per watched app, from UsageStatsManager events (DB version 3);
+                              -- package '*' = whole phone (any app on screen, home screen not counted), no app names
   package TEXT NOT NULL, start_ts INTEGER NOT NULL,
   end_ts INTEGER NOT NULL,     -- still-open sessions: time of the last collection, finalized on the next run
   sim INTEGER DEFAULT 0, PRIMARY KEY (package, start_ts));

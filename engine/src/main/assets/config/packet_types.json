@@ -242,5 +242,53 @@
    "observed": true,
    "match": {}
   }
+ ],
+ "signal_kinds_note": "Colors for what a caught signal is (day graph icons and chips). Same single source as packet types; unknown kinds use neutral.",
+ "signal_kinds": [
+  {
+   "id": "ads",
+   "label": "Ads",
+   "color": "#FF5252"
+  },
+  {
+   "id": "analytics",
+   "label": "Analytics",
+   "color": "#FFB300"
+  },
+  {
+   "id": "fingerprinting",
+   "label": "Fingerprinting",
+   "color": "#AB47BC"
+  },
+  {
+   "id": "social",
+   "label": "Social",
+   "color": "#42A5F5"
+  },
+  {
+   "id": "tracker",
+   "label": "Other tracker",
+   "color": "#A1887F"
+  },
+  {
+   "id": "blocked",
+   "label": "Blocked",
+   "color": "#26A69A"
+  },
+  {
+   "id": "tripwire",
+   "label": "Tripwire",
+   "color": "#FF7043"
+  },
+  {
+   "id": "anomaly",
+   "label": "Unusual",
+   "color": "#EC407A"
+  },
+  {
+   "id": "benign",
+   "label": "Plain lookup",
+   "color": "#9AA0A6"
+  }
  ]
 }

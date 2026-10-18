@@ -298,4 +298,15 @@ class StatsTest {
     }
 
     @Test(expected = IllegalArgumentException::class) fun usageDayRejectsEmptyRange() { stats.usageDay("com.a", B, B, H) }
+
+    @Test fun screenTimeReportsWholePhoneTotalSeparately() {
+        fx.session("com.a", B + H, B + H + 6 * 60_000)
+        fx.session("*", B + H - 10 * 60_000, B + 3 * H)          // whole phone, partly before the range
+        val r = stats.screenTime(B + H - 5 * 60_000, B + D)
+        assertEquals(listOf("com.a" to 6 * 60_000L), pairs(r))    // '*' is never listed as an app
+        assertEquals(6 * 60_000L, r.l("total_ms"))
+        assertEquals(2 * H + 5 * 60_000, r.l("device_total_ms"))
+        assertEquals(listOf("com.a", "com.c").containsAll(pairs(stats.screenTime(B, B + D, Stats.Scope(includeUnwatched = true))).map { it.first }), true)
+        assertEquals(0L, stats.screenTime(B + 5 * D, B + 6 * D).l("device_total_ms"))
+    }
 }

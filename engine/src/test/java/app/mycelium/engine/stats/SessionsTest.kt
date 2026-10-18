@@ -50,4 +50,16 @@ class SessionsTest {
         assertEquals(listOf(Span("b", 10_000, 30_000)), second)                 // same primary key (b, 10000): upsert, no double count
         assertEquals(40_000, Sessions.cursor(second, 40_000))
     }
+
+    @Test fun deviceTimeIsAnyCountedAppOnScreenWithoutNames() {
+        val evs = listOf(
+            Ev(0, OPEN, "a", "Main"), Ev(10_000, CLOSE, "a", "Main"), Ev(10_500, OPEN, "b", "X"), Ev(20_000, CLOSE, "b", "X"),
+            Ev(20_200, OPEN, "launcher", "Home"), Ev(60_000, CLOSE, "launcher", "Home"),                  // home screen: not counted
+            Ev(60_100, OPEN, "c", "Y"), Ev(70_000, ALL_OFF, ""), Ev(80_000, OPEN, "a", "Main"),
+        )
+        assertEquals(
+            listOf(Span(Sessions.DEVICE, 0, 20_000), Span(Sessions.DEVICE, 60_100, 70_000), Span(Sessions.DEVICE, 80_000, 90_000, open = true)),
+            Sessions.device(evs, setOf("launcher"), 90_000),
+        )
+    }
 }

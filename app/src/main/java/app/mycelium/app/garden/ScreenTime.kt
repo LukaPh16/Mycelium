@@ -3,19 +3,23 @@ package app.mycelium.app.garden
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,11 +41,13 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -56,14 +62,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import app.mycelium.app.Api
-import app.mycelium.app.PacketType
 import app.mycelium.app.R
 import app.mycelium.app.fullTime
 import app.mycelium.app.obj
 import app.mycelium.app.objects
 import app.mycelium.app.startOfToday
 import app.mycelium.app.ui.ButtonKind
-import app.mycelium.app.ui.DialogBox
 import app.mycelium.app.ui.Glyphs
 import app.mycelium.app.ui.Info
 import app.mycelium.app.ui.InfoButton
@@ -72,7 +76,6 @@ import app.mycelium.app.ui.LocalPal
 import app.mycelium.app.ui.LocalSounds
 import app.mycelium.app.ui.PanelStyle
 import app.mycelium.app.ui.PixelButton
-import app.mycelium.app.ui.PixelDialog
 import app.mycelium.app.ui.PixelGlyph
 import app.mycelium.app.ui.StatLine
 import app.mycelium.app.ui.pixel
@@ -86,17 +89,17 @@ import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-/** What a signal is, for its icon and filter chip. All signal glyphs (8x8) are defined here. */
-enum class Signal(@param:StringRes val label: Int, val glyph: List<String>) {
-    ADS(R.string.sig_ads, listOf("......X.", "....XXX.", "XXXXX.X.", "XX..X.X.", "XXXXX.X.", ".X..XXX.", ".X....X.", "........")),
-    ANALYTICS(R.string.sig_analytics, Glyphs.bars),
-    FINGERPRINTING(R.string.sig_fingerprinting, listOf("..XXXX..", ".X....X.", "X..XX..X", "X.X..X.X", "X.X..X.X", "X.X.X..X", "..X.X.X.", "....X...")),
-    SOCIAL(R.string.sig_social, listOf(".XX..XX.", "XXXXXXXX", "XXXXXXXX", "XXXXXXXX", ".XXXXXX.", "..XXXX..", "...XX...", "........")),
-    BLOCKED(R.string.sig_blocked, listOf("..XXXX..", ".XX..XX.", "XXX...XX", "X.XX...X", "X..XX..X", "X...XX.X", ".XX..XX.", "..XXXX..")),
-    TRIPWIRE(R.string.sig_tripwire, listOf("....XX..", "...XX...", "..XX....", ".XXXXXX.", "....XX..", "...XX...", "..XX....", ".X......")),
-    ANOMALY(R.string.sig_anomaly, listOf("...XX...", "...XX...", "...XX...", "...XX...", "...XX...", "........", "...XX...", "...XX...")),
-    TRACKER(R.string.sig_tracker, Glyphs.target),
-    BENIGN(R.string.sig_benign, listOf("........", "........", "..XXXX..", ".XXXXXX.", ".XXXXXX.", "..XXXX..", "........", "........")),
+/** What a signal is, for its icon, color and filter chip. [id] matches signal_kinds in packet_types.json. All glyphs (8x8) live here. */
+enum class Signal(val id: String, @param:StringRes val label: Int, val glyph: List<String>) {
+    ADS("ads", R.string.sig_ads, listOf("......X.", "....XXX.", "XXXXX.X.", "XX..X.X.", "XXXXX.X.", ".X..XXX.", ".X....X.", "........")),
+    ANALYTICS("analytics", R.string.sig_analytics, Glyphs.bars),
+    FINGERPRINTING("fingerprinting", R.string.sig_fingerprinting, listOf("..XXXX..", ".X....X.", "X..XX..X", "X.X..X.X", "X.X..X.X", "X.X.X..X", "..X.X.X.", "....X...")),
+    SOCIAL("social", R.string.sig_social, listOf(".XX..XX.", "XXXXXXXX", "XXXXXXXX", "XXXXXXXX", ".XXXXXX.", "..XXXX..", "...XX...", "........")),
+    TRACKER("tracker", R.string.sig_tracker, Glyphs.target),
+    BLOCKED("blocked", R.string.sig_blocked, listOf("..XXXX..", ".XX..XX.", "XXX...XX", "X.XX...X", "X..XX..X", "X...XX.X", ".XX..XX.", "..XXXX..")),
+    TRIPWIRE("tripwire", R.string.sig_tripwire, listOf("....XX..", "...XX...", "..XX....", ".XXXXXX.", "....XX..", "...XX...", "..XX....", ".X......")),
+    ANOMALY("anomaly", R.string.sig_anomaly, listOf("...XX...", "...XX...", "...XX...", "...XX...", "...XX...", "........", "...XX...", "...XX...")),
+    BENIGN("benign", R.string.sig_benign, listOf("........", "........", "..XXXX..", ".XXXXXX.", ".XXXXXX.", "..XXXX..", "........", "........")),
 }
 
 fun signalOf(e: JSONObject): Signal {
@@ -113,23 +116,24 @@ fun signalOf(e: JSONObject): Signal {
     }
 }
 
-/** Packet type labels and colors from packet_types.json (call("packet_types")); unknown ids get its neutral color. */
-private class TypeColors(val types: Map<String, PacketType>, val neutral: Color?) {
-    fun color(id: String?, fallback: Color) = types[id]?.color ?: neutral ?: fallback
+/** Colors and labels from packet_types.json (call("packet_types")): signal kinds and packet types; unknown ids get its neutral color. */
+private class Colors(val kinds: Map<String, Color>, val typeLabels: Map<String, String>, val neutral: Color?) {
+    fun of(s: Signal, fallback: Color) = kinds[s.id] ?: neutral ?: fallback
 }
 
 @Composable
-private fun rememberTypeColors(): TypeColors {
-    var tc by remember { mutableStateOf(TypeColors(emptyMap(), null)) }
+private fun rememberColors(): Colors {
+    var c by remember { mutableStateOf(Colors(emptyMap(), emptyMap(), null)) }
     LaunchedEffect(Unit) {
         val r = Api.io("packet_types")
-        fun parse(s: String?) = s?.takeIf { it.isNotEmpty() }?.let { Color(android.graphics.Color.parseColor(it)) }
-        tc = TypeColors(
-            r.optJSONArray("types").objects().associate { it.getString("id") to PacketType(it.optString("label"), parse(it.getString("color"))!!) },
+        fun parse(s: String?) = s?.takeIf { it.isNotEmpty() }?.let { runCatching { Color(android.graphics.Color.parseColor(it)) }.getOrNull() }
+        c = Colors(
+            r.optJSONArray("signal_kinds").objects().mapNotNull { k -> parse(k.optString("color"))?.let { k.getString("id") to it } }.toMap(),
+            r.optJSONArray("types").objects().associate { it.getString("id") to it.optString("label") },
             parse(r.optString("neutral")),
         )
     }
-    return tc
+    return c
 }
 
 /** "1 h 12 min", "18 min", "42 s" (seconds only when asked or under a minute). */
@@ -157,7 +161,7 @@ private fun hourLabel(ts: Long): String =
 
 private class Share(val granted: Boolean, val ms: Long, val total: Long)
 
-/** On the creature card: this app's share of today's watched-app screen time. Tapping opens the day graph. */
+/** On the creature card: this app's share of today's whole-phone screen time. Tapping opens the day graph. */
 @Composable
 fun ScreenTimeBar(pet: Pet) {
     val pal = LocalPal.current
@@ -169,7 +173,7 @@ fun ScreenTimeBar(pet: Pet) {
         val granted = Api.io("usage_access").optBoolean("granted")
         val r = Api.io("stats", obj("fn" to "screenTime", "from_ms" to startOfToday(), "to_ms" to System.currentTimeMillis()))
         val ms = r.optJSONArray("apps").objects().firstOrNull { it.optString("package") == pet.pkg }?.optLong("ms") ?: 0L
-        data = Share(granted, ms, r.optLong("total_ms"))
+        data = Share(granted, ms, maxOf(r.optLong("device_total_ms"), r.optLong("total_ms")))   // whole phone; watched apps until collected
     }
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(stringResource(R.string.st_title), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = pal.ink)
@@ -182,7 +186,8 @@ fun ScreenTimeBar(pet: Pet) {
     }
     val time = duration(d.ms)
     val pct = if (d.total > 0) (d.ms * 100 / d.total).toInt() else 0
-    val share = if (d.ms > 0 && pct < 1) stringResource(R.string.st_share_small) else stringResource(R.string.st_share, pct)
+    val total = duration(d.total)
+    val share = if (d.ms > 0 && pct < 1) stringResource(R.string.st_share_small, total) else stringResource(R.string.st_share, pct, total)
     val line = when {
         d.total == 0L && !d.granted -> stringResource(R.string.st_no_access)
         d.total == 0L -> stringResource(R.string.st_none)
@@ -217,11 +222,12 @@ private fun ShareBar(f: Float, some: Boolean, modifier: Modifier) {
         var w = ((size.width - 2 * p) * f.coerceIn(0f, 1f) / p).toInt() * p
         if (some && w < p) w = p
         if (w > 0) {
-            drawRect(pal.sky, Offset(p, p), Size(w, size.height - 2 * p))
+            drawRect(pal.leaf, Offset(p, p), Size(w, size.height - 2 * p))
             drawRect(Color.White.copy(alpha = 0.3f), Offset(p, p), Size(w, p))
         }
     }
 }
+
 
 // ---- the day graph ----
 
@@ -243,6 +249,10 @@ private fun cluster(signals: List<JSONObject>, x: (Long) -> Float, minDist: Floa
         out
     }
 
+/**
+ * Full-screen page for one app and one day. Back steps out one level (details, then hour, then the page); swiping
+ * the graph changes the day (or the hour when zoomed in); taps on the graph show details inline under it.
+ */
 @Composable
 private fun UsageDayDialog(pet: Pet, onDismiss: () -> Unit) {
     val pal = LocalPal.current
@@ -250,44 +260,62 @@ private fun UsageDayDialog(pet: Pet, onDismiss: () -> Unit) {
     var day by remember { mutableStateOf<JSONObject?>(null) }
     var hour by remember { mutableStateOf<Int?>(null) }
     var shown by remember { mutableStateOf(Signal.entries.toSet() - Signal.BENIGN) }
-    var cluster by remember { mutableStateOf<List<JSONObject>?>(null) }
-    var detail by remember { mutableStateOf<JSONObject?>(null) }
-    val colors = rememberTypeColors()
+    var picked by remember { mutableStateOf<List<JSONObject>?>(null) }    // tapped mark: one event or a group
+    var detail by remember { mutableStateOf<JSONObject?>(null) }          // one event of a group
+    val colors = rememberColors()
     LaunchedEffect(offset) {
-        day = null; hour = null
+        day = null; hour = null; picked = null; detail = null
         day = Api.io("stats", obj("fn" to "usageDay", "package" to pet.pkg, "from_ms" to dayStart(offset), "to_ms" to dayStart(offset + 1)))
     }
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Box(Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-            DialogBox(stringResource(R.string.st_day_title, pet.label), actions = {
-                PixelButton(stringResource(R.string.close), onDismiss, kind = ButtonKind.Secondary)
-            }) {
-                val d = day
-                val first = d?.takeIf { !it.isNull("first_ms") }?.optLong("first_ms")
-                DayHeader(dayStart(offset), d?.optLong("total_ms"),
-                    canPrev = first != null && dayStart(offset) > first && offset > -60, canNext = offset < 0,
-                    onPrev = { offset-- }, onNext = { offset++ }, onToday = { offset = 0 })
-                when {
-                    d == null -> LoadingState(stringResource(R.string.st_loading))
-                    d.has("error") -> Text(d.optString("error"), color = pal.berry)
-                    else -> DayBody(d, hour, { hour = it }, shown, { shown = it }, colors, onPick = { evs ->
-                        if (evs.size == 1) detail = evs[0] else cluster = evs.sortedBy { it.getLong("ts") }
-                    })
-                }
+    val d = day
+    val first = d?.takeIf { !it.isNull("first_ms") }?.optLong("first_ms")
+    val canPrev = first != null && dayStart(offset) > first && offset > -60
+    val back = {
+        when {
+            detail != null && (picked?.size ?: 0) > 1 -> detail = null
+            picked != null -> { picked = null; detail = null }
+            hour != null -> hour = null
+            else -> onDismiss()
+        }
+    }
+    Dialog(onDismissRequest = back, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+        Column(Modifier.fillMaxSize().pixelPanel(PanelStyle.Paper, pal, pixel()).safeDrawingPadding().padding(horizontal = 12.dp, vertical = 8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                GlyphButton(Glyphs.back, stringResource(R.string.close), true, onDismiss)
+                Text(stringResource(R.string.st_day_title, pet.label), Modifier.weight(1f).semantics { heading() },
+                    style = MaterialTheme.typography.titleMedium, color = pal.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                InfoButton(Info(R.string.info_screen_t, R.string.info_screen_b))
+            }
+            DayHeader(offset, d?.optLong("total_ms"), canPrev, offset < 0, { offset-- }, { offset++ }, { offset = 0 })
+            when {
+                d == null -> LoadingState(stringResource(R.string.st_loading))
+                d.has("error") -> Text(d.optString("error"), color = pal.berry)
+                else -> DayBody(
+                    d, hour, { hour = it; picked = null; detail = null }, shown, { shown = it }, colors,
+                    picked, detail, onPick = { picked = it; detail = if (it.size == 1) it[0] else null }, onDetail = { detail = it },
+                    onCloseSel = { picked = null; detail = null },
+                    onSwipe = { dir ->
+                        val h = hour
+                        if (h != null) hour = (h + dir).coerceIn(0, d.optJSONArray("hours").objects().size - 1)
+                        else if (dir < 0 && canPrev) offset-- else if (dir > 0 && offset < 0) offset++
+                    },
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
     }
-    cluster?.let { evs -> ClusterDialog(evs, colors, onPick = { detail = it }, onDismiss = { cluster = null }) }
-    detail?.let { e -> SignalDialog(e, colors, onDismiss = { detail = null }) }
 }
 
 @Composable
-private fun DayHeader(from: Long, totalMs: Long?, canPrev: Boolean, canNext: Boolean, onPrev: () -> Unit, onNext: () -> Unit, onToday: () -> Unit) {
+private fun DayHeader(offset: Int, totalMs: Long?, canPrev: Boolean, canNext: Boolean, onPrev: () -> Unit, onNext: () -> Unit, onToday: () -> Unit) {
     val pal = LocalPal.current
+    val from = dayStart(offset)
+    val date = SimpleDateFormat(android.text.format.DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMMd"), Locale.getDefault()).format(Date(from))
+    val name = when (offset) { 0 -> stringResource(R.string.st_today) + " · " + date; -1 -> stringResource(R.string.st_yesterday) + " · " + date; else -> date }
     Row(verticalAlignment = Alignment.CenterVertically) {
         GlyphButton(Glyphs.chevronLeft, stringResource(R.string.st_prev), canPrev, onPrev)
         Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(from)), style = MaterialTheme.typography.titleSmall, color = pal.ink)
+            Text(name, style = MaterialTheme.typography.titleSmall, color = pal.ink)
             if (totalMs != null) Text(stringResource(R.string.st_total, duration(totalMs)), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
         }
         GlyphButton(Glyphs.chevron, stringResource(R.string.st_next), canNext, onNext)
@@ -311,89 +339,139 @@ private fun GlyphButton(glyph: List<String>, label: String, enabled: Boolean, on
 
 @Composable
 private fun DayBody(
-    d: JSONObject, hour: Int?, onHour: (Int?) -> Unit, shown: Set<Signal>, onShown: (Set<Signal>) -> Unit, colors: TypeColors,
-    onPick: (List<JSONObject>) -> Unit,
+    d: JSONObject, hour: Int?, onHour: (Int?) -> Unit, shown: Set<Signal>, onShown: (Set<Signal>) -> Unit, colors: Colors,
+    picked: List<JSONObject>?, detail: JSONObject?, onPick: (List<JSONObject>) -> Unit, onDetail: (JSONObject?) -> Unit,
+    onCloseSel: () -> Unit, onSwipe: (Int) -> Unit, modifier: Modifier,
 ) {
     val pal = LocalPal.current
     val all = remember(d) { d.optJSONArray("signals").objects() }
     val sessions = remember(d) { d.optJSONArray("sessions").objects().map { it.getLong("start_ms") to it.getLong("end_ms") } }
     val hours = remember(d) { d.optJSONArray("hours").objects() }
     if (sessions.isEmpty() && all.isEmpty()) {
-        Text(stringResource(R.string.st_day_empty), style = MaterialTheme.typography.bodyMedium, color = pal.inkMuted)
+        Text(stringResource(R.string.st_day_empty), modifier.padding(top = 16.dp), style = MaterialTheme.typography.bodyMedium, color = pal.inkMuted)
         return
     }
     val bucket = d.optLong("bucket_ms", 3_600_000L)
     val to = d.getLong("to_ms")
     val (v0, v1) = if (hour == null) d.getLong("from_ms") to to else hours[hour].getLong("start_ms").let { it to minOf(to, it + bucket) }
     val signals = remember(all, shown) { all.filter { signalOf(it) in shown } }
-    if (hour != null) Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(stringResource(R.string.st_hour_view, clockShort(v0), clockShort(v1)), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = pal.ink)
-        PixelButton(stringResource(R.string.st_back_day), { onHour(null) }, kind = ButtonKind.Secondary, compact = true)
-    }
-    DayGraph(v0, v1, hour == null, hours, bucket, sessions, signals, colors, onHour, onPick)
-    if (d.optBoolean("truncated")) Text(stringResource(R.string.st_truncated, all.size), style = MaterialTheme.typography.bodySmall, color = pal.berry)
-
-    Text(stringResource(R.string.st_filters), style = MaterialTheme.typography.labelLarge, color = pal.ink)
+    val inView = signals.filter { it.getLong("ts") in v0 until v1 }
+    val usedInView = sessions.sumOf { (a, b) -> maxOf(0L, minOf(b, v1) - maxOf(a, v0)) }
     val counts = remember(all) { all.groupingBy(::signalOf).eachCount() }
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        for (s in Signal.entries) {
-            val n = counts[s] ?: 0
-            if (n == 0 && s !in shown) continue
-            FilterChip(s, n, s in shown) { onShown(if (s in shown) shown - s else shown + s) }
-        }
-    }
-    val present = signals.map { it.optString("ptype").ifEmpty { "other" } }.distinct()
-    if (present.isNotEmpty()) {
-        Text(stringResource(R.string.st_colors), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            for (id in present) Row(Modifier.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-                Canvas(Modifier.size(10.dp)) { drawRect(colors.color(id, pal.inkMuted)) }
-                Spacer(Modifier.width(4.dp))
-                Text(colors.types[id]?.label ?: id, style = MaterialTheme.typography.labelSmall, color = pal.ink)
+    val listed = picked?.takeIf { it.size > 1 && detail == null }?.sortedBy { it.getLong("ts") }
+
+    LazyColumn(modifier.fillMaxWidth(), contentPadding = PaddingValues(bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        item {
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                SumChip(duration(usedInView), pal.leaf, Modifier.weight(1f))
+                SumChip(pluralStringResource(R.plurals.st_sum_signals, inView.size, inView.size), pal.ink, Modifier.weight(1f))
+                val bg = inView.count { it.optInt("fg", -1) == 0 }
+                SumChip(pluralStringResource(R.plurals.st_sum_bg, bg, bg), pal.berry, Modifier.weight(1f))
             }
         }
+        if (hour != null) item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                GlyphButton(Glyphs.chevronLeft, stringResource(R.string.st_prev_hour), hour > 0) { onHour(hour - 1) }
+                Text(stringResource(R.string.st_hour_view, clockShort(v0), clockShort(v1)), Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleSmall, color = pal.ink, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                GlyphButton(Glyphs.chevron, stringResource(R.string.st_next_hour), hour < hours.size - 1) { onHour(hour + 1) }
+                PixelButton(stringResource(R.string.st_back_day), { onHour(null) }, kind = ButtonKind.Secondary, compact = true)
+            }
+        }
+        item {
+            Column(Modifier.fillMaxWidth().pixelPanel(PanelStyle.Quiet, pal, pixel()).padding(6.dp)) {
+                DayGraph(v0, v1, hour == null, hours, bucket, sessions, signals, colors, picked?.toSet().orEmpty(), { onHour(it) }, onPick, onSwipe)
+            }
+            Text(stringResource(if (hour == null) R.string.st_hint_day else R.string.st_hint_hour), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+            if (d.optBoolean("truncated")) Text(stringResource(R.string.st_truncated, all.size), style = MaterialTheme.typography.bodySmall, color = pal.berry)
+        }
+        // what was tapped: one signal's details, or the list of a group
+        if (detail != null) item {
+            SignalCard(detail, colors, backToList = picked?.size?.takeIf { it > 1 }, onBack = { onDetail(null) }, onClose = onCloseSel)
+        }
+        if (listed != null) {
+            item {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.st_cluster_title, listed.size), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = pal.ink)
+                    GlyphButton(CLOSE_GLYPH, stringResource(R.string.st_close_sel), true, onCloseSel)
+                }
+            }
+            items(listed.take(LIST_MAX), key = { it.getLong("id") }) { e -> SignalRow(e, colors) { onDetail(e) } }
+            if (listed.size > LIST_MAX) item {
+                Text(stringResource(R.string.st_more, listed.size - LIST_MAX), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+            }
+        }
+        item {
+            Text(stringResource(R.string.st_filters), style = MaterialTheme.typography.labelLarge, color = pal.ink)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                for (s in Signal.entries) {
+                    val n = counts[s] ?: 0
+                    if (n == 0 && s !in shown) continue
+                    FilterChip(s, n, s in shown, colors.of(s, pal.inkMuted)) { onShown(if (s in shown) shown - s else shown + s) }
+                }
+            }
+        }
+        if (hour != null) item {
+            Text(stringResource(R.string.st_sessions), style = MaterialTheme.typography.titleSmall, color = pal.ink)
+            val inHour = sessions.mapNotNull { (a, b) -> (maxOf(a, v0) to minOf(b, v1)).takeIf { it.second > it.first } }
+            if (inHour.isEmpty()) Text(stringResource(R.string.st_no_sessions), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+            for ((a, b) in inHour) Text(stringResource(R.string.st_session_row, clock(a), clock(b), duration(b - a, seconds = true)),
+                style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+        }
+        item { Text(stringResource(R.string.st_honest), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted) }
     }
-    if (hour != null) {
-        Text(stringResource(R.string.st_sessions), style = MaterialTheme.typography.titleSmall, color = pal.ink)
-        val inHour = sessions.mapNotNull { (a, b) -> (maxOf(a, v0) to minOf(b, v1)).takeIf { it.second > it.first } }
-        if (inHour.isEmpty()) Text(stringResource(R.string.st_no_sessions), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
-        for ((a, b) in inHour) Text(stringResource(R.string.st_session_row, clock(a), clock(b), duration(b - a, seconds = true)),
-            style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+}
+
+private const val LIST_MAX = 200
+private val CLOSE_GLYPH = listOf("XX....XX", ".XX..XX.", "..XXXX..", "...XX...", "...XX...", "..XXXX..", ".XX..XX.", "XX....XX")
+
+@Composable
+private fun SumChip(text: String, dot: Color, modifier: Modifier) {
+    val pal = LocalPal.current
+    Row(modifier.heightIn(min = 32.dp).pixelPanel(PanelStyle.Quiet, pal, pixel()).padding(horizontal = 8.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        Canvas(Modifier.size(8.dp)) { drawRect(dot) }
+        Spacer(Modifier.width(6.dp))
+        Text(text, style = MaterialTheme.typography.labelMedium, color = pal.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
-    Text(stringResource(R.string.st_honest), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
 }
 
 @Composable
-private fun FilterChip(s: Signal, n: Int, on: Boolean, onToggle: () -> Unit) {
+private fun FilterChip(s: Signal, n: Int, on: Boolean, color: Color, onToggle: () -> Unit) {
     val pal = LocalPal.current
     val sounds = LocalSounds.current
     Box(Modifier.heightIn(min = 48.dp).clickable(role = Role.Checkbox) { sounds?.play(if (on) "ui_toggle_off" else "ui_toggle_on"); onToggle() }
         .semantics(mergeDescendants = true) {}, contentAlignment = Alignment.Center) {
-        Row(Modifier.alpha(if (on) 1f else 0.45f).pixelPanel(PanelStyle.Quiet, pal, pixel()).padding(horizontal = 8.dp, vertical = 6.dp),
+        Row(Modifier.alpha(if (on) 1f else 0.4f).pixelPanel(PanelStyle.Quiet, pal, pixel()).padding(horizontal = 8.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            PixelGlyph(s.glyph, pal.ink, sizeDp = 16)
+            PixelGlyph(s.glyph, color, sizeDp = 16)
             Spacer(Modifier.width(6.dp))
             Text("${stringResource(s.label)} $n", style = MaterialTheme.typography.labelMedium, color = pal.ink)
         }
     }
 }
 
-/** Lanes of signal marks (background on top, on screen below) over the usage bars, with a local-time axis. */
+/**
+ * Two lanes of signal marks (background on top, tinted; on screen below) over green usage bars, with a local-time
+ * axis. Marks are colored by signal kind; a group shows its count in the color of its most common kind.
+ */
 @Composable
 private fun DayGraph(
     v0: Long, v1: Long, wholeDay: Boolean, hours: List<JSONObject>, bucket: Long, sessions: List<Pair<Long, Long>>,
-    signals: List<JSONObject>, colors: TypeColors, onHour: (Int) -> Unit, onPick: (List<JSONObject>) -> Unit,
+    signals: List<JSONObject>, colors: Colors, selected: Set<JSONObject>, onHour: (Int) -> Unit, onPick: (List<JSONObject>) -> Unit,
+    onSwipe: (Int) -> Unit,
 ) {
     val pal = LocalPal.current
     val p = pixel()
     val density = LocalDensity.current
     val measurer = rememberTextMeasurer()
-    val laneH = with(density) { 48.dp.toPx() }
+    val laneH = with(density) { 44.dp.toPx() }
     val barTop = 2 * laneH + with(density) { 6.dp.toPx() }
-    val barH = with(density) { 96.dp.toPx() }
+    val barH = with(density) { 104.dp.toPx() }
     val axisH = with(density) { 24.dp.toPx() }
     val minDist = with(density) { 26.dp.toPx() }
     val hit = with(density) { 24.dp.toPx() }
+    val swipe = with(density) { 56.dp.toPx() }
     val labelStyle = TextStyle(fontSize = 11.sp, color = pal.inkMuted)
     val signalNames = Signal.entries.associateWith { stringResource(it.label) }
     val fgName = stringResource(R.string.st_fg)
@@ -403,52 +481,62 @@ private fun DayGraph(
     val blockedName = stringResource(R.string.st_blocked)
     val laneBg = stringResource(R.string.st_lane_bg)
     val laneFg = stringResource(R.string.st_lane_fg)
+    val usageLabel = stringResource(R.string.st_legend_usage)
     val hourCd = hours.map { h ->
         val start = h.getLong("start_ms")
         stringResource(R.string.st_hour_cd, clockShort(start), duration(h.getLong("used_ms")), signals.count { it.getLong("ts") in start until start + bucket })
     }
-    val clusterFmt = clusterFormat()
-    BoxWithConstraints(Modifier.fillMaxWidth().height(with(density) { (barTop + barH + axisH).toDp() })) {
+    val res = LocalContext.current.resources
+    val height = with(density) { (barTop + barH + axisH).toDp() }
+    BoxWithConstraints(Modifier.fillMaxWidth().height(height)) {
         val w = constraints.maxWidth.toFloat()
         val span = (v1 - v0).toDouble()
         fun x(ts: Long) = ((ts - v0) / span * w).toFloat()
         val marks = remember(signals, v0, v1, w) { cluster(signals.filter { it.getLong("ts") in v0 until v1 }, ::x, minDist) }
-        Canvas(Modifier.fillMaxWidth().height(with(density) { (barTop + barH + axisH).toDp() }).pointerInput(marks, wholeDay, w) {
-            detectTapGestures { o ->
-                if (o.y < 2 * laneH) {
-                    val bg = o.y < laneH
-                    marks.filter { it.bg == bg }.minByOrNull { abs(it.x - o.x) }?.takeIf { abs(it.x - o.x) <= hit }?.let { onPick(it.events) }
-                } else if (wholeDay && o.y >= barTop - laneH / 4) {
-                    val ts = v0 + (o.x / w * span).toLong()
-                    hours.indexOfLast { it.getLong("start_ms") <= ts }.takeIf { it >= 0 }?.let(onHour)
+        Canvas(Modifier.fillMaxWidth().height(height)
+            .pointerInput(marks, wholeDay, w) {
+                detectTapGestures { o ->
+                    val near = marks.filter { it.bg == (o.y < laneH) }.minByOrNull { abs(it.x - o.x) }
+                    if (o.y < 2 * laneH && near != null && abs(near.x - o.x) <= hit) onPick(near.events)
+                    else if (wholeDay && o.y >= 2 * laneH) {
+                        val ts = v0 + (o.x / w * span).toLong()
+                        hours.indexOfLast { it.getLong("start_ms") <= ts }.takeIf { it >= 0 }?.let(onHour)
+                    }
                 }
             }
-        }) {
+            .pointerInput(Unit) {
+                var dx = 0f
+                detectHorizontalDragGestures(onDragStart = { dx = 0f }, onDragEnd = { if (abs(dx) > swipe) onSwipe(if (dx < 0) 1 else -1) }) { _, d -> dx += d }
+            },
+        ) {
             fun snap(v: Float) = (v / p).toInt() * p
-            // lanes
-            drawRect(pal.berry.copy(alpha = 0.10f), Offset(0f, 0f), Size(w, laneH - p))
-            drawRect(pal.paperEdge.copy(alpha = 0.25f), Offset(0f, laneH), Size(w, laneH - p))
+            // lanes: background (tinted, the interesting one) and on screen
+            drawRect(pal.berry.copy(alpha = 0.14f), Offset(0f, 0f), Size(w, laneH - p))
+            drawRect(pal.paperEdge.copy(alpha = 0.30f), Offset(0f, laneH), Size(w, laneH - p))
             label(measurer, laneBg, 2 * p, p, labelStyle)
             label(measurer, laneFg, 2 * p, laneH + p, labelStyle)
-            // usage bars on a 0-60 min scale (whole day), or the on-screen spans of the hour
+            // usage: every hour has a faint tappable slot; green fill = minutes on screen (0-60), or the exact spans of the hour
             drawRect(pal.woodDark, Offset(0f, barTop + barH), Size(w, p))
-            drawRect(pal.paperEdge, Offset(0f, barTop), Size(w, p / 2))
+            label(measurer, usageLabel, 2 * p, barTop + p, labelStyle)
             if (wholeDay) for (h in hours) {
                 val s = h.getLong("start_ms")
                 val x0 = snap(x(s)) + p
                 val x1 = snap(x(minOf(v1, s + bucket))) - p
-                val bh = snap(barH * (h.getLong("used_ms").toFloat() / bucket).coerceIn(0f, 1f))
-                if (h.getLong("used_ms") > 0 && x1 > x0) {
-                    val top = barTop + barH - maxOf(bh, p)
-                    drawRect(pal.sky, Offset(x0, top), Size(x1 - x0, maxOf(bh, p)))
+                if (x1 <= x0) continue
+                drawRect(pal.paperEdge.copy(alpha = 0.25f), Offset(x0, barTop + 8 * p), Size(x1 - x0, barH - 8 * p))
+                val used = h.getLong("used_ms")
+                if (used > 0) {
+                    val bh = maxOf(p, snap((barH - 8 * p) * (used.toFloat() / bucket).coerceIn(0f, 1f)))
+                    val top = barTop + barH - bh
+                    drawRect(pal.leaf, Offset(x0, top), Size(x1 - x0, bh))
                     drawRect(Color.White.copy(alpha = 0.3f), Offset(x0, top), Size(x1 - x0, p))
                 }
             } else for ((a, b) in sessions) {
                 if (b <= v0 || a >= v1) continue
                 val x0 = snap(x(maxOf(a, v0)))
                 val x1 = maxOf(x0 + p, snap(x(minOf(b, v1))))
-                drawRect(pal.sky, Offset(x0, barTop + p), Size(x1 - x0, barH - p))
-                drawRect(Color.White.copy(alpha = 0.3f), Offset(x0, barTop + p), Size(x1 - x0, p))
+                drawRect(pal.leaf, Offset(x0, barTop + 8 * p), Size(x1 - x0, barH - 8 * p))
+                drawRect(Color.White.copy(alpha = 0.3f), Offset(x0, barTop + 8 * p), Size(x1 - x0, p))
             }
             // axis: whole day = tick each hour, local-time label every 3 h; hour = tick each 5 min, label each 15 min
             val ay = barTop + barH + p
@@ -473,24 +561,26 @@ private fun DayGraph(
             // signal marks
             for (m in marks) {
                 val top = if (m.bg) 0f else laneH
-                val first = m.events[0]
-                val dominant = m.events.groupingBy { it.optString("ptype") }.eachCount().maxBy { it.value }.key
-                val c = colors.color(dominant.ifEmpty { null }, pal.inkMuted)
+                val kinds = m.events.groupingBy(::signalOf).eachCount()
+                val c = colors.of(kinds.maxBy { it.value }.key, pal.inkMuted)
                 val border = if (m.bg) pal.berry else pal.woodDark
-                val cy = top + laneH / 2 + 2 * p
+                val cy = top + laneH / 2 + 3 * p
+                val sel = m.events.any { it in selected }
                 if (m.events.size == 1) {
                     val g = 10 * p
                     val gx = snap(m.x - g / 2)
                     val gy = snap(cy - g / 2)
+                    if (sel) drawRect(pal.ink, Offset(gx - 2 * p, gy - 2 * p), Size(g + 4 * p, g + 4 * p))
                     drawRect(border, Offset(gx, gy), Size(g, g))
                     drawRect(pal.paper, Offset(gx + p, gy + p), Size(g - 2 * p, g - 2 * p))
-                    glyph(signalOf(first).glyph, c, gx + p, gy + p, p)
+                    glyph(signalOf(m.events[0]).glyph, c, gx + p, gy + p, p)
                 } else {
                     val tl = measurer.measure(m.events.size.toString(), TextStyle(fontSize = 11.sp, color = pal.ink))
-                    val bw = snap(maxOf(10 * p, tl.size.width + 4 * p))
+                    val bw = snap(maxOf(10 * p, tl.size.width + 6 * p))
                     val bh = 10 * p
                     val gx = snap(m.x - bw / 2)
                     val gy = snap(cy - bh / 2)
+                    if (sel) drawRect(pal.ink, Offset(gx - 2 * p, gy - 2 * p), Size(bw + 4 * p, bh + 4 * p))
                     drawRect(border, Offset(gx, gy), Size(bw, bh))
                     drawRect(c, Offset(gx + p, gy + p), Size(bw - 2 * p, bh - 2 * p))
                     drawRect(pal.paper, Offset(gx + 2 * p, gy + 2 * p), Size(bw - 4 * p, bh - 4 * p))
@@ -505,25 +595,17 @@ private fun DayGraph(
                 stringResource(R.string.st_signal_cd, listOfNotNull(e.optString("company").ifEmpty { null }, signalNames.getValue(signalOf(e))).joinToString(" "),
                     clock(e.getLong("ts")), when (e.optString("verdict")) { "blocked" -> blockedName; "allowed" -> allowedName; else -> unknownName },
                     when (e.optInt("fg", -1)) { 1 -> fgName; 0 -> bgName; else -> unknownName })
-            } else clusterFmt(m.events.size, clock(m.events[0].getLong("ts")))
+            } else res.getString(R.string.st_cluster_cd, m.events.size, clock(m.events[0].getLong("ts")))
             Box(Modifier.offset { IntOffset((m.x - markPx / 2f).roundToInt(), if (m.bg) 0 else laneH.roundToInt()) }.size(48.dp)
                 .semantics { contentDescription = desc; role = Role.Button; onClick { onPick(m.events); true } })
         }
         if (wholeDay) hours.forEachIndexed { i, h ->
             val s = h.getLong("start_ms")
-            val x0 = x(s).roundToInt()
             val wd = with(density) { (x(minOf(v1, s + bucket)) - x(s)).toDp() }
-            Box(Modifier.offset { IntOffset(x0, barTop.roundToInt()) }.size(wd, with(density) { barH.toDp() })
+            Box(Modifier.offset { IntOffset(x(s).roundToInt(), barTop.roundToInt()) }.size(wd, with(density) { barH.toDp() })
                 .semantics { contentDescription = hourCd[i]; role = Role.Button; onClick { onHour(i); true } })
         }
     }
-}
-
-/** "12 signals around 14:32:07" for a cluster mark, resolved once per composition. */
-@Composable
-private fun clusterFormat(): (Int, String) -> String {
-    val res = androidx.compose.ui.platform.LocalContext.current.resources
-    return { n, t -> res.getString(R.string.st_cluster_cd, n, t) }
 }
 
 private fun DrawScope.label(measurer: TextMeasurer, text: String, x: Float, y: Float, style: TextStyle, maxX: Float = Float.MAX_VALUE) {
@@ -538,43 +620,41 @@ private fun DrawScope.glyph(rows: List<String>, color: Color, x: Float, y: Float
 }
 
 @Composable
-private fun ClusterDialog(events: List<JSONObject>, colors: TypeColors, onPick: (JSONObject) -> Unit, onDismiss: () -> Unit) {
+private fun SignalRow(e: JSONObject, colors: Colors, onClick: () -> Unit) {
     val pal = LocalPal.current
-    Dialog(onDismissRequest = onDismiss) {
-        DialogBox(stringResource(R.string.st_cluster_title, events.size), actions = {
-            PixelButton(stringResource(R.string.close), onDismiss, kind = ButtonKind.Secondary)
-        }, scroll = false) {
-            LazyColumn(Modifier.fillMaxWidth().heightIn(max = 420.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                items(events, key = { it.getLong("id") }) { e ->
-                    val s = signalOf(e)
-                    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(role = Role.Button) { onPick(e) }.padding(horizontal = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically) {
-                        PixelGlyph(s.glyph, colors.color(e.optString("ptype").ifEmpty { null }, pal.inkMuted), sizeDp = 16)
-                        Spacer(Modifier.width(8.dp))
-                        Text(clock(e.getLong("ts")), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
-                        Spacer(Modifier.width(8.dp))
-                        Text(e.optString("company").ifEmpty { e.optString("domain") }.ifEmpty { stringResource(s.label) }, Modifier.weight(1f),
-                            style = MaterialTheme.typography.bodyMedium, color = if (e.optInt("fg", -1) == 0) pal.berry else pal.ink,
-                            maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    }
-                }
-            }
-        }
+    val s = signalOf(e)
+    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).pixelPanel(PanelStyle.Quiet, pal, pixel()).clickable(role = Role.Button, onClick = onClick)
+        .padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        PixelGlyph(s.glyph, colors.of(s, pal.inkMuted), sizeDp = 16)
+        Spacer(Modifier.width(8.dp))
+        Text(clock(e.getLong("ts")), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
+        Spacer(Modifier.width(8.dp))
+        Text(e.optString("company").ifEmpty { e.optString("domain") }.ifEmpty { stringResource(s.label) }, Modifier.weight(1f),
+            style = MaterialTheme.typography.bodyMedium, color = pal.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        if (e.optInt("fg", -1) == 0) Text(stringResource(R.string.st_bg), style = MaterialTheme.typography.labelSmall, color = pal.berry)
+        Spacer(Modifier.width(4.dp))
+        PixelGlyph(Glyphs.chevron, pal.inkMuted, sizeDp = 12)
     }
 }
 
+/** Details of one signal, shown inline under the graph. */
 @Composable
-private fun SignalDialog(e: JSONObject, colors: TypeColors, onDismiss: () -> Unit) {
+private fun SignalCard(e: JSONObject, colors: Colors, backToList: Int?, onBack: () -> Unit, onClose: () -> Unit) {
+    val pal = LocalPal.current
     val s = signalOf(e)
     val ptype = e.optString("ptype").ifEmpty { null }
-    PixelDialog(e.optString("company").ifEmpty { stringResource(s.label) }, onDismiss, actions = {
-        PixelButton(stringResource(R.string.got_it), onDismiss, kind = ButtonKind.Secondary)
-    }) {
+    Column(Modifier.fillMaxWidth().pixelPanel(PanelStyle.Quiet, pal, pixel()).padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (backToList != null) GlyphButton(Glyphs.chevronLeft, stringResource(R.string.st_back_list, backToList), true, onBack)
+            PixelGlyph(s.glyph, colors.of(s, pal.inkMuted), sizeDp = 20)
+            Spacer(Modifier.width(8.dp))
+            Text(e.optString("company").ifEmpty { stringResource(s.label) }, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = pal.ink)
+            GlyphButton(CLOSE_GLYPH, stringResource(R.string.st_close_sel), true, onClose)
+        }
         StatLine(stringResource(R.string.st_time), fullTime(e.getLong("ts")))
-        e.optString("company").ifEmpty { null }?.let { StatLine(stringResource(R.string.st_company), it) }
         e.optString("domain").ifEmpty { null }?.let { StatLine(stringResource(R.string.st_domain), it) }
         StatLine(stringResource(R.string.st_category), stringResource(s.label) + (e.optString("category").ifEmpty { null }?.let { " ($it)" } ?: ""))
-        StatLine(stringResource(R.string.st_ptype), colors.types[ptype]?.label ?: ptype ?: "-")
+        StatLine(stringResource(R.string.st_ptype), colors.typeLabels[ptype] ?: ptype ?: "-")
         e.optString("verdict").ifEmpty { null }?.let { StatLine(stringResource(R.string.st_verdict), stringResource(if (it == "blocked") R.string.st_blocked else R.string.st_allowed)) }
         StatLine(stringResource(R.string.st_state), stringResource(when (e.optInt("fg", -1)) { 1 -> R.string.st_fg; 0 -> R.string.st_bg; else -> R.string.st_unknown }))
         StatLine(stringResource(R.string.st_event_id), stringResource(R.string.st_event_id_v, e.getLong("id")))

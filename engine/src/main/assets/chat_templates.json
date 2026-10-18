@@ -6,7 +6,7 @@
   "I keep field notes on the apps you watch: which domains they look up, which companies they reach, what was blocked, and how much data moved."
  ],
  "help_examples": [
-  "Ask, for example, what an app did today, which companies turned up this week, what happened last night, or what was blocked."
+  "Ask, for example, what an app did today, which companies turned up this week, what happened last night, what was blocked, or how much screen time an app got."
  ],
  "out_of_scope": [
   "That lies outside what I can observe. I only speak about lookups, trackers, blocks and data use recorded on this device."
@@ -144,5 +144,28 @@
  ],
  "anomaly_item": [
   "At {time}, {species} showed {what}."
+ ],
+ "screen_app": [
+  "{label} was on screen for {duration} {period}, {pct} of the phone's {total} screen time.",
+  "{period}, {label} had {duration} on screen: {pct} of all {total} of screen time."
+ ],
+ "screen_app_nototal": [
+  "{label} was on screen for {duration} {period}."
+ ],
+ "screen_app_none": [
+  "{label} was not on screen {period}."
+ ],
+ "screen_no_access": [
+  "I can only count screen time with usage access. Turn it on in Settings, then ask again."
+ ],
+ "screen_none": [
+  "No app was on screen {period}."
+ ],
+ "screen_total": [
+  "Your phone was on screen for {duration} {period}.",
+  "{period}, your phone had {duration} of screen time."
+ ],
+ "screen_top": [
+  "{label}: {duration} ({pct})."
  ]
 }

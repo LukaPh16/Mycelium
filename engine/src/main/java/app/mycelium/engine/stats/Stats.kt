@@ -249,7 +249,10 @@ class Stats(
         }
     }
 
-    /** Foreground time per watched app in [from, to), sessions clipped to the range. No cap: share = ms / total_ms. */
+    /**
+     * Foreground time per watched app in [from, to), sessions clipped to the range. No cap. total_ms = watched apps;
+     * device_total_ms = the whole phone (any app on screen, from the anonymous '*' rows), 0 if not collected.
+     */
     fun screenTime(from: Long, to: Long, s: Scope = Scope()): JsonObject {
         require(to > from) { "bad_range" }
         val byPkg = sessions(null, from, to, s).groupBy { it.first }
@@ -259,6 +262,7 @@ class Stats(
             put("fn", "screenTime"); put("from_ms", from); put("to_ms", to)
             put("apps", JsonArray(apps.map { (p, ms) -> buildJsonObject { put("package", p); put("label", labels[p] ?: p); put("ms", ms) } }))
             put("total_ms", apps.sumOf { it.second })
+            put("device_total_ms", used(sessions(Sessions.DEVICE, from, to, s).map { it.second to it.third }))
             put("event_ids", JsonArray(emptyList()))
         }
     }
@@ -306,7 +310,7 @@ class Stats(
     private fun sessions(pkg: String?, from: Long, to: Long, s: Scope): List<Triple<String, Long, Long>> =
         q(
             "SELECT package, MAX(start_ts, $from) a, MIN(end_ts, $to) b FROM session WHERE start_ts<$to AND end_ts>$from${s.sim}" +
-                if (pkg != null) " AND package=?" else s.watched(),
+                if (pkg != null) " AND package=?" else " AND package<>'${Sessions.DEVICE}'" + s.watched(),
             listOfNotNull(pkg),
         ).map { Triple(it["package"] as String, it.long("a"), it.long("b")) }.filter { it.third > it.second }
 
