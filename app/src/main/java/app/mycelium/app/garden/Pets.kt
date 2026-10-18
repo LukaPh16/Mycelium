@@ -7,13 +7,16 @@ import app.mycelium.app.startOfToday
 import java.util.zip.CRC32
 
 /** A tracker company that visited an app today. [shooed] = the user blocked it for this app (or for all apps). */
-class SnoopVisit(val company: String, val category: String, val hits: Int, val shooed: Boolean)
+class SnoopVisit(val company: String, val category: String, val hits: Int, val shooed: Boolean, val lastTs: Long = 0L)
+
+/** How a creature feels, from what its app did: shown as a bubble over its head and on its card. */
+enum class Mood { HAPPY, CONTENT, GRUMPY, SICK, SLEEPY }
 
 /** One watched app as a creature, from call("terrarium"), call("garden") and today's stats. */
 class Pet(
     val pkg: String, val label: String, val preset: String, val stage: Int, val stageCount: Int,
     val growth: Double, val next: Double?, val seed: String, val contactsToday: Int, val blockedToday: Int,
-    val lastSeen: Long, val snoops: List<SnoopVisit>,
+    val lastSeen: Long, val snoops: List<SnoopVisit>, val stageShown: Int = stage,
 ) {
     val visiting get() = snoops.filter { !it.shooed }
     /** Neglected: no contact for 3 hours -> the creature naps. */
@@ -34,6 +37,18 @@ class Pet(
                 else -> 1
             }
         }
+
+    /**
+     * Sleepy when its app has been quiet; sick when trackers took over (infection 2+); grumpy right after a Snoop
+     * showed up (last 30 minutes); happy when no Snoop is bothering it; content otherwise.
+     */
+    fun mood(now: Long): Mood = when {
+        sleeping(now) -> Mood.SLEEPY
+        infection >= 2 -> Mood.SICK
+        visiting.any { now - it.lastTs < 30 * 60_000L } -> Mood.GRUMPY
+        visiting.isEmpty() -> Mood.HAPPY
+        else -> Mood.CONTENT
+    }
 
     /** Colors come with the creature type (what you see in the picker is what you get); the hat comes from the app's seed. */
     fun look(atlas: SpriteAtlas): String = lookForPreset(atlas, preset)
@@ -62,13 +77,14 @@ suspend fun loadPets(): List<Pet> {
             .map { t ->
                 val c = t.getString("company")
                 SnoopVisit(c, t.optString("category"), t.optInt("hits"),
-                    rules.any { it.optString("value").equals(c, true) && it.optString("package").let { p -> p == pkg || p == "*" } })
+                    rules.any { it.optString("value").equals(c, true) && it.optString("package").let { p -> p == pkg || p == "*" } },
+                    t.optLong("last_ts"))
             }
         Pet(
             pkg, o.optString("label", pkg), o.optString("preset_id", "preset01"), o.optInt("stage", 1), o.optInt("stage_count", 3),
             o.optDouble("growth", 0.0), if (o.isNull("next_threshold")) null else o.optDouble("next_threshold"),
             g?.optString("seed").orEmpty().ifEmpty { pkg }, today.optInt("lookups"), today.optInt("blocked"),
-            g?.optLong("last_seen") ?: 0L, snoops,
+            g?.optLong("last_seen") ?: 0L, snoops, o.optInt("stage_shown", o.optInt("stage", 1)),
         )
     }
 }

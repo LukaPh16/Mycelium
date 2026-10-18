@@ -4,6 +4,7 @@ import android.text.format.Formatter
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.compositeOver
+import app.mycelium.app.garden.Pet
+import app.mycelium.app.garden.PetPortrait
+import app.mycelium.app.garden.SnoopIcon
+import app.mycelium.app.garden.loadPets
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -95,6 +101,8 @@ fun InsightsScreen() {
     var watched by remember { mutableStateOf<Int?>(null) }
     var data by remember { mutableStateOf<Summary?>(null) }
     var failed by remember { mutableStateOf(false) }
+    var pets by remember { mutableStateOf(emptyMap<String, Pet>()) }
+    LaunchedEffect(Unit) { pets = loadPets().associateBy { it.pkg } }   // the apps' creatures, as they look right now
     LaunchedEffect(week, reload) {
         watched = Api.io("watched").optJSONArray("apps")?.length() ?: 0
         data = null
@@ -115,15 +123,23 @@ fun InsightsScreen() {
             s == null -> LoadingState(stringResource(R.string.ins_loading))
             else -> {
                 val period = stringResource(if (week) R.string.ins_this_week else R.string.ins_today)
-                BigCard(R.drawable.sprite_mushroom_wow, stringResource(R.string.ins_busiest), Info(R.string.info_busiest_t, R.string.info_busiest_b),
+                val busyPet = pets[s.busiest?.optString("package")]
+                val snoopPet = pets[s.snoopiest?.optString("package")]
+                val nightPet = pets.values.firstOrNull { it.label == s.nightApp }
+                BigCard({ CreatureIcon(busyPet, R.drawable.sprite_mushroom_wow) }, stringResource(R.string.ins_busiest), Info(R.string.info_busiest_t, R.string.info_busiest_b),
                     s.busiest?.optString("label") ?: stringResource(R.string.ins_nobody),
                     s.busiest?.let { pluralStringResource(R.plurals.ins_busiest_line, it.optInt("value"), it.optInt("value"), period) }
                         ?: stringResource(R.string.ins_quiet, period))
-                BigCard(R.drawable.sprite_snoop, stringResource(R.string.ins_snoopiest), Info(R.string.info_snoopiest_t, R.string.info_snoopiest_b),
+                BigCard({
+                    Box(contentAlignment = Alignment.TopEnd) {
+                        CreatureIcon(snoopPet, R.drawable.sprite_mushroom_wow)
+                        snoopPet?.visiting?.firstOrNull()?.let { SnoopIcon(it.company, 1.5f) }
+                    }
+                }, stringResource(R.string.ins_snoopiest), Info(R.string.info_snoopiest_t, R.string.info_snoopiest_b),
                     s.snoopiest?.optString("label") ?: stringResource(R.string.ins_no_snoops_title),
                     s.snoopiest?.let { pluralStringResource(R.plurals.ins_snoopiest_line, it.optInt("value"), it.optInt("value"), period) }
                         ?: stringResource(R.string.ins_no_snoops, period))
-                BigCard(R.drawable.sprite_mushroom_sleepy, stringResource(R.string.ins_night), Info(R.string.info_night_t, R.string.info_night_b),
+                BigCard({ CreatureIcon(nightPet, R.drawable.sprite_mushroom_sleepy, sleeping = true) }, stringResource(R.string.ins_night), Info(R.string.info_night_t, R.string.info_night_b),
                     pluralStringResource(R.plurals.ins_night_value, s.nightContacts.toInt(), s.nightContacts.toInt()),
                     when {
                         s.nightContacts == 0L -> stringResource(R.string.ins_night_none)
@@ -131,7 +147,7 @@ fun InsightsScreen() {
                         else -> stringResource(R.string.ins_night_some)
                     })
                 val photos = (s.bytes / (3L * 1024 * 1024)).toInt()
-                BigCard(R.drawable.sprite_mushroom_happy, stringResource(R.string.ins_data), Info(R.string.info_data_t, R.string.info_data_b),
+                BigCard({ CreatureIcon(null, R.drawable.sprite_mushroom_happy) }, stringResource(R.string.ins_data), Info(R.string.info_data_t, R.string.info_data_b),
                     if (s.bytes == 0L && !s.usageAccess) stringResource(R.string.ins_data_unknown) else Formatter.formatShortFileSize(ctx, s.bytes),
                     when {
                         s.bytes == 0L && !s.usageAccess -> stringResource(R.string.ins_data_needs_access)
@@ -171,7 +187,7 @@ private fun Key(color: androidx.compose.ui.graphics.Color) {
 
 /** One big friendly fact: a sprite, a small title with an "i", a big answer and one line of plain words. */
 @Composable
-private fun BigCard(@DrawableRes sprite: Int, title: String, info: Info, value: String, line: String) {
+private fun BigCard(icon: @Composable () -> Unit, title: String, info: Info, value: String, line: String) {
     val pal = LocalPal.current
     PixelPanel(Modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -179,7 +195,7 @@ private fun BigCard(@DrawableRes sprite: Int, title: String, info: Info, value: 
             InfoButton(info)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            PixelSprite(sprite, artPixelDp = if (sprite == R.drawable.sprite_snoop) 3f else 1.5f)
+            icon()
             Spacer(Modifier.width(16.dp))
             Column(Modifier.weight(1f)) {
                 Text(value, style = MaterialTheme.typography.titleLarge, color = pal.ink)
@@ -189,21 +205,53 @@ private fun BigCard(@DrawableRes sprite: Int, title: String, info: Info, value: 
     }
 }
 
+/** The app's own creature (with its colors, hat-free portrait and infection), or the mascot when there is none. */
+@Composable
+private fun CreatureIcon(pet: Pet?, @DrawableRes mascot: Int, sleeping: Boolean = false) {
+    if (pet != null) PetPortrait(pet, 56.dp, sleeping) else Box(Modifier.size(56.dp), contentAlignment = Alignment.Center) { PixelSprite(mascot, artPixelDp = 1.5f) }
+}
+
 /** Pixel bars: green contacts with red Snoop visits in front, snapped to whole device pixels. */
 @Composable
 private fun BarChart(buckets: List<JSONObject>) {
     val pal = LocalPal.current
     val p = pixel()
     val max = (buckets.maxOfOrNull { it.optLong("lookups") } ?: 0L).coerceAtLeast(1L)
-    Canvas(Modifier.fillMaxWidth().height(140.dp)) {
-        drawRect(pal.paperEdge, Offset(0f, size.height - p), Size(size.width, p))
+    val well = if (pal.night) pal.bg else pal.paperEdge.copy(alpha = 0.35f).compositeOver(pal.paper)
+    Canvas(Modifier.fillMaxWidth().height(148.dp)) {
+        val w = size.width
+        val h = size.height
+        // recessed window: wood-dark notched frame, a darker well inside, inner shadow on the top edge
+        drawRect(pal.woodDark, Offset(p, 0f), Size(w - 2 * p, h))
+        drawRect(pal.woodDark, Offset(0f, p), Size(w, h - 2 * p))
+        drawRect(well, Offset(p, p), Size(w - 2 * p, h - 2 * p))
+        drawRect(pal.woodDark.copy(alpha = 0.35f), Offset(p, p), Size(w - 2 * p, p))
+        val left = 3 * p
+        val top = 4 * p
+        val bottom = h - 4 * p
+        val inner = w - 6 * p
+        for (k in 1..3) {   // dotted guides at a quarter, half, three quarters
+            val y = (bottom - (bottom - top) * k / 4f).let { (it / p).toInt() * p }
+            var x = left
+            while (x < left + inner) { drawRect(pal.paperEdge.copy(alpha = 0.55f), Offset(x, y), Size(p, p)); x += 3 * p }
+        }
+        drawRect(pal.woodLight, Offset(left, bottom), Size(inner, p))   // ground line
         if (buckets.isEmpty()) return@Canvas
-        val w = (size.width / buckets.size).toInt().toFloat()
+        val slot = ((inner / buckets.size) / p).toInt().coerceAtLeast(2) * p
+        val bw = (slot - p).coerceAtLeast(p)
         buckets.forEachIndexed { i, b ->
-            for ((key, color) in listOf("lookups" to pal.leaf, "tracker_hits" to pal.berry)) {
-                val h = ((size.height - p) * b.optLong(key) / max / p).toInt() * p
-                if (h > 0) drawRect(color, Offset(i * w + p, size.height - p - h), Size((w - 2 * p).coerceAtLeast(p), h))
+            val x = left + i * slot
+            fun bar(value: Long, fill: androidx.compose.ui.graphics.Color, shade: androidx.compose.ui.graphics.Color) {
+                val bh = (((bottom - top) * value / max) / p).toInt() * p
+                if (bh <= 0) return
+                val y = bottom - bh
+                drawRect(fill, Offset(x, y + p), Size(bw, bh - p))
+                if (bw > 2 * p) drawRect(fill, Offset(x + p, y), Size(bw - 2 * p, p)) else drawRect(fill, Offset(x, y), Size(bw, p))   // notched top
+                drawRect(androidx.compose.ui.graphics.Color.White.copy(alpha = 0.3f), Offset(x, y + p), Size(p, bh - p))         // lit left edge
+                if (bw > 2 * p) drawRect(shade, Offset(x + bw - p, y + p), Size(p, bh - p))                                        // shaded right edge
             }
+            bar(b.optLong("lookups"), pal.leaf, pal.moss)
+            bar(b.optLong("tracker_hits"), pal.berry, pal.woodDark)
         }
     }
 }

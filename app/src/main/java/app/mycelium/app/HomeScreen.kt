@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalDensity
+import app.mycelium.app.garden.EvolutionMoment
 import app.mycelium.app.garden.GardenSheet
+import androidx.compose.runtime.mutableStateMapOf
 import app.mycelium.app.garden.SheetState
 import app.mycelium.app.garden.SheetStop
 import app.mycelium.app.garden.SnoopVisit
@@ -90,6 +92,7 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
     var picking by remember { mutableStateOf(false) }
     var shoo by remember { mutableStateOf<Pair<Pet, SnoopVisit>?>(null) }
     var resetting by remember { mutableStateOf<Pet?>(null) }
+    val acked = remember { mutableStateMapOf<String, Int>() }   // stages already celebrated this session
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
     val sheet = remember { SheetState(with(density) { 88.dp.toPx() }) }
@@ -168,6 +171,21 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
                         contentAlignment = Alignment.Center,
                     ) { PixelGlyph(Glyphs.target, pal.ink, sizeDp = 24) }
                 }
+            }
+        }
+        // evolution moments: one stage at a time, saved with terrarium_ack so a moment never replays
+        LaunchedEffect(pets) {
+            for (p in pets) if (p.stage < (acked[p.pkg] ?: p.stageShown)) {   // fewer stages now (reset or new thresholds): quietly follow
+                Api.io("terrarium_ack", obj("app_id" to p.pkg, "stage" to p.stage)); acked[p.pkg] = p.stage
+            }
+        }
+        DebugHooks.evolve.value?.let { pkg -> pets.firstOrNull { it.pkg == pkg }?.let { acked[pkg] = maxOf(1, it.stage - 1); DebugHooks.evolve.value = null } }
+        val evolving = pets.firstOrNull { it.stage > (acked[it.pkg] ?: it.stageShown) }
+        evolving?.let { p ->
+            val from = acked[p.pkg] ?: p.stageShown
+            EvolutionMoment(p, from, from + 1) {
+                acked[p.pkg] = from + 1
+                scope.launch { Api.io("terrarium_ack", obj("app_id" to p.pkg, "stage" to from + 1)) }
             }
         }
         resetting?.let { pet -> ResetRecordDialog(pet.pkg, pet.label) { done -> resetting = null; if (done) reload++ } }

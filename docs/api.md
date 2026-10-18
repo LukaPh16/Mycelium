@@ -253,8 +253,8 @@ Counts = event rows with ptype (sim=0 unless simulating) + Sanctuary queue rows 
 call("terrarium", {"app_id":"com.android.chrome"})      // app_id optional: all watched apps
   -> {"apps":[{"app_id":"com.android.chrome","label":"Chrome","preset_id":"preset07",
        "packet_counts_by_type":{"dns":120,"tracker":31,"https":0,...every type...,"os_packets":5400,"other":0},
-       "total_packets":5551,"growth":236.0,"stage":3,"stage_count":3,"next_threshold":null,"stage_shown":2,
-       "sanctuary_pending":0}],"stage_thresholds":[0,50,200]}
+       "total_packets":5551,"growth":236.0,"stage":2,"stage_count":8,"next_threshold":500.0,"stage_shown":2,
+       "sanctuary_pending":0}],"stage_thresholds":[0,50,500,1500,4000,10000,25000,60000]}
 call("presets") -> {"presets":[{"id":"preset01","name":"Ink Cap","file":"organisms/preset01/preset.json",
                      "preset":{"id":"preset01","name":"Ink Cap","kingdom":"mushroom","palette":[...],"shape":{...},...}}, ...25],
                    "default_preset":"preset01"}

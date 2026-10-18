@@ -129,17 +129,32 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
     private fun drawPet(pet: Pet, spot: Spot, cx: Int, cy: Int, ms: Long, now: Long, selected: Boolean, fx: GardenFx, lift: Int = 0): Placed {
         val hopStart = fx.hops[pet.pkg]
         val asleep = pet.sleeping(now) && hopStart == null
-        val s = atlas.creature(creatureSprite(pet, asleep), pet.look(atlas), pet.infection, crc(pet.pkg))
-        val hop = -lift + if (hopStart != null && ms != 0L) intArrayOf(0, -3, -6, -4, -1, 0, -2, 0).getOrElse(((clockMs() - hopStart).coerceAtLeast(0) / 70).toInt()) { 0 } else 0
+        val s = atlas.creature(creatureSprite(pet, asleep, atlas), pet.look(atlas), pet.infection, crc(pet.pkg))
+        val mood = pet.mood(now)
+        // a mood moment every 8 s (each creature on its own beat): bubble over the head plus a little behavior
+        val beat = if (ms == 0L) 0L else (ms + crc(pet.pkg) % 8000) % 8000
+        val moment = ms == 0L || beat < 2200
+        var moodHop = 0
+        var shake = 0
+        if (moment && ms != 0L) when (mood) {
+            Mood.HAPPY -> moodHop = intArrayOf(0, -2, -3, -2, 0).getOrElse((beat / 70).toInt()) { 0 }
+            Mood.GRUMPY -> shake = if ((ms / 70) % 2 == 0L) -1 else 1
+            else -> Unit
+        }
+        val droop = if (mood == Mood.SICK) 1 else 0
+        val hop = -lift + moodHop + droop + if (hopStart != null && ms != 0L) intArrayOf(0, -3, -6, -4, -1, 0, -2, 0).getOrElse(((clockMs() - hopStart).coerceAtLeast(0) / 70).toInt()) { 0 } else 0
         if (selected) ring(spot, s.w, cx, cy)
-        val f = if (ms == 0L) 0 else s.frameAt(ms + crc(pet.pkg) % 1000)
-        blit(s, f, spot.x, spot.y + hop, cx, cy)
+        val f = if (ms == 0L) 0 else s.frameAt((if (mood == Mood.SICK) ms / 2 else ms) + crc(pet.pkg) % 1000)   // sick: sluggish
+        blit(s, f, spot.x + shake, spot.y + hop, cx, cy)
         val hx = spot.x - s.ax + s.hx
         val hy = spot.y - s.ay + s.hy + hop
         pet.hat(atlas)?.let { blit(atlas["hat_$it"], 0, hx, hy + 2, cx, cy) }
         if (asleep) {
             val z = atlas["zzz"]
             blit(z, if (ms == 0L) 2 else z.frameAt(ms), hx + 6, hy - 2, cx, cy)
+        } else if (moment && hopStart == null && lift == 0) {
+            val bubble = when (mood) { Mood.HAPPY -> "mood_happy"; Mood.GRUMPY -> "mood_grumpy"; Mood.SICK -> "mood_sick"; else -> null }
+            if (bubble != null) { val b = atlas[bubble]; blit(b, if (ms == 0L) 0 else b.frameAt(ms), hx + 7, hy - 1, cx, cy) }
         }
         val snoops = pet.visiting.take(3).mapIndexed { n, v ->
             val (dx, dy) = when (n) { 0 -> -s.w / 2 + 3 to -s.h / 2; 1 -> s.w / 2 - 3 to -s.h / 3; else -> 2 to -s.h + 4 }
@@ -193,5 +208,10 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
     }
 }
 
-fun creatureSprite(pet: Pet, sleeping: Boolean): String =
-    "creature_${pet.preset}_s${pet.stage.coerceIn(1, 3)}" + if (sleeping) "_sleep" else ""
+/** The sprite for a creature's stage (1..8); art made for fewer stages falls back to its highest one. */
+fun creatureSprite(pet: Pet, sleeping: Boolean, atlas: SpriteAtlas? = null): String {
+    val suffix = if (sleeping) "_sleep" else ""
+    var stage = pet.stage.coerceIn(1, 8)
+    while (atlas != null && stage > 1 && !atlas.has("creature_${pet.preset}_s$stage$suffix")) stage--
+    return "creature_${pet.preset}_s$stage$suffix"
+}

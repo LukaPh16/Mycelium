@@ -125,6 +125,7 @@ class MainActivity : ComponentActivity() {
     private fun openFromIntent(intent: Intent?) {
         if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE == 0) return
         intent?.getStringExtra("route")?.let { openRoute.value = it }
+        intent?.getStringExtra("evolve")?.let { DebugHooks.evolve.value = it }   // replay that creature's last evolution
     }
 
     /** Starts protection; shows Android's VPN dialog when needed. Reports "ok", "consent_denied" or an engine error code. */
@@ -136,6 +137,11 @@ class MainActivity : ComponentActivity() {
         onConsent = { ok -> report(if (ok) start().optString("error").ifEmpty { "ok" } else "consent_denied") }
         consent.launch(intent)
     }
+}
+
+/** Debug builds only: hooks for checking moments on a phone without waiting for real growth. */
+object DebugHooks {
+    val evolve = mutableStateOf<String?>(null)
 }
 
 /** Shows a short pixel toast from anywhere. */
@@ -267,6 +273,10 @@ private fun AppShell(prefs: UiPrefs, startProtection: ((String) -> Unit) -> Unit
 private val TOP_BAR_HEIGHT = 60.dp
 
 private fun navigateTo(nav: NavHostController, route: String) {
+    if (SCREENS.firstOrNull { it.route == route }?.inDrawer == false) {   // sub-page: Back returns to the page that opened it
+        nav.navigate(route) { launchSingleTop = true }
+        return
+    }
     nav.navigate(route) {
         popUpTo(Routes.HOME) { saveState = true }
         launchSingleTop = true

@@ -150,7 +150,7 @@ private fun MiniStat(text: String, modifier: Modifier) {
 @Composable
 fun PetPortrait(pet: Pet, box: Dp = 48.dp, sleeping: Boolean = false) {
     val atlas = SpriteAtlas.of(LocalContext.current)
-    val s = remember(pet.preset, pet.stage, sleeping, pet.infection) { atlas.creature(creatureSprite(pet, sleeping), pet.look(atlas), pet.infection, crc(pet.pkg)) }
+    val s = remember(pet.preset, pet.stage, sleeping, pet.infection) { atlas.creature(creatureSprite(pet, sleeping, atlas), pet.look(atlas), pet.infection, crc(pet.pkg)) }
     Box(Modifier.size(box), contentAlignment = Alignment.BottomCenter) {
         PixelBitmap(s.image, artPixelDp = box.value / maxOf(s.w, s.h), srcSize = IntSize(s.w, s.h))
     }
@@ -179,9 +179,8 @@ private fun PetList(pets: List<Pet>, onSelect: (Pet) -> Unit, modifier: Modifier
                     Text(p.label, style = MaterialTheme.typography.bodyLarge, color = pal.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(stringResource(R.string.terr_org_stage, p.stage, p.stageCount), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
                 }
-                if (p.visiting.isNotEmpty()) Chip(pluralStringResource(R.plurals.sheet_snoop_chip, p.visiting.size, p.visiting.size), pal.berry)
-                else if (p.sleeping(now)) Chip(stringResource(R.string.sheet_napping), pal.sky)
-                else Chip(stringResource(R.string.sheet_awake), pal.leaf)
+                val mood = p.mood(now)
+                Chip(moodName(mood), moodColor(mood))
             }
         }
     }
@@ -213,8 +212,18 @@ private fun PetCard(pet: Pet, onBack: () -> Unit, onShoo: (Pet, SnoopVisit) -> U
             }
         }
         item {
+            val mood = pet.mood(System.currentTimeMillis())
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.terr_org_stage, pet.stage, pet.stageCount), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = pal.ink)
+                Chip(moodName(mood), moodColor(mood))
+                Spacer(Modifier.width(8.dp))
+                Text(moodReason(mood), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+                InfoButton(Info(R.string.info_mood_t, R.string.info_mood_b))
+            }
+        }
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.terr_org_stage, pet.stage, pet.stageCount) + " · " + stageName(pet.stage), Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleSmall, color = pal.ink)
                 InfoButton(Info(R.string.info_growth_t, R.string.info_growth_b))
             }
             GrowthBar(pet)
@@ -259,6 +268,36 @@ private fun SnoopRow(pet: Pet, v: SnoopVisit, onShoo: (Pet, SnoopVisit) -> Unit)
         }
         if (!v.shooed) PixelButton(stringResource(R.string.shoo), { onShoo(pet, v) }, kind = ButtonKind.Danger)
     }
+}
+
+@Composable
+fun moodName(m: Mood): String = stringResource(when (m) {
+    Mood.HAPPY -> R.string.mood_happy; Mood.CONTENT -> R.string.mood_content; Mood.GRUMPY -> R.string.mood_grumpy
+    Mood.SICK -> R.string.mood_sick; Mood.SLEEPY -> R.string.mood_sleepy
+})
+
+@Composable
+private fun moodReason(m: Mood): String = stringResource(when (m) {
+    Mood.HAPPY -> R.string.mood_happy_b; Mood.CONTENT -> R.string.mood_content_b; Mood.GRUMPY -> R.string.mood_grumpy_b
+    Mood.SICK -> R.string.mood_sick_b; Mood.SLEEPY -> R.string.mood_sleepy_b
+})
+
+@Composable
+fun moodColor(m: Mood): Color {
+    val pal = LocalPal.current
+    return when (m) { Mood.HAPPY -> pal.leaf; Mood.CONTENT -> pal.gold; Mood.GRUMPY -> pal.berry; Mood.SICK -> pal.berry; Mood.SLEEPY -> pal.sky }
+}
+
+/** A friendly name for each of the 8 stages. */
+@Composable
+fun stageName(stage: Int): String = androidx.compose.ui.res.stringArrayResource(R.array.stage_names).let { it[(stage - 1).coerceIn(0, it.size - 1)] }
+
+/** A Snoop in the terrarium art (which one depends on the company). */
+@Composable
+fun SnoopIcon(company: String, artPixelDp: Float = 2f) {
+    val atlas = SpriteAtlas.of(LocalContext.current)
+    val s = remember(company) { atlas["snoop_${1 + (crc(company) % 3).toInt()}"] }
+    PixelBitmap(s.image, artPixelDp = artPixelDp, srcSize = IntSize(s.w, s.h))
 }
 
 /** Growth toward the next stage as a chunky pixel bar. */
