@@ -129,7 +129,7 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
     private fun drawPet(pet: Pet, spot: Spot, cx: Int, cy: Int, ms: Long, now: Long, selected: Boolean, fx: GardenFx, lift: Int = 0): Placed {
         val hopStart = fx.hops[pet.pkg]
         val asleep = pet.sleeping(now) && hopStart == null
-        val s = atlas.creature(creatureSprite(pet, asleep), pet.look(atlas), pet.infection, crc(pet.pkg))
+        val s = atlas.creature(creatureSprite(pet, asleep, atlas), pet.look(atlas), pet.infection, crc(pet.pkg))
         val hop = -lift + if (hopStart != null && ms != 0L) intArrayOf(0, -3, -6, -4, -1, 0, -2, 0).getOrElse(((clockMs() - hopStart).coerceAtLeast(0) / 70).toInt()) { 0 } else 0
         if (selected) ring(spot, s.w, cx, cy)
         val f = if (ms == 0L) 0 else s.frameAt(ms + crc(pet.pkg) % 1000)
@@ -193,5 +193,10 @@ class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: In
     }
 }
 
-fun creatureSprite(pet: Pet, sleeping: Boolean): String =
-    "creature_${pet.preset}_s${pet.stage.coerceIn(1, 3)}" + if (sleeping) "_sleep" else ""
+/** The sprite for a creature's stage (1..8); art made for fewer stages falls back to its highest one. */
+fun creatureSprite(pet: Pet, sleeping: Boolean, atlas: SpriteAtlas? = null): String {
+    val suffix = if (sleeping) "_sleep" else ""
+    var stage = pet.stage.coerceIn(1, 8)
+    while (atlas != null && stage > 1 && !atlas.has("creature_${pet.preset}_s$stage$suffix")) stage--
+    return "creature_${pet.preset}_s$stage$suffix"
+}

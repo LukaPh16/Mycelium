@@ -55,7 +55,7 @@ Adding a preset needs no code: a folder, its `preset.json`, its strips, and one 
 
 - `engine/src/main/assets/config/terrarium.json`
   ```json
-  {"stage_thresholds": [0, 50, 200], "weights": {"default": 1, "tracker": 2, "os_packets": 0.01},
+  {"stage_thresholds": [0, 50, 500, 1500, 4000, 10000, 25000, 60000], "weights": {"default": 1, "tracker": 2, "os_packets": 0.01},
    "count_os_packets": true, "default_preset": "preset01", "presets_index": "organisms/index.json"}
   ```
   growth = sum over packet types of count * weight (`default` for types not listed). Stage = highest stage whose

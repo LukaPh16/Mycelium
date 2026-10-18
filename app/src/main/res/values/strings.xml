@@ -130,7 +130,17 @@
     <string name="sheet_snoops_title">Snoops today</string>
     <string name="sheet_all">All creatures</string>
     <string name="info_growth_t">Stage and growth</string>
-    <string name="info_growth_b">Every contact the app makes adds a little growth; Snoop visits count double. With enough growth the creature reaches its next stage (3 stages). It naps when its app has been quiet for 3 hours.</string>
+    <string name="info_growth_b">Every contact the app makes adds a little growth; Snoop visits count double. There are 8 stages: the first comes quickly, later ones take days or weeks, and each one shows (tufts, flowers, little mushroom friends, glowing spores, and a halo at Legend). It naps when its app has been quiet for 3 hours.</string>
+    <string-array name="stage_names">
+        <item>Seedling</item>
+        <item>Sprout</item>
+        <item>Young</item>
+        <item>Grown</item>
+        <item>Blooming</item>
+        <item>Elder</item>
+        <item>Ancient</item>
+        <item>Legend</item>
+    </string-array>
     <string name="garden_more">+%1$d more in My Apps</string>
 
     <!-- terrarium web page (passed to terrarium.js) -->

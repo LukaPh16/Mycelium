@@ -186,6 +186,176 @@
    ]
   },
   {
+   "name": "creature_preset01_s4",
+   "file": "creature_preset01_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    24
+   ]
+  },
+  {
+   "name": "creature_preset01_s4_sleep",
+   "file": "creature_preset01_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    24
+   ]
+  },
+  {
+   "name": "creature_preset01_s5",
+   "file": "creature_preset01_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset01_s5_sleep",
+   "file": "creature_preset01_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset01_s6",
+   "file": "creature_preset01_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset01_s6_sleep",
+   "file": "creature_preset01_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset01_s7",
+   "file": "creature_preset01_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset01_s7_sleep",
+   "file": "creature_preset01_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset01_s8",
+   "file": "creature_preset01_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset01_s8_sleep",
+   "file": "creature_preset01_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    33
+   ]
+  },
+  {
    "name": "creature_preset02_s1",
    "file": "creature_preset02_s1.png",
    "w": 30,
@@ -285,6 +455,176 @@
    "head": [
     23,
     25
+   ]
+  },
+  {
+   "name": "creature_preset02_s4",
+   "file": "creature_preset02_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset02_s4_sleep",
+   "file": "creature_preset02_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset02_s5",
+   "file": "creature_preset02_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset02_s5_sleep",
+   "file": "creature_preset02_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset02_s6",
+   "file": "creature_preset02_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    34
+   ]
+  },
+  {
+   "name": "creature_preset02_s6_sleep",
+   "file": "creature_preset02_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    34
+   ]
+  },
+  {
+   "name": "creature_preset02_s7",
+   "file": "creature_preset02_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset02_s7_sleep",
+   "file": "creature_preset02_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset02_s8",
+   "file": "creature_preset02_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    38
+   ]
+  },
+  {
+   "name": "creature_preset02_s8_sleep",
+   "file": "creature_preset02_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    38
    ]
   },
   {
@@ -390,6 +730,176 @@
    ]
   },
   {
+   "name": "creature_preset03_s4",
+   "file": "creature_preset03_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset03_s4_sleep",
+   "file": "creature_preset03_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset03_s5",
+   "file": "creature_preset03_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset03_s5_sleep",
+   "file": "creature_preset03_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset03_s6",
+   "file": "creature_preset03_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset03_s6_sleep",
+   "file": "creature_preset03_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset03_s7",
+   "file": "creature_preset03_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset03_s7_sleep",
+   "file": "creature_preset03_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset03_s8",
+   "file": "creature_preset03_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    36
+   ]
+  },
+  {
+   "name": "creature_preset03_s8_sleep",
+   "file": "creature_preset03_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    36
+   ]
+  },
+  {
    "name": "creature_preset04_s1",
    "file": "creature_preset04_s1.png",
    "w": 30,
@@ -489,6 +999,176 @@
    "head": [
     23,
     20
+   ]
+  },
+  {
+   "name": "creature_preset04_s4",
+   "file": "creature_preset04_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    24
+   ]
+  },
+  {
+   "name": "creature_preset04_s4_sleep",
+   "file": "creature_preset04_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    24
+   ]
+  },
+  {
+   "name": "creature_preset04_s5",
+   "file": "creature_preset04_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset04_s5_sleep",
+   "file": "creature_preset04_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset04_s6",
+   "file": "creature_preset04_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset04_s6_sleep",
+   "file": "creature_preset04_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset04_s7",
+   "file": "creature_preset04_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset04_s7_sleep",
+   "file": "creature_preset04_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset04_s8",
+   "file": "creature_preset04_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset04_s8_sleep",
+   "file": "creature_preset04_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    33
    ]
   },
   {
@@ -594,6 +1274,176 @@
    ]
   },
   {
+   "name": "creature_preset05_s4",
+   "file": "creature_preset05_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset05_s4_sleep",
+   "file": "creature_preset05_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset05_s5",
+   "file": "creature_preset05_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset05_s5_sleep",
+   "file": "creature_preset05_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset05_s6",
+   "file": "creature_preset05_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    42
+   ]
+  },
+  {
+   "name": "creature_preset05_s6_sleep",
+   "file": "creature_preset05_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    42
+   ]
+  },
+  {
+   "name": "creature_preset05_s7",
+   "file": "creature_preset05_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    45
+   ]
+  },
+  {
+   "name": "creature_preset05_s7_sleep",
+   "file": "creature_preset05_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    45
+   ]
+  },
+  {
+   "name": "creature_preset05_s8",
+   "file": "creature_preset05_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    46
+   ]
+  },
+  {
+   "name": "creature_preset05_s8_sleep",
+   "file": "creature_preset05_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    46
+   ]
+  },
+  {
    "name": "creature_preset06_s1",
    "file": "creature_preset06_s1.png",
    "w": 30,
@@ -693,6 +1543,176 @@
    "head": [
     23,
     33
+   ]
+  },
+  {
+   "name": "creature_preset06_s4",
+   "file": "creature_preset06_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset06_s4_sleep",
+   "file": "creature_preset06_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset06_s5",
+   "file": "creature_preset06_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset06_s5_sleep",
+   "file": "creature_preset06_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset06_s6",
+   "file": "creature_preset06_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    42
+   ]
+  },
+  {
+   "name": "creature_preset06_s6_sleep",
+   "file": "creature_preset06_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    42
+   ]
+  },
+  {
+   "name": "creature_preset06_s7",
+   "file": "creature_preset06_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    45
+   ]
+  },
+  {
+   "name": "creature_preset06_s7_sleep",
+   "file": "creature_preset06_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    45
+   ]
+  },
+  {
+   "name": "creature_preset06_s8",
+   "file": "creature_preset06_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    46
+   ]
+  },
+  {
+   "name": "creature_preset06_s8_sleep",
+   "file": "creature_preset06_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    46
    ]
   },
   {
@@ -798,6 +1818,176 @@
    ]
   },
   {
+   "name": "creature_preset07_s4",
+   "file": "creature_preset07_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset07_s4_sleep",
+   "file": "creature_preset07_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset07_s5",
+   "file": "creature_preset07_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset07_s5_sleep",
+   "file": "creature_preset07_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset07_s6",
+   "file": "creature_preset07_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset07_s6_sleep",
+   "file": "creature_preset07_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset07_s7",
+   "file": "creature_preset07_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    38
+   ]
+  },
+  {
+   "name": "creature_preset07_s7_sleep",
+   "file": "creature_preset07_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    38
+   ]
+  },
+  {
+   "name": "creature_preset07_s8",
+   "file": "creature_preset07_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset07_s8_sleep",
+   "file": "creature_preset07_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    40
+   ]
+  },
+  {
    "name": "creature_preset08_s1",
    "file": "creature_preset08_s1.png",
    "w": 30,
@@ -897,6 +2087,176 @@
    "head": [
     23,
     19
+   ]
+  },
+  {
+   "name": "creature_preset08_s4",
+   "file": "creature_preset08_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    23
+   ]
+  },
+  {
+   "name": "creature_preset08_s4_sleep",
+   "file": "creature_preset08_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    23
+   ]
+  },
+  {
+   "name": "creature_preset08_s5",
+   "file": "creature_preset08_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    26
+   ]
+  },
+  {
+   "name": "creature_preset08_s5_sleep",
+   "file": "creature_preset08_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    26
+   ]
+  },
+  {
+   "name": "creature_preset08_s6",
+   "file": "creature_preset08_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset08_s6_sleep",
+   "file": "creature_preset08_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset08_s7",
+   "file": "creature_preset08_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    31
+   ]
+  },
+  {
+   "name": "creature_preset08_s7_sleep",
+   "file": "creature_preset08_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    31
+   ]
+  },
+  {
+   "name": "creature_preset08_s8",
+   "file": "creature_preset08_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset08_s8_sleep",
+   "file": "creature_preset08_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    32
    ]
   },
   {
@@ -1002,6 +2362,176 @@
    ]
   },
   {
+   "name": "creature_preset09_s4",
+   "file": "creature_preset09_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    26
+   ]
+  },
+  {
+   "name": "creature_preset09_s4_sleep",
+   "file": "creature_preset09_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    26
+   ]
+  },
+  {
+   "name": "creature_preset09_s5",
+   "file": "creature_preset09_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset09_s5_sleep",
+   "file": "creature_preset09_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset09_s6",
+   "file": "creature_preset09_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    31
+   ]
+  },
+  {
+   "name": "creature_preset09_s6_sleep",
+   "file": "creature_preset09_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    31
+   ]
+  },
+  {
+   "name": "creature_preset09_s7",
+   "file": "creature_preset09_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset09_s7_sleep",
+   "file": "creature_preset09_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset09_s8",
+   "file": "creature_preset09_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    34
+   ]
+  },
+  {
+   "name": "creature_preset09_s8_sleep",
+   "file": "creature_preset09_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    34
+   ]
+  },
+  {
    "name": "creature_preset10_s1",
    "file": "creature_preset10_s1.png",
    "w": 30,
@@ -1101,6 +2631,176 @@
    "head": [
     23,
     31
+   ]
+  },
+  {
+   "name": "creature_preset10_s4",
+   "file": "creature_preset10_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset10_s4_sleep",
+   "file": "creature_preset10_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset10_s5",
+   "file": "creature_preset10_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    38
+   ]
+  },
+  {
+   "name": "creature_preset10_s5_sleep",
+   "file": "creature_preset10_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    38
+   ]
+  },
+  {
+   "name": "creature_preset10_s6",
+   "file": "creature_preset10_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset10_s6_sleep",
+   "file": "creature_preset10_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset10_s7",
+   "file": "creature_preset10_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    43
+   ]
+  },
+  {
+   "name": "creature_preset10_s7_sleep",
+   "file": "creature_preset10_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    43
+   ]
+  },
+  {
+   "name": "creature_preset10_s8",
+   "file": "creature_preset10_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    44
+   ]
+  },
+  {
+   "name": "creature_preset10_s8_sleep",
+   "file": "creature_preset10_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    44
    ]
   },
   {
@@ -1206,6 +2906,176 @@
    ]
   },
   {
+   "name": "creature_preset11_s4",
+   "file": "creature_preset11_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset11_s4_sleep",
+   "file": "creature_preset11_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset11_s5",
+   "file": "creature_preset11_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset11_s5_sleep",
+   "file": "creature_preset11_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset11_s6",
+   "file": "creature_preset11_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset11_s6_sleep",
+   "file": "creature_preset11_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset11_s7",
+   "file": "creature_preset11_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset11_s7_sleep",
+   "file": "creature_preset11_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset11_s8",
+   "file": "creature_preset11_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    36
+   ]
+  },
+  {
+   "name": "creature_preset11_s8_sleep",
+   "file": "creature_preset11_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    36
+   ]
+  },
+  {
    "name": "creature_preset12_s1",
    "file": "creature_preset12_s1.png",
    "w": 30,
@@ -1305,6 +3175,176 @@
    "head": [
     23,
     21
+   ]
+  },
+  {
+   "name": "creature_preset12_s4",
+   "file": "creature_preset12_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    25
+   ]
+  },
+  {
+   "name": "creature_preset12_s4_sleep",
+   "file": "creature_preset12_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    25
+   ]
+  },
+  {
+   "name": "creature_preset12_s5",
+   "file": "creature_preset12_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset12_s5_sleep",
+   "file": "creature_preset12_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset12_s6",
+   "file": "creature_preset12_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset12_s6_sleep",
+   "file": "creature_preset12_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset12_s7",
+   "file": "creature_preset12_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset12_s7_sleep",
+   "file": "creature_preset12_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset12_s8",
+   "file": "creature_preset12_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    34
+   ]
+  },
+  {
+   "name": "creature_preset12_s8_sleep",
+   "file": "creature_preset12_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    34
    ]
   },
   {
@@ -1410,6 +3450,176 @@
    ]
   },
   {
+   "name": "creature_preset13_s4",
+   "file": "creature_preset13_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset13_s4_sleep",
+   "file": "creature_preset13_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset13_s5",
+   "file": "creature_preset13_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    38
+   ]
+  },
+  {
+   "name": "creature_preset13_s5_sleep",
+   "file": "creature_preset13_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    38
+   ]
+  },
+  {
+   "name": "creature_preset13_s6",
+   "file": "creature_preset13_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset13_s6_sleep",
+   "file": "creature_preset13_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset13_s7",
+   "file": "creature_preset13_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    43
+   ]
+  },
+  {
+   "name": "creature_preset13_s7_sleep",
+   "file": "creature_preset13_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    43
+   ]
+  },
+  {
+   "name": "creature_preset13_s8",
+   "file": "creature_preset13_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    44
+   ]
+  },
+  {
+   "name": "creature_preset13_s8_sleep",
+   "file": "creature_preset13_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    44
+   ]
+  },
+  {
    "name": "creature_preset14_s1",
    "file": "creature_preset14_s1.png",
    "w": 30,
@@ -1509,6 +3719,176 @@
    "head": [
     23,
     28
+   ]
+  },
+  {
+   "name": "creature_preset14_s4",
+   "file": "creature_preset14_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset14_s4_sleep",
+   "file": "creature_preset14_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset14_s5",
+   "file": "creature_preset14_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset14_s5_sleep",
+   "file": "creature_preset14_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset14_s6",
+   "file": "creature_preset14_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset14_s6_sleep",
+   "file": "creature_preset14_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset14_s7",
+   "file": "creature_preset14_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset14_s7_sleep",
+   "file": "creature_preset14_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset14_s8",
+   "file": "creature_preset14_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    41
+   ]
+  },
+  {
+   "name": "creature_preset14_s8_sleep",
+   "file": "creature_preset14_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    41
    ]
   },
   {
@@ -1614,6 +3994,176 @@
    ]
   },
   {
+   "name": "creature_preset15_s4",
+   "file": "creature_preset15_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset15_s4_sleep",
+   "file": "creature_preset15_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset15_s5",
+   "file": "creature_preset15_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset15_s5_sleep",
+   "file": "creature_preset15_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset15_s6",
+   "file": "creature_preset15_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset15_s6_sleep",
+   "file": "creature_preset15_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset15_s7",
+   "file": "creature_preset15_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset15_s7_sleep",
+   "file": "creature_preset15_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset15_s8",
+   "file": "creature_preset15_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    36
+   ]
+  },
+  {
+   "name": "creature_preset15_s8_sleep",
+   "file": "creature_preset15_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    36
+   ]
+  },
+  {
    "name": "creature_preset16_s1",
    "file": "creature_preset16_s1.png",
    "w": 30,
@@ -1713,6 +4263,176 @@
    "head": [
     23,
     20
+   ]
+  },
+  {
+   "name": "creature_preset16_s4",
+   "file": "creature_preset16_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    24
+   ]
+  },
+  {
+   "name": "creature_preset16_s4_sleep",
+   "file": "creature_preset16_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    24
+   ]
+  },
+  {
+   "name": "creature_preset16_s5",
+   "file": "creature_preset16_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset16_s5_sleep",
+   "file": "creature_preset16_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset16_s6",
+   "file": "creature_preset16_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset16_s6_sleep",
+   "file": "creature_preset16_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset16_s7",
+   "file": "creature_preset16_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset16_s7_sleep",
+   "file": "creature_preset16_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset16_s8",
+   "file": "creature_preset16_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset16_s8_sleep",
+   "file": "creature_preset16_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    33
    ]
   },
   {
@@ -1818,6 +4538,176 @@
    ]
   },
   {
+   "name": "creature_preset17_s4",
+   "file": "creature_preset17_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset17_s4_sleep",
+   "file": "creature_preset17_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset17_s5",
+   "file": "creature_preset17_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset17_s5_sleep",
+   "file": "creature_preset17_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset17_s6",
+   "file": "creature_preset17_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    42
+   ]
+  },
+  {
+   "name": "creature_preset17_s6_sleep",
+   "file": "creature_preset17_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    42
+   ]
+  },
+  {
+   "name": "creature_preset17_s7",
+   "file": "creature_preset17_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    45
+   ]
+  },
+  {
+   "name": "creature_preset17_s7_sleep",
+   "file": "creature_preset17_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    45
+   ]
+  },
+  {
+   "name": "creature_preset17_s8",
+   "file": "creature_preset17_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    46
+   ]
+  },
+  {
+   "name": "creature_preset17_s8_sleep",
+   "file": "creature_preset17_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    46
+   ]
+  },
+  {
    "name": "creature_preset18_s1",
    "file": "creature_preset18_s1.png",
    "w": 30,
@@ -1917,6 +4807,176 @@
    "head": [
     23,
     33
+   ]
+  },
+  {
+   "name": "creature_preset18_s4",
+   "file": "creature_preset18_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset18_s4_sleep",
+   "file": "creature_preset18_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset18_s5",
+   "file": "creature_preset18_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset18_s5_sleep",
+   "file": "creature_preset18_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset18_s6",
+   "file": "creature_preset18_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    42
+   ]
+  },
+  {
+   "name": "creature_preset18_s6_sleep",
+   "file": "creature_preset18_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    42
+   ]
+  },
+  {
+   "name": "creature_preset18_s7",
+   "file": "creature_preset18_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    45
+   ]
+  },
+  {
+   "name": "creature_preset18_s7_sleep",
+   "file": "creature_preset18_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    45
+   ]
+  },
+  {
+   "name": "creature_preset18_s8",
+   "file": "creature_preset18_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    46
+   ]
+  },
+  {
+   "name": "creature_preset18_s8_sleep",
+   "file": "creature_preset18_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    46
    ]
   },
   {
@@ -2022,6 +5082,176 @@
    ]
   },
   {
+   "name": "creature_preset19_s4",
+   "file": "creature_preset19_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset19_s4_sleep",
+   "file": "creature_preset19_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset19_s5",
+   "file": "creature_preset19_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset19_s5_sleep",
+   "file": "creature_preset19_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset19_s6",
+   "file": "creature_preset19_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset19_s6_sleep",
+   "file": "creature_preset19_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset19_s7",
+   "file": "creature_preset19_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    38
+   ]
+  },
+  {
+   "name": "creature_preset19_s7_sleep",
+   "file": "creature_preset19_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    38
+   ]
+  },
+  {
+   "name": "creature_preset19_s8",
+   "file": "creature_preset19_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset19_s8_sleep",
+   "file": "creature_preset19_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    40
+   ]
+  },
+  {
    "name": "creature_preset20_s1",
    "file": "creature_preset20_s1.png",
    "w": 30,
@@ -2121,6 +5351,176 @@
    "head": [
     23,
     19
+   ]
+  },
+  {
+   "name": "creature_preset20_s4",
+   "file": "creature_preset20_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    23
+   ]
+  },
+  {
+   "name": "creature_preset20_s4_sleep",
+   "file": "creature_preset20_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    23
+   ]
+  },
+  {
+   "name": "creature_preset20_s5",
+   "file": "creature_preset20_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    26
+   ]
+  },
+  {
+   "name": "creature_preset20_s5_sleep",
+   "file": "creature_preset20_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    26
+   ]
+  },
+  {
+   "name": "creature_preset20_s6",
+   "file": "creature_preset20_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset20_s6_sleep",
+   "file": "creature_preset20_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset20_s7",
+   "file": "creature_preset20_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    31
+   ]
+  },
+  {
+   "name": "creature_preset20_s7_sleep",
+   "file": "creature_preset20_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    31
+   ]
+  },
+  {
+   "name": "creature_preset20_s8",
+   "file": "creature_preset20_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset20_s8_sleep",
+   "file": "creature_preset20_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    32
    ]
   },
   {
@@ -2226,6 +5626,176 @@
    ]
   },
   {
+   "name": "creature_preset21_s4",
+   "file": "creature_preset21_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    26
+   ]
+  },
+  {
+   "name": "creature_preset21_s4_sleep",
+   "file": "creature_preset21_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    26
+   ]
+  },
+  {
+   "name": "creature_preset21_s5",
+   "file": "creature_preset21_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset21_s5_sleep",
+   "file": "creature_preset21_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset21_s6",
+   "file": "creature_preset21_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    31
+   ]
+  },
+  {
+   "name": "creature_preset21_s6_sleep",
+   "file": "creature_preset21_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    31
+   ]
+  },
+  {
+   "name": "creature_preset21_s7",
+   "file": "creature_preset21_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset21_s7_sleep",
+   "file": "creature_preset21_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset21_s8",
+   "file": "creature_preset21_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    34
+   ]
+  },
+  {
+   "name": "creature_preset21_s8_sleep",
+   "file": "creature_preset21_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    34
+   ]
+  },
+  {
    "name": "creature_preset22_s1",
    "file": "creature_preset22_s1.png",
    "w": 30,
@@ -2325,6 +5895,176 @@
    "head": [
     23,
     23
+   ]
+  },
+  {
+   "name": "creature_preset22_s4",
+   "file": "creature_preset22_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset22_s4_sleep",
+   "file": "creature_preset22_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset22_s5",
+   "file": "creature_preset22_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset22_s5_sleep",
+   "file": "creature_preset22_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset22_s6",
+   "file": "creature_preset22_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset22_s6_sleep",
+   "file": "creature_preset22_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset22_s7",
+   "file": "creature_preset22_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset22_s7_sleep",
+   "file": "creature_preset22_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset22_s8",
+   "file": "creature_preset22_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    36
+   ]
+  },
+  {
+   "name": "creature_preset22_s8_sleep",
+   "file": "creature_preset22_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    36
    ]
   },
   {
@@ -2430,6 +6170,176 @@
    ]
   },
   {
+   "name": "creature_preset23_s4",
+   "file": "creature_preset23_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    25
+   ]
+  },
+  {
+   "name": "creature_preset23_s4_sleep",
+   "file": "creature_preset23_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    25
+   ]
+  },
+  {
+   "name": "creature_preset23_s5",
+   "file": "creature_preset23_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset23_s5_sleep",
+   "file": "creature_preset23_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    28
+   ]
+  },
+  {
+   "name": "creature_preset23_s6",
+   "file": "creature_preset23_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset23_s6_sleep",
+   "file": "creature_preset23_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    30
+   ]
+  },
+  {
+   "name": "creature_preset23_s7",
+   "file": "creature_preset23_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset23_s7_sleep",
+   "file": "creature_preset23_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset23_s8",
+   "file": "creature_preset23_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    34
+   ]
+  },
+  {
+   "name": "creature_preset23_s8_sleep",
+   "file": "creature_preset23_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    34
+   ]
+  },
+  {
    "name": "creature_preset24_s1",
    "file": "creature_preset24_s1.png",
    "w": 30,
@@ -2532,6 +6442,176 @@
    ]
   },
   {
+   "name": "creature_preset24_s4",
+   "file": "creature_preset24_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    24
+   ]
+  },
+  {
+   "name": "creature_preset24_s4_sleep",
+   "file": "creature_preset24_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    24
+   ]
+  },
+  {
+   "name": "creature_preset24_s5",
+   "file": "creature_preset24_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset24_s5_sleep",
+   "file": "creature_preset24_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    27
+   ]
+  },
+  {
+   "name": "creature_preset24_s6",
+   "file": "creature_preset24_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset24_s6_sleep",
+   "file": "creature_preset24_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    29
+   ]
+  },
+  {
+   "name": "creature_preset24_s7",
+   "file": "creature_preset24_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset24_s7_sleep",
+   "file": "creature_preset24_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset24_s8",
+   "file": "creature_preset24_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    33
+   ]
+  },
+  {
+   "name": "creature_preset24_s8_sleep",
+   "file": "creature_preset24_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    33
+   ]
+  },
+  {
    "name": "creature_preset25_s1",
    "file": "creature_preset25_s1.png",
    "w": 30,
@@ -2631,6 +6711,176 @@
    "head": [
     23,
     28
+   ]
+  },
+  {
+   "name": "creature_preset25_s4",
+   "file": "creature_preset25_s4.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    26,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset25_s4_sleep",
+   "file": "creature_preset25_s4_sleep.png",
+   "w": 52,
+   "h": 60,
+   "anchor": [
+    26,
+    59
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    26,
+    32
+   ]
+  },
+  {
+   "name": "creature_preset25_s5",
+   "file": "creature_preset25_s5.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    28,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset25_s5_sleep",
+   "file": "creature_preset25_s5_sleep.png",
+   "w": 56,
+   "h": 64,
+   "anchor": [
+    28,
+    63
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    28,
+    35
+   ]
+  },
+  {
+   "name": "creature_preset25_s6",
+   "file": "creature_preset25_s6.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    30,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset25_s6_sleep",
+   "file": "creature_preset25_s6_sleep.png",
+   "w": 60,
+   "h": 68,
+   "anchor": [
+    30,
+    67
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    30,
+    37
+   ]
+  },
+  {
+   "name": "creature_preset25_s7",
+   "file": "creature_preset25_s7.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    32,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset25_s7_sleep",
+   "file": "creature_preset25_s7_sleep.png",
+   "w": 64,
+   "h": 72,
+   "anchor": [
+    32,
+    71
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    32,
+    40
+   ]
+  },
+  {
+   "name": "creature_preset25_s8",
+   "file": "creature_preset25_s8.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 4,
+   "fps": 6,
+   "priority": "P1",
+   "head": [
+    34,
+    41
+   ]
+  },
+  {
+   "name": "creature_preset25_s8_sleep",
+   "file": "creature_preset25_s8_sleep.png",
+   "w": 68,
+   "h": 80,
+   "anchor": [
+    34,
+    79
+   ],
+   "frames": 2,
+   "fps": 2,
+   "priority": "P2",
+   "head": [
+    34,
+    41
    ]
   },
   {

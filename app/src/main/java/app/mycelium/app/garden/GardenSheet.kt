@@ -150,7 +150,7 @@ private fun MiniStat(text: String, modifier: Modifier) {
 @Composable
 fun PetPortrait(pet: Pet, box: Dp = 48.dp, sleeping: Boolean = false) {
     val atlas = SpriteAtlas.of(LocalContext.current)
-    val s = remember(pet.preset, pet.stage, sleeping, pet.infection) { atlas.creature(creatureSprite(pet, sleeping), pet.look(atlas), pet.infection, crc(pet.pkg)) }
+    val s = remember(pet.preset, pet.stage, sleeping, pet.infection) { atlas.creature(creatureSprite(pet, sleeping, atlas), pet.look(atlas), pet.infection, crc(pet.pkg)) }
     Box(Modifier.size(box), contentAlignment = Alignment.BottomCenter) {
         PixelBitmap(s.image, artPixelDp = box.value / maxOf(s.w, s.h), srcSize = IntSize(s.w, s.h))
     }
@@ -214,7 +214,8 @@ private fun PetCard(pet: Pet, onBack: () -> Unit, onShoo: (Pet, SnoopVisit) -> U
         }
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.terr_org_stage, pet.stage, pet.stageCount), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = pal.ink)
+                Text(stringResource(R.string.terr_org_stage, pet.stage, pet.stageCount) + " · " + stageName(pet.stage), Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleSmall, color = pal.ink)
                 InfoButton(Info(R.string.info_growth_t, R.string.info_growth_b))
             }
             GrowthBar(pet)
@@ -260,6 +261,10 @@ private fun SnoopRow(pet: Pet, v: SnoopVisit, onShoo: (Pet, SnoopVisit) -> Unit)
         if (!v.shooed) PixelButton(stringResource(R.string.shoo), { onShoo(pet, v) }, kind = ButtonKind.Danger)
     }
 }
+
+/** A friendly name for each of the 8 stages. */
+@Composable
+fun stageName(stage: Int): String = androidx.compose.ui.res.stringArrayResource(R.array.stage_names).let { it[(stage - 1).coerceIn(0, it.size - 1)] }
 
 /** A Snoop in the terrarium art (which one depends on the company). */
 @Composable

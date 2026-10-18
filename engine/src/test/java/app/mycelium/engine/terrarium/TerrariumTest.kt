@@ -42,7 +42,7 @@ class TerrariumTest {
     private fun JsonObject.counts() = getValue("packet_counts_by_type").jsonObject.mapValues { it.value.jsonPrimitive.long }
 
     @Test fun configMatchesSpec() {
-        assertEquals(listOf(0.0, 50.0, 200.0), config.thresholds)
+        assertEquals(listOf(0.0, 50.0, 500.0, 1500.0, 4000.0, 10000.0, 25000.0, 60000.0), config.thresholds)
         assertEquals(mapOf("default" to 1.0, "tracker" to 2.0, "os_packets" to 0.01), config.weights)
         assertEquals("preset01", config.defaultPreset)
         assertEquals(25, presets.size)
@@ -62,7 +62,7 @@ class TerrariumTest {
 
     @Test fun perPresetThresholdsWin() {
         val slow = presets.entries.single { it.value["name"]?.jsonPrimitive?.content == "Slow Moss" }.key
-        assertEquals(listOf(0.0, 80.0, 300.0), terrarium().thresholdsFor(slow))
+        assertEquals(listOf(0.0, 80.0, 800.0, 2400.0, 6400.0, 16000.0, 40000.0, 96000.0), terrarium().thresholdsFor(slow))
         assertEquals(config.thresholds, terrarium().thresholdsFor("preset01"))
         // Same counts, different stage: com.b grows 4 (tracker 2 + dns 1 + ... ) under a low global config vs Slow Moss.
         val low = config.copy(thresholds = listOf(0.0, 2.0, 1000.0))
@@ -92,7 +92,7 @@ class TerrariumTest {
         val a = terrarium().forApp("com.a")!!
         assertEquals(typer.ids, a.counts().keys.toList())
         assertEquals(1, a.getValue("stage").jsonPrimitive.int)
-        assertEquals(3, a.getValue("stage_count").jsonPrimitive.int)
+        assertEquals(8, a.getValue("stage_count").jsonPrimitive.int)
         assertEquals(1, a.getValue("stage_shown").jsonPrimitive.int)
         assertEquals("preset07", a.getValue("preset_id").jsonPrimitive.content)    // fixture organism
         assertTrue(terrarium().forApp("com.c") == null)                            // not watched

@@ -257,7 +257,8 @@ def canopy(cv, rng, cx, cy, rx, ry, ramp, lobes=9):
 # ---------------------------------------------------------------- creatures
 
 KINDS = {}   # preset id -> kingdom (read from the engine's presets)
-STAGE = {1: (30, 32), 2: (38, 42), 3: (46, 54)}   # frame w, h per stage
+STAGE = {1: (30, 32), 2: (38, 42), 3: (46, 54), 4: (52, 60), 5: (56, 64), 6: (60, 68), 7: (64, 72), 8: (68, 80)}   # frame w, h
+STAGES = 8   # matches the engine's stage_thresholds (assets/config/terrarium.json)
 
 
 def face(cv, cx, cy, size, blink, sleep):
@@ -296,7 +297,55 @@ def feet(cv, cx, by, spread, ramp):
 
 
 def creature(pid, stage, frame, sleep):
-    """One frame. The KEY ramp marks the per-app color. Returns (canvas, head anchor [x, y])."""
+    """One frame of a creature at any of the 8 stages: the body keeps growing, and from stage 4 on each stage adds a mark
+    of age: moss tufts (4), flowers and drifting leaves (5), companion mushrooms (6), glowing spores (7), a halo (8)."""
+    cv, head = creature_body(pid, stage, frame, sleep)
+    if stage < 4:
+        return cv, head
+    w, h = STAGE[stage]
+    cx, base = w // 2, h - 2
+    rng = random.Random(zlib.crc32(f"{pid}deco".encode()))
+    sway = 0 if sleep else (0, 1, 0, -1)[frame]
+    for side in (-1, 1):   # 4: moss tufts at the feet
+        x0 = cx + side * (w // 2 - 7)
+        for k in range(5):
+            hgt = 2 + (k * 7 + side) % 3
+            for j in range(hgt):
+                cv.put(x0 + k - 2 + (sway if j == hgt - 1 else 0), base - j, RAMPS["moss"][3 if j == hgt - 1 else 2])
+    if stage >= 5:   # flowers at the feet, two leaves drifting near the head
+        for i, dx in enumerate((-w // 2 + 3, w // 2 - 4, -w // 2 + 9)):
+            col = ("blossom", "sun", "cloud")[i]
+            for ddx, ddy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
+                cv.put(cx + dx + ddx, base - 4 + ddy, RAMPS[col][3])
+            cv.put(cx + dx, base - 4, RAMPS["sun"][2])
+        for i, (lx, ly) in enumerate(((-10, 6), (11, 2))):
+            bob = 0 if sleep else (0, -1, -2, -1)[(frame + i) % 4]
+            shade(cv, ellipse(head[0] + lx, head[1] + ly + bob, 1.8, 1.1), "grass", rim=False, inner=False)
+    if stage >= 6:   # companion mushrooms
+        for dx, hh in ((-w // 2 + 5, 4), (w // 2 - 6, 6)):
+            for k in range(hh):
+                cv.put(cx + dx, base - k, RECOLOR["cream"][3])
+            shade(cv, {p for p in ellipse(cx + dx + 0.5, base - hh, 2.6, 1.9) if p[1] <= base - hh}, "flyred", inner=False)
+            cv.put(cx + dx, base - hh - 1, RAMPS["cloud"][4])
+    if stage >= 7:   # glowing spores drifting around the body
+        for i in range(7):
+            a = i / 7 * math.tau + (0 if sleep else frame * 0.4)
+            r = w * 0.42
+            x, y = cx + math.cos(a) * r, (head[1] + base) / 2 + math.sin(a) * r * 0.6
+            cv.put(x, y, RAMPS["glow"][4], 230)
+            cv.put(x + 1, y, RAMPS["glow"][3], 140)
+    if stage >= 8:   # a golden halo that shimmers
+        hy = max(3, head[1] - 4)
+        for deg in range(0, 360, 12):
+            a = math.radians(deg)
+            k = 4 if (deg // 12 + frame) % 4 == 0 else 3
+            cv.put(head[0] + math.cos(a) * 7, hy + math.sin(a) * 2, RAMPS["sun"][k])
+        head = [head[0], hy - 2]
+    return cv, head
+
+
+def creature_body(pid, stage, frame, sleep):
+    """The creature itself. The KEY ramp marks the per-app color. Returns (canvas, head anchor [x, y])."""
     w, h = STAGE[stage]
     cv = Canvas(w, h)
     kind = KINDS.get(pid, "plant")
@@ -307,9 +356,10 @@ def creature(pid, stage, frame, sleep):
     blink = frame == 3
     cx = w // 2
     base = h - 2
-    s = stage
-    bw = {1: 7, 2: 9, 3: 11}[s]
-    bh = {1: 6.5, 2: 8, 3: 9.5}[s] - (1 if sleep else 0)
+    s = min(stage, 3)            # feature tier (adult features from stage 3 on)
+    grow = max(0, stage - 3)     # older stages keep getting bigger
+    bw = {1: 7, 2: 9, 3: 11}[s] + grow
+    bh = {1: 6.5, 2: 8, 3: 9.5}[s] + grow * 0.7 - (1 if sleep else 0)
     by = base - bh + bob + sq * 0.5
     head = [cx, int(by - bh)]
 
@@ -1064,7 +1114,7 @@ def main():
     for p in presets:
         KINDS[p["id"]] = json.loads((ROOT / "engine/src/main/assets" / p["file"]).read_text()).get("kingdom", "plant")
     for p in presets:
-        for s in (1, 2, 3):
+        for s in range(1, STAGES + 1):
             frames, heads = zip(*[creature(p["id"], s, f, False) for f in range(4)])
             add(f"creature_{p['id']}_s{s}", list(frames), 6, priority="P1", head=list(heads[0]))
             sl, _ = zip(*[creature(p["id"], s, f, True) for f in range(2)])
