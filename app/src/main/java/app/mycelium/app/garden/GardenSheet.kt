@@ -143,7 +143,7 @@ private fun MiniStat(text: String, modifier: Modifier) {
 @Composable
 fun PetPortrait(pet: Pet, box: Dp = 48.dp, sleeping: Boolean = false) {
     val atlas = SpriteAtlas.of(LocalContext.current)
-    val s = remember(pet.preset, pet.stage, sleeping) { atlas[creatureSprite(pet, sleeping)] }
+    val s = remember(pet.preset, pet.stage, sleeping, pet.infection) { atlas.creature(creatureSprite(pet, sleeping), pet.look(atlas), pet.infection, crc(pet.pkg)) }
     Box(Modifier.size(box), contentAlignment = Alignment.BottomCenter) {
         PixelBitmap(s.image, artPixelDp = box.value / maxOf(s.w, s.h), srcSize = IntSize(s.w, s.h))
     }
@@ -239,7 +239,7 @@ private fun PetCard(pet: Pet, onBack: () -> Unit, onShoo: (Pet, SnoopVisit) -> U
 private fun SnoopRow(pet: Pet, v: SnoopVisit, onShoo: (Pet, SnoopVisit) -> Unit) {
     val pal = LocalPal.current
     val atlas = SpriteAtlas.of(LocalContext.current)
-    val sprite = remember(v.company) { atlas["snoop_${1 + (crc(v.company) % 2).toInt()}"] }
+    val sprite = remember(v.company) { atlas["snoop_${1 + (crc(v.company) % 3).toInt()}"] }
     Row(Modifier.fillMaxWidth().pixelPanel(PanelStyle.Quiet, pal, pixel()).padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
         PixelBitmap(sprite.image, artPixelDp = 2f, srcSize = IntSize(sprite.w, sprite.h))
         Spacer(Modifier.width(8.dp))

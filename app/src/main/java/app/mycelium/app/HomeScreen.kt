@@ -130,6 +130,8 @@ fun HomeScreen(prefs: UiPrefs, protection: Protection, start: () -> Unit, topIns
                 GardenView(
                     still = prefs.reduceMotion || prefs.batterySaver, pets = pets, selected = selected, fx = fx, camera = camera,
                     focus = focus, bottomInsetPx = sheetPx,
+                    // leave room for the status note when protection is paused or offline, so the lid stays in view
+                    topInsetPx = with(density) { (topInset + if (protection == Protection.Paused || protection == Protection.SafeMode) 72.dp else 0.dp).roundToPx() },
                     onTapPet = { open(it) }, onTapSnoop = { p, _ -> open(p) },
                     onTapEmpty = { selected = null; focus = null; picking = false },
                     modifier = Modifier.fillMaxSize(),

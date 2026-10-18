@@ -52,7 +52,7 @@ class Placed(val pet: Pet, val spot: Spot, val sprite: Sprite, val snoops: List<
  * plants and water, the night tint, glowing things, creatures with their infection, hats and Snoops, the red data
  * threads Snoops pull out through the lid, effects, then the glass in front. The view scales it up (nearest-neighbor).
  */
-class TerrariumRenderer(context: Context, val atlas: SpriteAtlas, val layout: Layout, viewArtW: Int, viewArtH: Int) {
+class TerrariumRenderer(val atlas: SpriteAtlas, val layout: Layout, viewArtW: Int, viewArtH: Int) {
     val frame: Bitmap = Bitmap.createBitmap(viewArtW + 2, viewArtH + 2, Bitmap.Config.ARGB_8888)
     private val canvas = Canvas(frame)
     private val paint = Paint().apply { isFilterBitmap = false; isAntiAlias = false }
@@ -163,11 +163,13 @@ class TerrariumRenderer(context: Context, val atlas: SpriteAtlas, val layout: La
             val n = (len / 2).toInt()
             for (i in 0..n) {
                 val f = i / n.toFloat()
-                if (((i + ms / 90) % 7).toInt() > 1) continue   // moving dashes
+                if (((i + ms / 90) % 5).toInt() > 2) continue   // moving dashes, flowing up toward the lid
                 val x = sx + (layout.mouthX - sx) * f + sin(f * PI * 3 + at.x).toFloat() * 6 * (1 - f)
                 val y = sy + (layout.mouthY - sy) * f
-                dot.color = if (i % 2 == 0) 0xCCE8455A.toInt() else 0x99B8203A.toInt()
-                canvas.drawRect(x - cx, y - cy, x - cx + 1, y - cy + 1, dot)
+                dot.color = if (i % 3 == 0) 0xFFFF8C8C.toInt() else 0xEEE8455A.toInt()
+                canvas.drawRect(x - cx, y - cy, x - cx + 2, y - cy + 1, dot)
+                dot.color = 0x887A1530.toInt()
+                canvas.drawRect(x - cx, y - cy + 1, x - cx + 2, y - cy + 2, dot)
             }
         }
     }

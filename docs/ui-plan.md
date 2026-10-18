@@ -131,3 +131,13 @@ Blossom #E7679A #F59BB8 #FFD3E1 #B9E6E8 #DFF6F4 · Vine #1E4A2B #2F7A3A · Parch
 | topBar | #5A3B28 (55% over the scene) | #2B2842 |
 Auto theme follows the phone clock (night 20:00-06:00). Spacing on an 8 dp grid (screen padding 16, gaps 8/16),
 icons 24 dp, touch targets 48 dp, "i" buttons pinned to the right end of every header and card title.
+
+## Glass terrarium (v2, replaces the floating-island scene)
+Home is a glass jar on a wooden shelf by a window (sky follows the clock: day/dusk/night). Art: `scripts/gen_sprites.py`
+(pure Python + Pillow, volume shader with hue-shifted ramps, rim light, colored outlines; ~160 colors) writes the room,
+the jar's inside (`terrain`), the glass (`glass_front`), animated decor, 25 presets x 3 stages of creatures, 3 Snoops,
+8 hats and effects, plus `terrarium_layout.json` (creature slots, decor, lid). The app (`garden/Terrarium.kt`) draws
+each frame in art pixels into one offscreen bitmap and scales it up nearest-neighbor: smooth pinch zoom 1x-3x,
+animated double-tap, pan with inertia. Each app's creature: its preset type, its own colors (KEY ramp swapped from
+the seed) and hat. Trackers show as infection (0-3: red blotches, veins, sickly cast) and red data threads pulled out
+through the lid by each visiting Snoop; shooing heals (poof, sparkles, hearts).
