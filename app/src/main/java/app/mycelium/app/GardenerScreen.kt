@@ -78,6 +78,7 @@ private class Msg(
     val action: Action? = null,
     val fresh: Boolean = false,
     val tips: Set<Int> = emptySet(),   // indexes of general-knowledge sentences (not facts about this phone)
+    val sent: String? = null,           // exactly what went to the AI helper, viewable under Details
 ) {
     var actionNote by mutableStateOf<String?>(null)
 }
@@ -130,7 +131,6 @@ fun GardenerScreen() {
     val msgs = remember { mutableStateListOf<Msg>() }
     var input by rememberSaveable { mutableStateOf("") }
     var busy by remember { mutableStateOf(false) }
-    var preview by remember { mutableStateOf<JSONObject?>(null) }
     var record by remember { mutableStateOf<JSONObject?>(null) }
     var confirmClear by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -148,8 +148,15 @@ fun GardenerScreen() {
         scope.launch {
             busy = true
             if (askAi) {
+                // the engine still builds the exact payload first; it is sent at once and kept for Details
                 val p = Api.io("ai_preview", obj("text" to q))
-                if (p.has("error")) msgs += Msg(false, listOf(ctx.getString(R.string.error_generic, p.optString("error")) to emptyList())) else preview = p
+                if (p.has("error")) msgs += Msg(false, listOf(ctx.getString(R.string.error_generic, p.optString("error")) to emptyList()))
+                else {
+                    msgs += Msg(true, listOf(q to emptyList()))
+                    input = ""
+                    val r = fromResult(Api.io("ai_ask", obj("preview_id" to p.getString("preview_id"))))
+                    msgs += Msg(r.user, r.sentences, r.engine, r.latencyMs, r.fallback, r.action, r.fresh, r.tips, p.optJSONObject("payload")?.toString(2))
+                }
             } else {
                 msgs += Msg(true, listOf(q to emptyList()))
                 input = ""
@@ -191,31 +198,10 @@ fun GardenerScreen() {
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             OutlinedTextField(input, { input = it }, Modifier.weight(1f), placeholder = { Text(stringResource(R.string.chat_hint)) }, maxLines = 3)
-            PixelButton(stringResource(if (askAi) R.string.chat_preview else R.string.chat_send), { send(input) }, enabled = !busy && input.isNotBlank())
+            PixelButton(stringResource(R.string.chat_send), { send(input) }, enabled = !busy && input.isNotBlank())
         }
     }
 
-    preview?.let { p ->
-        PixelDialog(stringResource(R.string.chat_preview_title), onDismiss = { preview = null }, actions = {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                PixelButton(stringResource(R.string.cancel), { preview = null }, kind = ButtonKind.Secondary)
-                PixelButton(stringResource(R.string.chat_send), {
-                    preview = null
-                    scope.launch {
-                        busy = true
-                        msgs += Msg(true, listOf(p.getJSONObject("payload").optString("question") to emptyList()))
-                        input = ""
-                        msgs += fromResult(Api.io("ai_ask", obj("preview_id" to p.getString("preview_id"))))
-                        busy = false
-                    }
-                })
-            }
-        }) {
-            Text(stringResource(R.string.chat_preview_body, p.optString("model"), p.optInt("payload_bytes")), style = MaterialTheme.typography.bodyMedium, color = pal.ink)
-            Text(stringResource(R.string.chat_preview_exact), style = MaterialTheme.typography.titleSmall, color = pal.ink)
-            Text(p.getJSONObject("payload").toString(2), fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall, color = pal.ink)
-        }
-    }
     record?.optJSONObject("record")?.let { rec -> EventDialog(rec, types, labels, advanced = false) { record = null } }
     if (confirmClear) PixelDialog(stringResource(R.string.chat_clear_q), onDismiss = { confirmClear = false }, actions = {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -286,7 +272,7 @@ private fun BotBubble(m: Msg, onCite: (Long) -> Unit, onAction: (Action) -> Unit
                     m.engine != null -> stringResource(R.string.chat_engine_template_plain)
                     else -> null
                 }
-                if (ids.isNotEmpty() || engine != null || m.fallback != null) Details {
+                if (ids.isNotEmpty() || engine != null || m.fallback != null || m.sent != null) Details {
                     if (ids.isNotEmpty()) {
                         Text(stringResource(R.string.chat_evidence_intro), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
                         Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -295,6 +281,10 @@ private fun BotBubble(m: Msg, onCite: (Long) -> Unit, onAction: (Action) -> Unit
                     }
                     m.fallback?.let { Text(stringResource(R.string.chat_fallback_reason, it), style = MaterialTheme.typography.bodySmall, color = pal.inkMuted) }
                     if (engine != null) Text(engine, style = MaterialTheme.typography.labelSmall, color = pal.inkMuted)
+                    m.sent?.let {
+                        Text(stringResource(R.string.chat_sent_title), style = MaterialTheme.typography.labelLarge, color = pal.ink)
+                        Text(it, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall, color = pal.inkMuted)
+                    }
                 }
             }
         }
