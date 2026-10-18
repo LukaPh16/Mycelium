@@ -219,7 +219,7 @@ fun GardenView(
                     // hold a creature for a moment to pick it up; drag it; let go and it lands on the nearest surface
                     val grab = hit(down.position)?.takeIf { it.second == null }?.first
                     if (grab != null) {
-                        val stillHeld = withTimeoutOrNull(380) {
+                        val stillHeld = withTimeoutOrNull(200) {
                             while (true) {
                                 val e = awaitPointerEvent()
                                 val c = e.changes.first()
